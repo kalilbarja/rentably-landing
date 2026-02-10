@@ -172,6 +172,38 @@
             font-size: 0.75rem;
         }
 
+        /* Language Toggle */
+        .lang-toggle {
+            display: flex;
+            background: var(--surface-dim);
+            border-radius: 8px;
+            padding: 3px;
+            gap: 2px;
+        }
+
+        .lang-btn {
+            padding: 0.4rem 0.75rem;
+            border: none;
+            background: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            font-family: 'Satoshi', sans-serif;
+        }
+
+        .lang-btn:hover {
+            color: var(--text);
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--text);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -1030,29 +1062,33 @@
             Rentably
         </a>
         <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#pricing">Pricing</a>
+            <a href="#features" data-translate="nav_features">Features</a>
+            <a href="#how-it-works" data-translate="nav_how">How It Works</a>
+            <a href="#pricing" data-translate="nav_pricing">Pricing</a>
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" onclick="setLanguage('es')">ES</button>
+            </div>
             <div class="login-dropdown">
-                <a href="#" class="btn btn-ghost login-trigger">Log In ▾</a>
+                <a href="#" class="btn btn-ghost login-trigger" data-translate="nav_login">Log In ▾</a>
                 <div class="login-menu">
                     <a href="/portal" class="login-option">
                         <span class="login-icon">🏠</span>
                         <div>
-                            <strong>Resident Portal</strong>
-                            <small>For tenants</small>
+                            <strong data-translate="login_resident">Resident Portal</strong>
+                            <small data-translate="login_resident_sub">For tenants</small>
                         </div>
                     </a>
                     <a href="/admin" class="login-option">
                         <span class="login-icon">⚙️</span>
                         <div>
-                            <strong>Admin Dashboard</strong>
-                            <small>For property managers</small>
+                            <strong data-translate="login_admin">Admin Dashboard</strong>
+                            <small data-translate="login_admin_sub">For property managers</small>
                         </div>
                     </a>
                 </div>
             </div>
-            <a href="#cta" class="btn btn-primary">Get Started</a>
+            <a href="#cta" class="btn btn-primary" data-translate="nav_start">Get Started</a>
         </div>
     </nav>
 
@@ -1064,32 +1100,32 @@
             <div class="hero-text">
                 <div class="badge">
                     <span class="badge-dot"></span>
-                    Now accepting early access signups
+                    <span data-translate="hero_badge">Now accepting early access signups</span>
                 </div>
-                <h1>Property Management <span>Made Simple</span></h1>
-                <p>Streamline maintenance requests, tenant communication, and property operations — all in one beautiful platform.</p>
+                <h1 data-translate="hero_title">Property Management <span>Made Simple</span></h1>
+                <p data-translate="hero_subtitle">Streamline maintenance requests, tenant communication, and property operations — all in one beautiful platform.</p>
                 <div class="hero-buttons">
-                    <a href="#cta" class="btn btn-primary btn-large">Join Waitlist →</a>
-                    <a href="#features" class="btn btn-ghost btn-large">See Features</a>
+                    <a href="#cta" class="btn btn-primary btn-large" data-translate="hero_cta">Join Waitlist →</a>
+                    <a href="#features" class="btn btn-ghost btn-large" data-translate="hero_features">See Features</a>
                 </div>
             </div>
             <div class="hero-visual">
                 <div class="dashboard-preview hero-image">
                     <div class="dashboard-header">
                         <div class="dashboard-title">Dashboard</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);">Today</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);" data-translate="dash_today">Today</div>
                     </div>
                     <div class="dashboard-stats">
                         <div class="stat-card">
-                            <div class="stat-label">Pending</div>
+                            <div class="stat-label" data-translate="dash_pending">Pending</div>
                             <div class="stat-value orange">12</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">In Progress</div>
+                            <div class="stat-label" data-translate="dash_progress">In Progress</div>
                             <div class="stat-value purple">8</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Completed</div>
+                            <div class="stat-label" data-translate="dash_completed">Completed</div>
                             <div class="stat-value green">47</div>
                         </div>
                     </div>
@@ -1097,18 +1133,18 @@
                         <div class="list-item">
                             <div class="list-icon">🔧</div>
                             <div class="list-content">
-                                <div class="list-title">Plumbing Issue - Unit 4B</div>
-                                <div class="list-subtitle">Submitted 2 hours ago</div>
+                                <div class="list-title" data-translate="dash_item1">Plumbing Issue - Unit 4B</div>
+                                <div class="list-subtitle" data-translate="dash_item1_sub">Submitted 2 hours ago</div>
                             </div>
-                            <div class="list-badge pending">Pending</div>
+                            <div class="list-badge pending" data-translate="dash_pending">Pending</div>
                         </div>
                         <div class="list-item">
                             <div class="list-icon">⚡</div>
                             <div class="list-content">
-                                <div class="list-title">Electrical - Unit 2A</div>
-                                <div class="list-subtitle">Technician assigned</div>
+                                <div class="list-title" data-translate="dash_item2">Electrical - Unit 2A</div>
+                                <div class="list-subtitle" data-translate="dash_item2_sub">Technician assigned</div>
                             </div>
-                            <div class="list-badge progress">In Progress</div>
+                            <div class="list-badge progress" data-translate="dash_progress">In Progress</div>
                         </div>
                         <div class="list-item">
                             <div class="list-icon">❄️</div>
@@ -1146,39 +1182,39 @@
     <section class="features" id="features">
         <div class="container">
             <div class="section-header">
-                <h2>Everything You Need</h2>
-                <p>Powerful tools to manage properties efficiently, keep tenants happy, and grow your business.</p>
+                <h2 data-translate="features_title">Everything You Need</h2>
+                <p data-translate="features_subtitle">Powerful tools to manage properties efficiently, keep tenants happy, and grow your business.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">📋</div>
-                    <h3>Maintenance Requests</h3>
-                    <p>Tenants submit requests through a simple portal. You track, assign, and resolve — all in one place.</p>
+                    <h3 data-translate="feature1_title">Maintenance Requests</h3>
+                    <p data-translate="feature1_desc">Tenants submit requests through a simple portal. You track, assign, and resolve — all in one place.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">💬</div>
-                    <h3>Tenant Communication</h3>
-                    <p>Built-in messaging, automated notifications, and announcements keep everyone in the loop.</p>
+                    <h3 data-translate="feature2_title">Tenant Communication</h3>
+                    <p data-translate="feature2_desc">Built-in messaging, automated notifications, and announcements keep everyone in the loop.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
-                    <h3>Analytics & Reports</h3>
-                    <p>Track maintenance costs, response times, and property performance with beautiful dashboards.</p>
+                    <h3 data-translate="feature3_title">Analytics & Reports</h3>
+                    <p data-translate="feature3_desc">Track maintenance costs, response times, and property performance with beautiful dashboards.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🏠</div>
-                    <h3>Property Portfolio</h3>
-                    <p>Manage multiple properties and units from a single dashboard. Scale without the chaos.</p>
+                    <h3 data-translate="feature4_title">Property Portfolio</h3>
+                    <p data-translate="feature4_desc">Manage multiple properties and units from a single dashboard. Scale without the chaos.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📱</div>
-                    <h3>Mobile-First Design</h3>
-                    <p>Tenants can submit requests from their phone. You can manage on-the-go.</p>
+                    <h3 data-translate="feature5_title">Mobile-First Design</h3>
+                    <p data-translate="feature5_desc">Tenants can submit requests from their phone. You can manage on-the-go.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎨</div>
-                    <h3>Your Brand</h3>
-                    <p>White-label portal with your logo and colors. Your tenants see your brand, not ours.</p>
+                    <h3 data-translate="feature6_title">Your Brand</h3>
+                    <p data-translate="feature6_desc">White-label portal with your logo and colors. Your tenants see your brand, not ours.</p>
                 </div>
             </div>
         </div>
@@ -1188,24 +1224,24 @@
     <section class="how-it-works" id="how-it-works">
         <div class="container">
             <div class="section-header">
-                <h2>Up and Running in Minutes</h2>
-                <p>No complex setup. No training required. Just sign up and start managing.</p>
+                <h2 data-translate="how_title">Up and Running in Minutes</h2>
+                <p data-translate="how_subtitle">No complex setup. No training required. Just sign up and start managing.</p>
             </div>
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
-                    <h3>Create Your Account</h3>
-                    <p>Sign up, add your properties and units. Import existing tenant data or start fresh.</p>
+                    <h3 data-translate="step1_title">Create Your Account</h3>
+                    <p data-translate="step1_desc">Sign up, add your properties and units. Import existing tenant data or start fresh.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
-                    <h3>Invite Your Tenants</h3>
-                    <p>Send automatic invitations. Tenants get instant access to their personalized portal.</p>
+                    <h3 data-translate="step2_title">Invite Your Tenants</h3>
+                    <p data-translate="step2_desc">Send automatic invitations. Tenants get instant access to their personalized portal.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <h3>Manage Everything</h3>
-                    <p>Receive requests, track progress, communicate with tenants — all from one dashboard.</p>
+                    <h3 data-translate="step3_title">Manage Everything</h3>
+                    <p data-translate="step3_desc">Receive requests, track progress, communicate with tenants — all from one dashboard.</p>
                 </div>
             </div>
         </div>
@@ -1215,50 +1251,50 @@
     <section class="pricing" id="pricing">
         <div class="container">
             <div class="section-header">
-                <h2>Simple, Transparent Pricing</h2>
-                <p>Start free. Upgrade as you grow. No hidden fees, ever.</p>
+                <h2 data-translate="pricing_title">Simple, Transparent Pricing</h2>
+                <p data-translate="pricing_subtitle">Start free. Upgrade as you grow. No hidden fees, ever.</p>
             </div>
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <div class="pricing-name">Starter</div>
                     <div class="pricing-price">$49<span>/mo</span></div>
-                    <p class="pricing-description">Perfect for small landlords getting started.</p>
+                    <p class="pricing-description" data-translate="price1_desc">Perfect for small landlords getting started.</p>
                     <ul class="pricing-features">
-                        <li>Up to 25 units</li>
-                        <li>Tenant portal</li>
-                        <li>Maintenance tracking</li>
-                        <li>Email notifications</li>
-                        <li>Basic reports</li>
+                        <li data-translate="price1_f1">Up to 25 units</li>
+                        <li data-translate="price1_f2">Tenant portal</li>
+                        <li data-translate="price1_f3">Maintenance tracking</li>
+                        <li data-translate="price1_f4">Email notifications</li>
+                        <li data-translate="price1_f5">Basic reports</li>
                     </ul>
-                    <a href="#cta" class="btn btn-primary">Get Started</a>
+                    <a href="#cta" class="btn btn-primary" data-translate="nav_start">Get Started</a>
                 </div>
                 <div class="pricing-card featured">
                     <div class="pricing-name">Professional</div>
                     <div class="pricing-price">$99<span>/mo</span></div>
-                    <p class="pricing-description">For growing property managers.</p>
+                    <p class="pricing-description" data-translate="price2_desc">For growing property managers.</p>
                     <ul class="pricing-features">
-                        <li>Up to 100 units</li>
-                        <li>Everything in Starter</li>
-                        <li>SMS notifications</li>
-                        <li>Custom branding</li>
-                        <li>Advanced analytics</li>
-                        <li>Priority support</li>
+                        <li data-translate="price2_f1">Up to 100 units</li>
+                        <li data-translate="price2_f2">Everything in Starter</li>
+                        <li data-translate="price2_f3">SMS notifications</li>
+                        <li data-translate="price2_f4">Custom branding</li>
+                        <li data-translate="price2_f5">Advanced analytics</li>
+                        <li data-translate="price2_f6">Priority support</li>
                     </ul>
-                    <a href="#cta" class="btn btn-primary">Get Started</a>
+                    <a href="#cta" class="btn btn-primary" data-translate="nav_start">Get Started</a>
                 </div>
                 <div class="pricing-card">
                     <div class="pricing-name">Business</div>
                     <div class="pricing-price">$199<span>/mo</span></div>
-                    <p class="pricing-description">For large portfolios and teams.</p>
+                    <p class="pricing-description" data-translate="price3_desc">For large portfolios and teams.</p>
                     <ul class="pricing-features">
-                        <li>Up to 500 units</li>
-                        <li>Everything in Professional</li>
-                        <li>API access</li>
-                        <li>Custom domain</li>
-                        <li>Unlimited team accounts</li>
-                        <li>Dedicated support</li>
+                        <li data-translate="price3_f1">Up to 500 units</li>
+                        <li data-translate="price3_f2">Everything in Professional</li>
+                        <li data-translate="price3_f3">API access</li>
+                        <li data-translate="price3_f4">Custom domain</li>
+                        <li data-translate="price3_f5">Unlimited team accounts</li>
+                        <li data-translate="price3_f6">Dedicated support</li>
                     </ul>
-                    <a href="#cta" class="btn btn-primary">Get Started</a>
+                    <a href="#cta" class="btn btn-primary" data-translate="nav_start">Get Started</a>
                 </div>
             </div>
         </div>
@@ -1267,11 +1303,11 @@
     <!-- CTA Section -->
     <section class="cta" id="cta">
         <div class="cta-box">
-            <h2>Ready to Simplify Property Management?</h2>
-            <p>Join the waitlist for early access. Be the first to know when we launch.</p>
+            <h2 data-translate="cta_title">Ready to Simplify Property Management?</h2>
+            <p data-translate="cta_subtitle">Join the waitlist for early access. Be the first to know when we launch.</p>
             <form class="waitlist-form" onsubmit="handleWaitlist(event)">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit" class="btn btn-large">Join Waitlist</button>
+                <input type="email" data-translate-placeholder="cta_email" placeholder="Enter your email" required>
+                <button type="submit" class="btn btn-large" data-translate="cta_button">Join Waitlist</button>
             </form>
         </div>
     </section>
@@ -1346,9 +1382,220 @@
             const email = e.target.querySelector('input').value;
             
             // TODO: Connect to backend/email service
-            alert('Thanks for joining the waitlist! We\'ll be in touch soon.');
+            alert(currentLang === 'es' ? '¡Gracias por unirte a la lista de espera! Te contactaremos pronto.' : 'Thanks for joining the waitlist! We\'ll be in touch soon.');
             e.target.reset();
         }
+
+        // ==============================================
+        // TRANSLATIONS
+        // ==============================================
+        const translations = {
+            en: {
+                // Nav
+                nav_features: 'Features',
+                nav_how: 'How It Works',
+                nav_pricing: 'Pricing',
+                nav_login: 'Log In ▾',
+                nav_start: 'Get Started',
+                login_resident: 'Resident Portal',
+                login_resident_sub: 'For tenants',
+                login_admin: 'Admin Dashboard',
+                login_admin_sub: 'For property managers',
+                // Hero
+                hero_badge: 'Now accepting early access signups',
+                hero_title: 'Property Management <span>Made Simple</span>',
+                hero_subtitle: 'Streamline maintenance requests, tenant communication, and property operations — all in one beautiful platform.',
+                hero_cta: 'Join Waitlist →',
+                hero_features: 'See Features',
+                // Dashboard preview
+                dash_today: 'Today',
+                dash_pending: 'Pending',
+                dash_progress: 'In Progress',
+                dash_completed: 'Completed',
+                dash_item1: 'Plumbing Issue - Unit 4B',
+                dash_item1_sub: 'Submitted 2 hours ago',
+                dash_item2: 'Electrical - Unit 2A',
+                dash_item2_sub: 'Technician assigned',
+                // Features
+                features_title: 'Everything You Need',
+                features_subtitle: 'Powerful tools to manage properties efficiently, keep tenants happy, and grow your business.',
+                feature1_title: 'Maintenance Requests',
+                feature1_desc: 'Tenants submit requests through a simple portal. You track, assign, and resolve — all in one place.',
+                feature2_title: 'Tenant Communication',
+                feature2_desc: 'Built-in messaging, automated notifications, and announcements keep everyone in the loop.',
+                feature3_title: 'Analytics & Reports',
+                feature3_desc: 'Track maintenance costs, response times, and property performance with beautiful dashboards.',
+                feature4_title: 'Property Portfolio',
+                feature4_desc: 'Manage multiple properties and units from a single dashboard. Scale without the chaos.',
+                feature5_title: 'Mobile-First Design',
+                feature5_desc: 'Tenants can submit requests from their phone. You can manage on-the-go.',
+                feature6_title: 'Your Brand',
+                feature6_desc: 'White-label portal with your logo and colors. Your tenants see your brand, not ours.',
+                // How it works
+                how_title: 'Up and Running in Minutes',
+                how_subtitle: 'No complex setup. No training required. Just sign up and start managing.',
+                step1_title: 'Create Your Account',
+                step1_desc: 'Sign up, add your properties and units. Import existing tenant data or start fresh.',
+                step2_title: 'Invite Your Tenants',
+                step2_desc: 'Send automatic invitations. Tenants get instant access to their personalized portal.',
+                step3_title: 'Manage Everything',
+                step3_desc: 'Receive requests, track progress, communicate with tenants — all from one dashboard.',
+                // Pricing
+                pricing_title: 'Simple, Transparent Pricing',
+                pricing_subtitle: 'Start free. Upgrade as you grow. No hidden fees, ever.',
+                price1_desc: 'Perfect for small landlords getting started.',
+                price1_f1: 'Up to 25 units',
+                price1_f2: 'Tenant portal',
+                price1_f3: 'Maintenance tracking',
+                price1_f4: 'Email notifications',
+                price1_f5: 'Basic reports',
+                price2_desc: 'For growing property managers.',
+                price2_f1: 'Up to 100 units',
+                price2_f2: 'Everything in Starter',
+                price2_f3: 'SMS notifications',
+                price2_f4: 'Custom branding',
+                price2_f5: 'Advanced analytics',
+                price2_f6: 'Priority support',
+                price3_desc: 'For large portfolios and teams.',
+                price3_f1: 'Up to 500 units',
+                price3_f2: 'Everything in Professional',
+                price3_f3: 'API access',
+                price3_f4: 'Custom domain',
+                price3_f5: 'Unlimited team accounts',
+                price3_f6: 'Dedicated support',
+                // CTA
+                cta_title: 'Ready to Simplify Property Management?',
+                cta_subtitle: 'Join the waitlist for early access. Be the first to know when we launch.',
+                cta_email: 'Enter your email',
+                cta_button: 'Join Waitlist'
+            },
+            es: {
+                // Nav
+                nav_features: 'Funciones',
+                nav_how: 'Cómo Funciona',
+                nav_pricing: 'Precios',
+                nav_login: 'Ingresar ▾',
+                nav_start: 'Comenzar',
+                login_resident: 'Portal de Residentes',
+                login_resident_sub: 'Para inquilinos',
+                login_admin: 'Panel de Administración',
+                login_admin_sub: 'Para administradores',
+                // Hero
+                hero_badge: 'Aceptando registros de acceso anticipado',
+                hero_title: 'Gestión de Propiedades <span>Simplificada</span>',
+                hero_subtitle: 'Optimiza solicitudes de mantenimiento, comunicación con inquilinos y operaciones — todo en una hermosa plataforma.',
+                hero_cta: 'Únete a la Lista →',
+                hero_features: 'Ver Funciones',
+                // Dashboard preview
+                dash_today: 'Hoy',
+                dash_pending: 'Pendiente',
+                dash_progress: 'En Progreso',
+                dash_completed: 'Completado',
+                dash_item1: 'Problema de Plomería - Unidad 4B',
+                dash_item1_sub: 'Enviado hace 2 horas',
+                dash_item2: 'Eléctrico - Unidad 2A',
+                dash_item2_sub: 'Técnico asignado',
+                // Features
+                features_title: 'Todo lo que Necesitas',
+                features_subtitle: 'Herramientas poderosas para gestionar propiedades eficientemente, mantener inquilinos felices y hacer crecer tu negocio.',
+                feature1_title: 'Solicitudes de Mantenimiento',
+                feature1_desc: 'Los inquilinos envían solicitudes a través de un portal simple. Tú rastreas, asignas y resuelves — todo en un lugar.',
+                feature2_title: 'Comunicación con Inquilinos',
+                feature2_desc: 'Mensajería integrada, notificaciones automáticas y anuncios mantienen a todos informados.',
+                feature3_title: 'Análisis e Informes',
+                feature3_desc: 'Rastrea costos de mantenimiento, tiempos de respuesta y rendimiento de propiedades con hermosos dashboards.',
+                feature4_title: 'Portafolio de Propiedades',
+                feature4_desc: 'Gestiona múltiples propiedades y unidades desde un solo dashboard. Escala sin caos.',
+                feature5_title: 'Diseño Mobile-First',
+                feature5_desc: 'Los inquilinos pueden enviar solicitudes desde su teléfono. Tú puedes gestionar en movimiento.',
+                feature6_title: 'Tu Marca',
+                feature6_desc: 'Portal white-label con tu logo y colores. Tus inquilinos ven tu marca, no la nuestra.',
+                // How it works
+                how_title: 'Funcionando en Minutos',
+                how_subtitle: 'Sin configuración compleja. Sin entrenamiento requerido. Solo regístrate y comienza a gestionar.',
+                step1_title: 'Crea tu Cuenta',
+                step1_desc: 'Regístrate, agrega tus propiedades y unidades. Importa datos existentes o comienza desde cero.',
+                step2_title: 'Invita a tus Inquilinos',
+                step2_desc: 'Envía invitaciones automáticas. Los inquilinos obtienen acceso instantáneo a su portal personalizado.',
+                step3_title: 'Gestiona Todo',
+                step3_desc: 'Recibe solicitudes, rastrea progreso, comunícate con inquilinos — todo desde un dashboard.',
+                // Pricing
+                pricing_title: 'Precios Simples y Transparentes',
+                pricing_subtitle: 'Comienza gratis. Actualiza mientras creces. Sin tarifas ocultas, nunca.',
+                price1_desc: 'Perfecto para pequeños propietarios comenzando.',
+                price1_f1: 'Hasta 25 unidades',
+                price1_f2: 'Portal de inquilinos',
+                price1_f3: 'Seguimiento de mantenimiento',
+                price1_f4: 'Notificaciones por email',
+                price1_f5: 'Informes básicos',
+                price2_desc: 'Para administradores de propiedades en crecimiento.',
+                price2_f1: 'Hasta 100 unidades',
+                price2_f2: 'Todo en Starter',
+                price2_f3: 'Notificaciones SMS',
+                price2_f4: 'Marca personalizada',
+                price2_f5: 'Análisis avanzado',
+                price2_f6: 'Soporte prioritario',
+                price3_desc: 'Para grandes portafolios y equipos.',
+                price3_f1: 'Hasta 500 unidades',
+                price3_f2: 'Todo en Professional',
+                price3_f3: 'Acceso API',
+                price3_f4: 'Dominio personalizado',
+                price3_f5: 'Cuentas de equipo ilimitadas',
+                price3_f6: 'Soporte dedicado',
+                // CTA
+                cta_title: '¿Listo para Simplificar la Gestión de Propiedades?',
+                cta_subtitle: 'Únete a la lista de espera para acceso anticipado. Sé el primero en saber cuando lancemos.',
+                cta_email: 'Ingresa tu correo',
+                cta_button: 'Unirse a la Lista'
+            }
+        };
+
+        let currentLang = localStorage.getItem('rentably-lang') || 'en';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('rentably-lang', lang);
+
+            // Update toggle buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === lang.toUpperCase()) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update all translated elements
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    if (key === 'hero_title') {
+                        el.innerHTML = translations[lang][key];
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-translate-placeholder');
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+        }
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial toggle state
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === currentLang.toUpperCase()) {
+                    btn.classList.add('active');
+                }
+            });
+            setLanguage(currentLang);
+        });
 
         // Animate elements on scroll
         const observerOptions = {
