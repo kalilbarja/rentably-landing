@@ -2544,6 +2544,8 @@
             if (!currentRequestId) return;
 
             const status = document.getElementById('requestStatus').value;
+            console.log('Saving request with status:', status);
+            
             const data = {
                 status: status,
                 scheduled_date: document.getElementById('requestScheduledDate').value || null,
@@ -2556,7 +2558,13 @@
                 data.completed_at = new Date().toISOString();
             }
 
-            await db.from('maintenance_requests').update(data).eq('id', currentRequestId);
+            const { error } = await db.from('maintenance_requests').update(data).eq('id', currentRequestId);
+            
+            if (error) {
+                console.error('Error saving request:', error);
+                alert('Error: ' + error.message);
+                return;
+            }
 
             closeRequestModal();
             showToast(translations[currentLang].saved_success);
