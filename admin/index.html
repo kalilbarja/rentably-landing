@@ -750,6 +750,135 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-500);
+            font-size: 1.25rem;
+        }
+
+        .modal-close:hover {
+            background: var(--gray-200);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.15s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .success-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 2000;
+        }
+
+        .success-toast.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -1150,6 +1279,140 @@
         </main>
     </div>
 
+    <!-- Property Modal -->
+    <div class="modal-overlay" id="propertyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="propertyModalTitle" data-translate="add_property">Add Property</h3>
+                <button class="modal-close" onclick="closePropertyModal()">×</button>
+            </div>
+            <form id="propertyForm">
+                <div class="modal-body">
+                    <input type="hidden" id="propertyId">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="property_name">Property Name *</label>
+                        <input type="text" class="form-input" id="propertyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="address">Address</label>
+                        <input type="text" class="form-input" id="propertyAddress">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="city">City</label>
+                            <input type="text" class="form-input" id="propertyCity">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="country">Country</label>
+                            <input type="text" class="form-input" id="propertyCountry" value="DO">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closePropertyModal()" data-translate="cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-translate="save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Unit Modal -->
+    <div class="modal-overlay" id="unitModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="unitModalTitle" data-translate="add_unit">Add Unit</h3>
+                <button class="modal-close" onclick="closeUnitModal()">×</button>
+            </div>
+            <form id="unitForm">
+                <div class="modal-body">
+                    <input type="hidden" id="unitId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="unit_identifier">Unit # *</label>
+                            <input type="text" class="form-input" id="unitIdentifier" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="property">Property *</label>
+                            <select class="form-select" id="unitProperty" required></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="bedrooms">Bedrooms</label>
+                            <input type="number" class="form-input" id="unitBedrooms" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="bathrooms">Bathrooms</label>
+                            <input type="number" class="form-input" id="unitBathrooms" min="0" step="0.5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="rent">Monthly Rent</label>
+                        <input type="number" class="form-input" id="unitRent" min="0">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeUnitModal()" data-translate="cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-translate="save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Resident Modal -->
+    <div class="modal-overlay" id="residentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="residentModalTitle" data-translate="add_resident">Add Resident</h3>
+                <button class="modal-close" onclick="closeResidentModal()">×</button>
+            </div>
+            <form id="residentForm">
+                <div class="modal-body">
+                    <input type="hidden" id="residentId">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="name">Name *</label>
+                        <input type="text" class="form-input" id="residentName" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="email">Email *</label>
+                            <input type="email" class="form-input" id="residentEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="phone">Phone</label>
+                            <input type="tel" class="form-input" id="residentPhone">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="unit">Unit *</label>
+                        <select class="form-select" id="residentUnit" required></select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="lease_start">Lease Start</label>
+                            <input type="date" class="form-input" id="residentLeaseStart">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="lease_end">Lease End</label>
+                            <input type="date" class="form-input" id="residentLeaseEnd">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="monthly_payment">Monthly Payment</label>
+                        <input type="number" class="form-input" id="residentPayment" min="0">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeResidentModal()" data-translate="cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-translate="save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="success-toast" id="successToast"></div>
+
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1239,6 +1502,21 @@
                 save_changes: 'Save Changes',
                 // Search
                 search: 'Search...',
+                // Modals
+                cancel: 'Cancel',
+                save: 'Save',
+                delete: 'Delete',
+                property_name: 'Property Name',
+                city: 'City',
+                country: 'Country',
+                unit_identifier: 'Unit #',
+                bathrooms: 'Bathrooms',
+                monthly_payment: 'Monthly Payment',
+                lease_start: 'Lease Start',
+                edit_property: 'Edit Property',
+                edit_unit: 'Edit Unit',
+                edit_resident: 'Edit Resident',
+                saved_success: 'Saved successfully!',
                 // Categories
                 cat_plumbing: 'Plumbing',
                 cat_electrical: 'Electrical',
@@ -1332,6 +1610,21 @@
                 save_changes: 'Guardar Cambios',
                 // Search
                 search: 'Buscar...',
+                // Modals
+                cancel: 'Cancelar',
+                save: 'Guardar',
+                delete: 'Eliminar',
+                property_name: 'Nombre de Propiedad',
+                city: 'Ciudad',
+                country: 'País',
+                unit_identifier: 'Unidad #',
+                bathrooms: 'Baños',
+                monthly_payment: 'Pago Mensual',
+                lease_start: 'Inicio de Contrato',
+                edit_property: 'Editar Propiedad',
+                edit_unit: 'Editar Unidad',
+                edit_resident: 'Editar Residente',
+                saved_success: '¡Guardado exitosamente!',
                 // Categories
                 cat_plumbing: 'Plomería',
                 cat_electrical: 'Eléctrico',
@@ -1904,15 +2197,215 @@
             setLanguage(currentLang);
         }
         
-        // Placeholder functions for modals
-        function viewRequest(id) { alert('View request: ' + id); }
-        function editProperty(id) { alert('Edit property: ' + id); }
-        function editUnit(id) { alert('Edit unit: ' + id); }
-        function editResident(id) { alert('Edit resident: ' + id); }
-        function showAddPropertyModal() { alert('Add property modal - coming soon!'); }
-        function showAddUnitModal() { alert('Add unit modal - coming soon!'); }
-        function showAddResidentModal() { alert('Add resident modal - coming soon!'); }
-        function saveSettings() { alert('Settings saved!'); }
+        // ==============================================
+        // MODALS - Property
+        // ==============================================
+        function showAddPropertyModal() {
+            document.getElementById('propertyId').value = '';
+            document.getElementById('propertyForm').reset();
+            document.getElementById('propertyModalTitle').textContent = translations[currentLang].add_property;
+            document.getElementById('propertyModal').classList.add('active');
+        }
+
+        async function editProperty(id) {
+            const { data: property } = await db.from('properties').select('*').eq('id', id).single();
+            if (property) {
+                document.getElementById('propertyId').value = property.id;
+                document.getElementById('propertyName').value = property.name || '';
+                document.getElementById('propertyAddress').value = property.address || '';
+                document.getElementById('propertyCity').value = property.city || '';
+                document.getElementById('propertyCountry').value = property.country || 'DO';
+                document.getElementById('propertyModalTitle').textContent = translations[currentLang].edit_property;
+                document.getElementById('propertyModal').classList.add('active');
+            }
+        }
+
+        function closePropertyModal() {
+            document.getElementById('propertyModal').classList.remove('active');
+        }
+
+        async function saveProperty(e) {
+            e.preventDefault();
+            const id = document.getElementById('propertyId').value;
+            const data = {
+                organization_id: currentOrg.id,
+                name: document.getElementById('propertyName').value,
+                address: document.getElementById('propertyAddress').value,
+                city: document.getElementById('propertyCity').value,
+                country: document.getElementById('propertyCountry').value
+            };
+
+            if (id) {
+                await db.from('properties').update(data).eq('id', id);
+            } else {
+                await db.from('properties').insert(data);
+            }
+
+            closePropertyModal();
+            showToast(translations[currentLang].saved_success);
+            loadProperties();
+            loadDashboard();
+        }
+
+        // ==============================================
+        // MODALS - Unit
+        // ==============================================
+        async function showAddUnitModal() {
+            document.getElementById('unitId').value = '';
+            document.getElementById('unitForm').reset();
+            document.getElementById('unitModalTitle').textContent = translations[currentLang].add_unit;
+            await loadPropertyOptions();
+            document.getElementById('unitModal').classList.add('active');
+        }
+
+        async function editUnit(id) {
+            const { data: unit } = await db.from('units').select('*').eq('id', id).single();
+            if (unit) {
+                await loadPropertyOptions();
+                document.getElementById('unitId').value = unit.id;
+                document.getElementById('unitIdentifier').value = unit.identifier || '';
+                document.getElementById('unitProperty').value = unit.property_id || '';
+                document.getElementById('unitBedrooms').value = unit.bedrooms || '';
+                document.getElementById('unitBathrooms').value = unit.bathrooms || '';
+                document.getElementById('unitRent').value = unit.rent_amount || '';
+                document.getElementById('unitModalTitle').textContent = translations[currentLang].edit_unit;
+                document.getElementById('unitModal').classList.add('active');
+            }
+        }
+
+        function closeUnitModal() {
+            document.getElementById('unitModal').classList.remove('active');
+        }
+
+        async function loadPropertyOptions() {
+            const { data: properties } = await db.from('properties').select('id, name').eq('organization_id', currentOrg.id);
+            const select = document.getElementById('unitProperty');
+            select.innerHTML = '<option value="">-- Select --</option>' + 
+                (properties || []).map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        }
+
+        async function saveUnit(e) {
+            e.preventDefault();
+            const id = document.getElementById('unitId').value;
+            const data = {
+                organization_id: currentOrg.id,
+                property_id: document.getElementById('unitProperty').value,
+                identifier: document.getElementById('unitIdentifier').value,
+                bedrooms: document.getElementById('unitBedrooms').value || null,
+                bathrooms: document.getElementById('unitBathrooms').value || null,
+                rent_amount: document.getElementById('unitRent').value || null
+            };
+
+            if (id) {
+                await db.from('units').update(data).eq('id', id);
+            } else {
+                data.is_occupied = false;
+                await db.from('units').insert(data);
+            }
+
+            closeUnitModal();
+            showToast(translations[currentLang].saved_success);
+            loadUnits();
+            loadDashboard();
+        }
+
+        // ==============================================
+        // MODALS - Resident
+        // ==============================================
+        async function showAddResidentModal() {
+            document.getElementById('residentId').value = '';
+            document.getElementById('residentForm').reset();
+            document.getElementById('residentModalTitle').textContent = translations[currentLang].add_resident;
+            await loadUnitOptions();
+            document.getElementById('residentModal').classList.add('active');
+        }
+
+        async function editResident(id) {
+            const { data: resident } = await db.from('residents').select('*').eq('id', id).single();
+            if (resident) {
+                await loadUnitOptions();
+                document.getElementById('residentId').value = resident.id;
+                document.getElementById('residentName').value = resident.name || '';
+                document.getElementById('residentEmail').value = resident.email || '';
+                document.getElementById('residentPhone').value = resident.phone || '';
+                document.getElementById('residentUnit').value = resident.unit_id || '';
+                document.getElementById('residentLeaseStart').value = resident.lease_start || '';
+                document.getElementById('residentLeaseEnd').value = resident.lease_end || '';
+                document.getElementById('residentPayment').value = resident.monthly_payment || '';
+                document.getElementById('residentModalTitle').textContent = translations[currentLang].edit_resident;
+                document.getElementById('residentModal').classList.add('active');
+            }
+        }
+
+        function closeResidentModal() {
+            document.getElementById('residentModal').classList.remove('active');
+        }
+
+        async function loadUnitOptions() {
+            const { data: units } = await db.from('units').select('id, identifier, properties(name)').eq('organization_id', currentOrg.id);
+            const select = document.getElementById('residentUnit');
+            select.innerHTML = '<option value="">-- Select --</option>' + 
+                (units || []).map(u => `<option value="${u.id}">${u.properties?.name} - ${u.identifier}</option>`).join('');
+        }
+
+        async function saveResident(e) {
+            e.preventDefault();
+            const id = document.getElementById('residentId').value;
+            const unitId = document.getElementById('residentUnit').value;
+            const data = {
+                organization_id: currentOrg.id,
+                unit_id: unitId,
+                name: document.getElementById('residentName').value,
+                email: document.getElementById('residentEmail').value,
+                phone: document.getElementById('residentPhone').value || null,
+                lease_start: document.getElementById('residentLeaseStart').value || null,
+                lease_end: document.getElementById('residentLeaseEnd').value || null,
+                monthly_payment: document.getElementById('residentPayment').value || null
+            };
+
+            if (id) {
+                await db.from('residents').update(data).eq('id', id);
+            } else {
+                data.is_active = true;
+                await db.from('residents').insert(data);
+            }
+
+            // Mark unit as occupied
+            await db.from('units').update({ is_occupied: true }).eq('id', unitId);
+
+            closeResidentModal();
+            showToast(translations[currentLang].saved_success);
+            loadResidents();
+            loadUnits();
+            loadDashboard();
+        }
+
+        // ==============================================
+        // TOAST
+        // ==============================================
+        function showToast(message) {
+            const toast = document.getElementById('successToast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ==============================================
+        // VIEW REQUEST
+        // ==============================================
+        function viewRequest(id) { 
+            alert('Request details modal coming soon!'); 
+        }
+
+        // ==============================================
+        // SAVE SETTINGS
+        // ==============================================
+        async function saveSettings() {
+            const name = document.getElementById('orgName').value;
+            await db.from('organizations').update({ name }).eq('id', currentOrg.id);
+            currentOrg.name = name;
+            showToast(translations[currentLang].saved_success);
+        }
         
         // ==============================================
         // INITIALIZATION
@@ -1947,6 +2440,11 @@
             
             // Initialize language
             initLanguage();
+
+            // Modal forms
+            document.getElementById('propertyForm').addEventListener('submit', saveProperty);
+            document.getElementById('unitForm').addEventListener('submit', saveUnit);
+            document.getElementById('residentForm').addEventListener('submit', saveResident);
         });
     </script>
 </body>
