@@ -111,6 +111,67 @@
             color: var(--text);
         }
 
+        /* Login Dropdown */
+        .login-dropdown {
+            position: relative;
+        }
+
+        .login-trigger {
+            cursor: pointer;
+        }
+
+        .login-menu {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border: 1px solid var(--border);
+            padding: 0.5rem;
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 1001;
+        }
+
+        .login-dropdown:hover .login-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .login-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: background 0.15s ease;
+        }
+
+        .login-option:hover {
+            background: var(--surface-dim);
+        }
+
+        .login-icon {
+            font-size: 1.5rem;
+        }
+
+        .login-option strong {
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .login-option small {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -972,7 +1033,25 @@
             <a href="#features">Features</a>
             <a href="#how-it-works">How It Works</a>
             <a href="#pricing">Pricing</a>
-            <a href="#" class="btn btn-ghost">Log In</a>
+            <div class="login-dropdown">
+                <a href="#" class="btn btn-ghost login-trigger">Log In ▾</a>
+                <div class="login-menu">
+                    <a href="/portal" class="login-option">
+                        <span class="login-icon">🏠</span>
+                        <div>
+                            <strong>Resident Portal</strong>
+                            <small>For tenants</small>
+                        </div>
+                    </a>
+                    <a href="/admin" class="login-option">
+                        <span class="login-icon">⚙️</span>
+                        <div>
+                            <strong>Admin Dashboard</strong>
+                            <small>For property managers</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
             <a href="#cta" class="btn btn-primary">Get Started</a>
         </div>
     </nav>
@@ -1142,7 +1221,7 @@
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <div class="pricing-name">Starter</div>
-                    <div class="pricing-price">$29<span>/mo</span></div>
+                    <div class="pricing-price">$49<span>/mo</span></div>
                     <p class="pricing-description">Perfect for small landlords getting started.</p>
                     <ul class="pricing-features">
                         <li>Up to 25 units</li>
@@ -1155,7 +1234,7 @@
                 </div>
                 <div class="pricing-card featured">
                     <div class="pricing-name">Professional</div>
-                    <div class="pricing-price">$79<span>/mo</span></div>
+                    <div class="pricing-price">$99<span>/mo</span></div>
                     <p class="pricing-description">For growing property managers.</p>
                     <ul class="pricing-features">
                         <li>Up to 100 units</li>
@@ -1176,7 +1255,7 @@
                         <li>Everything in Professional</li>
                         <li>API access</li>
                         <li>Custom domain</li>
-                        <li>Team accounts</li>
+                        <li>Unlimited team accounts</li>
                         <li>Dedicated support</li>
                     </ul>
                     <a href="#cta" class="btn btn-primary">Get Started</a>
