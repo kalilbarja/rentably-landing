@@ -1085,7 +1085,7 @@
                 // Get resident profile
                 const { data: resident, error: residentError } = await db
                     .from('residents')
-                    .select('*, units(identifier, properties(name)), organizations(name, logo_url, primary_color)')
+                    .select('*, units(identifier, property_id, properties(id, name)), organizations(name, logo_url, primary_color)')
                     .eq('user_id', data.user.id)
                     .single();
 
@@ -1120,7 +1120,7 @@
             if (session) {
                 const { data: resident } = await db
                     .from('residents')
-                    .select('*, units(identifier, properties(name)), organizations(name, logo_url, primary_color)')
+                    .select('*, units(identifier, property_id, properties(id, name)), organizations(name, logo_url, primary_color)')
                     .eq('user_id', session.user.id)
                     .single();
 
@@ -1311,7 +1311,7 @@
             try {
                 const { error } = await db.from('maintenance_requests').insert({
                     organization_id: currentResident.organization_id,
-                    property_id: currentResident.units.properties.id || currentResident.units.property_id,
+                    property_id: currentResident.units.property_id,
                     unit_id: currentResident.unit_id,
                     resident_id: currentResident.id,
                     category: document.getElementById('reqCategory').value,
