@@ -1410,6 +1410,49 @@
         </div>
     </div>
 
+    <!-- Request Detail Modal -->
+    <div class="modal-overlay" id="requestModal">
+        <div class="modal" style="max-width:600px">
+            <div class="modal-header">
+                <h3 class="modal-title" id="requestModalTitle" data-translate="request_details">Request Details</h3>
+                <button class="modal-close" onclick="closeRequestModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="requestDetails"></div>
+                
+                <hr style="border:none;border-top:1px solid var(--gray-200);margin:1.5rem 0">
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="status">Status</label>
+                    <select class="form-select" id="requestStatus">
+                        <option value="pending" data-translate="status_pending">Pending</option>
+                        <option value="in_progress" data-translate="status_in_progress">In Progress</option>
+                        <option value="completed" data-translate="status_completed">Completed</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="scheduled_date">Scheduled Date</label>
+                    <input type="date" class="form-input" id="requestScheduledDate">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="internal_notes">Internal Notes (not visible to resident)</label>
+                    <textarea class="form-input" id="requestNotes" rows="3" style="resize:vertical"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="cost">Cost</label>
+                    <input type="number" class="form-input" id="requestCost" min="0" step="0.01">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeRequestModal()" data-translate="cancel">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveRequest()" data-translate="save">Save</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Success Toast -->
     <div class="success-toast" id="successToast"></div>
 
@@ -1517,6 +1560,20 @@
                 edit_unit: 'Edit Unit',
                 edit_resident: 'Edit Resident',
                 saved_success: 'Saved successfully!',
+                // Request Modal
+                request_details: 'Request Details',
+                scheduled_date: 'Scheduled Date',
+                internal_notes: 'Internal Notes (not visible to resident)',
+                cost: 'Cost',
+                status_pending: 'Pending',
+                status_in_progress: 'In Progress',
+                status_completed: 'Completed',
+                submitted_by: 'Submitted by',
+                submitted_on: 'Submitted on',
+                preferred_contact: 'Preferred Contact',
+                preferred_time: 'Preferred Time',
+                morning: 'Morning (8am-12pm)',
+                afternoon: 'Afternoon (12pm-5pm)',
                 // Categories
                 cat_plumbing: 'Plumbing',
                 cat_electrical: 'Electrical',
@@ -1625,6 +1682,20 @@
                 edit_unit: 'Editar Unidad',
                 edit_resident: 'Editar Residente',
                 saved_success: '¡Guardado exitosamente!',
+                // Request Modal
+                request_details: 'Detalles de Solicitud',
+                scheduled_date: 'Fecha Programada',
+                internal_notes: 'Notas Internas (no visible para residente)',
+                cost: 'Costo',
+                status_pending: 'Pendiente',
+                status_in_progress: 'En Progreso',
+                status_completed: 'Completada',
+                submitted_by: 'Enviado por',
+                submitted_on: 'Enviado el',
+                preferred_contact: 'Contacto Preferido',
+                preferred_time: 'Horario Preferido',
+                morning: 'Mañana (8am-12pm)',
+                afternoon: 'Tarde (12pm-5pm)',
                 // Categories
                 cat_plumbing: 'Plomería',
                 cat_electrical: 'Eléctrico',
@@ -2391,10 +2462,106 @@
         }
 
         // ==============================================
-        // VIEW REQUEST
+        // MODALS - Request
         // ==============================================
-        function viewRequest(id) { 
-            alert('Request details modal coming soon!'); 
+        let currentRequestId = null;
+
+        async function viewRequest(id) {
+            currentRequestId = id;
+            const { data: request } = await db
+                .from('maintenance_requests')
+                .select('*, residents(name, phone, email), units(identifier), properties(name)')
+                .eq('id', id)
+                .single();
+
+            if (request) {
+                const contactMethods = {
+                    en: { phone: 'Phone Call', text: 'Text Message', email: 'Email' },
+                    es: { phone: 'Llamada', text: 'Mensaje de Texto', email: 'Correo' }
+                };
+                const timeWindows = {
+                    en: { morning: 'Morning (8am-12pm)', afternoon: 'Afternoon (12pm-5pm)' },
+                    es: { morning: 'Mañana (8am-12pm)', afternoon: 'Tarde (12pm-5pm)' }
+                };
+
+                document.getElementById('requestDetails').innerHTML = `
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+                        <div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)">${translations[currentLang].category || 'Category'}</div>
+                            <div style="font-weight:500;display:flex;align-items:center;gap:0.5rem">
+                                <span>${getCategoryIcon(request.category)}</span>
+                                ${getCategoryName(request.category)}
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)">${translations[currentLang].location || 'Location'}</div>
+                            <div style="font-weight:500">${getLocationName(request.location)}</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:1rem">
+                        <div style="font-size:0.8rem;color:var(--gray-500)">${translations[currentLang].description || 'Description'}</div>
+                        <div style="background:var(--gray-50);padding:0.75rem;border-radius:8px;margin-top:0.25rem">${request.description || '-'}</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)">${translations[currentLang].submitted_by}</div>
+                            <div style="font-weight:500">${request.residents?.name || '-'}</div>
+                            <div style="font-size:0.85rem;color:var(--gray-500)">${request.properties?.name} - ${request.units?.identifier}</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)">${translations[currentLang].submitted_on}</div>
+                            <div style="font-weight:500">${formatDate(request.created_at)}</div>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem">
+                        <div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)">${translations[currentLang].preferred_contact}</div>
+                            <div style="font-weight:500">${contactMethods[currentLang][request.contact_method] || request.contact_method || '-'}</div>
+                            <div style="font-size:0.85rem;color:var(--gray-500)">${request.contact_phone || request.residents?.phone || '-'}</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)">${translations[currentLang].preferred_time}</div>
+                            <div style="font-weight:500">${timeWindows[currentLang][request.time_window] || request.time_window || '-'}</div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('requestStatus').value = request.status || 'pending';
+                document.getElementById('requestScheduledDate').value = request.scheduled_date || '';
+                document.getElementById('requestNotes').value = request.internal_notes || '';
+                document.getElementById('requestCost').value = request.total_cost || '';
+                
+                document.getElementById('requestModal').classList.add('active');
+            }
+        }
+
+        function closeRequestModal() {
+            document.getElementById('requestModal').classList.remove('active');
+            currentRequestId = null;
+        }
+
+        async function saveRequest() {
+            if (!currentRequestId) return;
+
+            const status = document.getElementById('requestStatus').value;
+            const data = {
+                status: status,
+                scheduled_date: document.getElementById('requestScheduledDate').value || null,
+                internal_notes: document.getElementById('requestNotes').value || null,
+                total_cost: document.getElementById('requestCost').value || null
+            };
+
+            // Set completed_at if status changed to completed
+            if (status === 'completed') {
+                data.completed_at = new Date().toISOString();
+            }
+
+            await db.from('maintenance_requests').update(data).eq('id', currentRequestId);
+
+            closeRequestModal();
+            showToast(translations[currentLang].saved_success);
+            loadRequests();
+            loadDashboard();
         }
 
         // ==============================================
