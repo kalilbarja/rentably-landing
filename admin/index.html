@@ -993,27 +993,27 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="tabs" style="margin-bottom:0;border-bottom:0;">
-                                <div class="tab active" data-tab="pending">Pending</div>
-                                <div class="tab" data-tab="in_progress">In Progress</div>
-                                <div class="tab" data-tab="completed">Completed</div>
-                                <div class="tab" data-tab="all">All</div>
+                                <div class="tab active" data-tab="pending" data-translate="pending">Pending</div>
+                                <div class="tab" data-tab="in_progress" data-translate="in_progress">In Progress</div>
+                                <div class="tab" data-tab="completed" data-translate="completed">Completed</div>
+                                <div class="tab" data-tab="all" data-translate="all">All</div>
                             </div>
                         </div>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Request</th>
-                                        <th>Unit</th>
-                                        <th>Resident</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
+                                        <th data-translate="request">Request</th>
+                                        <th data-translate="unit">Unit</th>
+                                        <th data-translate="resident">Resident</th>
+                                        <th data-translate="date">Date</th>
+                                        <th data-translate="status">Status</th>
+                                        <th data-translate="actions">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requestsTable">
                                     <tr>
-                                        <td colspan="6" style="text-align:center;padding:3rem;color:var(--gray-500)">
+                                        <td colspan="6" style="text-align:center;padding:3rem;color:var(--gray-500)" data-translate="no_requests_found">
                                             No requests found
                                         </td>
                                     </tr>
@@ -1027,24 +1027,24 @@
                 <div class="page" id="page-properties">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">All Properties</h3>
+                            <h3 class="card-title" data-translate="all_properties">All Properties</h3>
                             <button class="btn btn-primary btn-sm" onclick="showAddPropertyModal()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
                                     <line x1="5" y1="12" x2="19" y2="12"/>
                                 </svg>
-                                Add Property
+                                <span data-translate="add_property">Add Property</span>
                             </button>
                         </div>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Property</th>
-                                        <th>Address</th>
-                                        <th>Units</th>
-                                        <th>Occupancy</th>
-                                        <th>Actions</th>
+                                        <th data-translate="property">Property</th>
+                                        <th data-translate="address">Address</th>
+                                        <th data-translate="units">Units</th>
+                                        <th data-translate="occupancy">Occupancy</th>
+                                        <th data-translate="actions">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="propertiesTable">
@@ -1058,26 +1058,26 @@
                 <div class="page" id="page-units">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">All Units</h3>
+                            <h3 class="card-title" data-translate="all_units">All Units</h3>
                             <button class="btn btn-primary btn-sm" onclick="showAddUnitModal()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
                                     <line x1="5" y1="12" x2="19" y2="12"/>
                                 </svg>
-                                Add Unit
+                                <span data-translate="add_unit">Add Unit</span>
                             </button>
                         </div>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Unit</th>
-                                        <th>Property</th>
-                                        <th>Bedrooms</th>
-                                        <th>Rent</th>
-                                        <th>Status</th>
-                                        <th>Resident</th>
-                                        <th>Actions</th>
+                                        <th data-translate="unit">Unit</th>
+                                        <th data-translate="property">Property</th>
+                                        <th data-translate="bedrooms">Bedrooms</th>
+                                        <th data-translate="rent">Rent</th>
+                                        <th data-translate="status">Status</th>
+                                        <th data-translate="resident">Resident</th>
+                                        <th data-translate="actions">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="unitsTable">
@@ -1091,26 +1091,26 @@
                 <div class="page" id="page-residents">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">All Residents</h3>
+                            <h3 class="card-title" data-translate="all_residents">All Residents</h3>
                             <button class="btn btn-primary btn-sm" onclick="showAddResidentModal()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
                                     <line x1="5" y1="12" x2="19" y2="12"/>
                                 </svg>
-                                Add Resident
+                                <span data-translate="add_resident">Add Resident</span>
                             </button>
                         </div>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Unit</th>
-                                        <th>Lease End</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
+                                        <th data-translate="name">Name</th>
+                                        <th data-translate="email">Email</th>
+                                        <th data-translate="phone">Phone</th>
+                                        <th data-translate="unit">Unit</th>
+                                        <th data-translate="lease_end">Lease End</th>
+                                        <th data-translate="status">Status</th>
+                                        <th data-translate="actions">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="residentsTable">
@@ -1186,6 +1186,8 @@
                 in_progress: 'In Progress',
                 completed: 'Completed',
                 total_units: 'Total Units',
+                units_word: 'units',
+                occupied_pct: 'occupied',
                 recent_requests: 'Recent Requests',
                 view_all: 'View All',
                 properties_overview: 'Properties Overview',
@@ -1276,7 +1278,9 @@
                 pending_requests: 'Solicitudes Pendientes',
                 in_progress: 'En Progreso',
                 completed: 'Completadas',
-                total_units: 'Total Unidades',
+                total_units: 'Unidades Totales',
+                units_word: 'unidades',
+                occupied_pct: 'ocupado',
                 recent_requests: 'Solicitudes Recientes',
                 view_all: 'Ver Todas',
                 properties_overview: 'Resumen de Propiedades',
@@ -1459,16 +1463,26 @@
             });
             document.getElementById(`page-${pageId}`).classList.add('active');
             
-            // Update title
+            // Update title with translations
             const titles = {
-                dashboard: 'Dashboard',
-                requests: 'Maintenance Requests',
-                properties: 'Properties',
-                units: 'Units',
-                residents: 'Residents',
-                settings: 'Settings'
+                en: {
+                    dashboard: 'Dashboard',
+                    requests: 'Maintenance Requests',
+                    properties: 'Properties',
+                    units: 'Units',
+                    residents: 'Residents',
+                    settings: 'Settings'
+                },
+                es: {
+                    dashboard: 'Dashboard',
+                    requests: 'Solicitudes de Mantenimiento',
+                    properties: 'Propiedades',
+                    units: 'Unidades',
+                    residents: 'Residentes',
+                    settings: 'Configuración'
+                }
             };
-            document.getElementById('pageTitle').textContent = titles[pageId] || 'Dashboard';
+            document.getElementById('pageTitle').textContent = titles[currentLang][pageId] || 'Dashboard';
             
             // Load page data
             if (pageId === 'dashboard') loadDashboard();
@@ -1540,14 +1554,16 @@
                     const totalUnits = p.units?.length || 0;
                     const occupiedUnits = p.units?.filter(u => u.is_occupied).length || 0;
                     const occupancy = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
+                    const unitsWord = translations[currentLang].units_word;
+                    const occupiedWord = translations[currentLang].occupied_pct;
                     return `
                         <div class="request-item">
                             <div class="request-icon">🏢</div>
                             <div class="request-details">
                                 <div class="request-title">${p.name}</div>
-                                <div class="request-meta">${p.city || 'No address'} • ${totalUnits} units</div>
+                                <div class="request-meta">${p.city || 'No address'} • ${totalUnits} ${unitsWord}</div>
                             </div>
-                            <span style="font-weight:600;color:var(--gray-700)">${occupancy}% occupied</span>
+                            <span style="font-weight:600;color:var(--gray-700)">${occupancy}% ${occupiedWord}</span>
                         </div>
                     `;
                 }).join('');
@@ -1569,6 +1585,8 @@
             
             const tbody = document.getElementById('requestsTable');
             if (requests && requests.length > 0) {
+                const viewText = currentLang === 'es' ? 'Ver' : 'View';
+                const unknownText = currentLang === 'es' ? 'Desconocido' : 'Unknown';
                 tbody.innerHTML = requests.map(r => `
                     <tr>
                         <td>
@@ -1581,7 +1599,7 @@
                             </div>
                         </td>
                         <td>${r.units?.identifier || 'N/A'}</td>
-                        <td>${r.residents?.name || 'Unknown'}</td>
+                        <td>${r.residents?.name || unknownText}</td>
                         <td>${formatDate(r.created_at)}</td>
                         <td>
                             <span class="status ${r.status.replace('_', '-')}">
@@ -1590,15 +1608,16 @@
                             </span>
                         </td>
                         <td>
-                            <button class="btn btn-secondary btn-sm" onclick="viewRequest('${r.id}')">View</button>
+                            <button class="btn btn-secondary btn-sm" onclick="viewRequest('${r.id}')">${viewText}</button>
                         </td>
                     </tr>
                 `).join('');
             } else {
+                const noRequestsText = currentLang === 'es' ? 'No se encontraron solicitudes' : 'No requests found';
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="6" style="text-align:center;padding:3rem;color:var(--gray-500)">
-                            No requests found
+                            ${noRequestsText}
                         </td>
                     </tr>
                 `;
@@ -1613,6 +1632,7 @@
             
             const tbody = document.getElementById('propertiesTable');
             if (properties && properties.length > 0) {
+                const editText = currentLang === 'es' ? 'Editar' : 'Edit';
                 tbody.innerHTML = properties.map(p => {
                     const totalUnits = p.units?.length || 0;
                     const occupiedUnits = p.units?.filter(u => u.is_occupied).length || 0;
@@ -1631,16 +1651,17 @@
                                 </div>
                             </td>
                             <td>
-                                <button class="btn btn-secondary btn-sm" onclick="editProperty('${p.id}')">Edit</button>
+                                <button class="btn btn-secondary btn-sm" onclick="editProperty('${p.id}')">${editText}</button>
                             </td>
                         </tr>
                     `;
                 }).join('');
             } else {
+                const noPropertiesText = currentLang === 'es' ? 'No hay propiedades. ¡Agrega tu primera propiedad!' : 'No properties yet. Add your first property!';
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" style="text-align:center;padding:3rem;color:var(--gray-500)">
-                            No properties yet. Add your first property!
+                            ${noPropertiesText}
                         </td>
                     </tr>
                 `;
@@ -1656,28 +1677,34 @@
             
             const tbody = document.getElementById('unitsTable');
             if (units && units.length > 0) {
+                const occupiedText = currentLang === 'es' ? 'Ocupado' : 'Occupied';
+                const vacantText = currentLang === 'es' ? 'Vacante' : 'Vacant';
+                const editText = currentLang === 'es' ? 'Editar' : 'Edit';
+                const bedText = currentLang === 'es' ? 'hab' : 'bed';
+                const bathText = currentLang === 'es' ? 'baño' : 'bath';
                 tbody.innerHTML = units.map(u => `
                     <tr>
                         <td style="font-weight:500">${u.identifier}</td>
                         <td>${u.properties?.name || '-'}</td>
-                        <td>${u.bedrooms || '-'} bed / ${u.bathrooms || '-'} bath</td>
+                        <td>${u.bedrooms || '-'} ${bedText} / ${u.bathrooms || '-'} ${bathText}</td>
                         <td>${u.rent_amount ? '$' + u.rent_amount.toLocaleString() : '-'}</td>
                         <td>
                             <span class="status ${u.is_occupied ? 'occupied' : 'vacant'}">
-                                ${u.is_occupied ? 'Occupied' : 'Vacant'}
+                                ${u.is_occupied ? occupiedText : vacantText}
                             </span>
                         </td>
                         <td>${u.residents?.name || '-'}</td>
                         <td>
-                            <button class="btn btn-secondary btn-sm" onclick="editUnit('${u.id}')">Edit</button>
+                            <button class="btn btn-secondary btn-sm" onclick="editUnit('${u.id}')">${editText}</button>
                         </td>
                     </tr>
                 `).join('');
             } else {
+                const noUnitsText = currentLang === 'es' ? 'No hay unidades. ¡Agrega tu primera unidad!' : 'No units yet. Add your first unit!';
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align:center;padding:3rem;color:var(--gray-500)">
-                            No units yet. Add your first unit!
+                            ${noUnitsText}
                         </td>
                     </tr>
                 `;
@@ -1693,6 +1720,9 @@
             
             const tbody = document.getElementById('residentsTable');
             if (residents && residents.length > 0) {
+                const activeText = currentLang === 'es' ? 'Activo' : 'Active';
+                const inactiveText = currentLang === 'es' ? 'Inactivo' : 'Inactive';
+                const editText = currentLang === 'es' ? 'Editar' : 'Edit';
                 tbody.innerHTML = residents.map(r => `
                     <tr>
                         <td style="font-weight:500">${r.name}</td>
@@ -1702,19 +1732,20 @@
                         <td>${r.lease_end ? formatDate(r.lease_end) : '-'}</td>
                         <td>
                             <span class="status ${r.is_active ? 'completed' : 'pending'}">
-                                ${r.is_active ? 'Active' : 'Inactive'}
+                                ${r.is_active ? activeText : inactiveText}
                             </span>
                         </td>
                         <td>
-                            <button class="btn btn-secondary btn-sm" onclick="editResident('${r.id}')">Edit</button>
+                            <button class="btn btn-secondary btn-sm" onclick="editResident('${r.id}')">${editText}</button>
                         </td>
                     </tr>
                 `).join('');
             } else {
+                const noResidentsText = currentLang === 'es' ? 'No hay residentes. ¡Agrega tu primer residente!' : 'No residents yet. Add your first resident!';
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align:center;padding:3rem;color:var(--gray-500)">
-                            No residents yet. Add your first resident!
+                            ${noResidentsText}
                         </td>
                     </tr>
                 `;
@@ -1740,40 +1771,72 @@
         
         function getCategoryName(category) {
             const names = {
-                plumbing: 'Plumbing',
-                electrical: 'Electrical',
-                hvac: 'HVAC',
-                appliances: 'Appliances',
-                doors_windows: 'Doors/Windows',
-                pest_control: 'Pest Control',
-                structural: 'Structural',
-                other: 'Other'
+                en: {
+                    plumbing: 'Plumbing',
+                    electrical: 'Electrical',
+                    hvac: 'HVAC',
+                    appliances: 'Appliances',
+                    doors_windows: 'Doors/Windows',
+                    pest_control: 'Pest Control',
+                    structural: 'Structural',
+                    other: 'Other'
+                },
+                es: {
+                    plumbing: 'Plomería',
+                    electrical: 'Eléctrico',
+                    hvac: 'A/C',
+                    appliances: 'Electrodomésticos',
+                    doors_windows: 'Puertas/Ventanas',
+                    pest_control: 'Control de Plagas',
+                    structural: 'Estructural',
+                    other: 'Otro'
+                }
             };
-            return names[category] || category;
+            return names[currentLang][category] || category;
         }
         
         function getLocationName(location) {
             const names = {
-                kitchen: 'Kitchen',
-                bathroom_main: 'Main Bathroom',
-                bathroom_secondary: 'Secondary Bathroom',
-                bedroom: 'Bedroom',
-                living_room: 'Living Room',
-                laundry: 'Laundry',
-                exterior: 'Exterior',
-                common_area: 'Common Area'
+                en: {
+                    kitchen: 'Kitchen',
+                    bathroom_main: 'Main Bathroom',
+                    bathroom_secondary: 'Secondary Bathroom',
+                    bedroom: 'Bedroom',
+                    living_room: 'Living Room',
+                    laundry: 'Laundry',
+                    exterior: 'Exterior',
+                    common_area: 'Common Area'
+                },
+                es: {
+                    kitchen: 'Cocina',
+                    bathroom_main: 'Baño Principal',
+                    bathroom_secondary: 'Baño Secundario',
+                    bedroom: 'Habitación',
+                    living_room: 'Sala',
+                    laundry: 'Lavandería',
+                    exterior: 'Exterior',
+                    common_area: 'Área Común'
+                }
             };
-            return names[location] || location;
+            return names[currentLang][location] || location;
         }
         
         function getStatusName(status) {
             const names = {
-                pending: 'Pending',
-                in_progress: 'In Progress',
-                completed: 'Completed',
-                cancelled: 'Cancelled'
+                en: {
+                    pending: 'Pending',
+                    in_progress: 'In Progress',
+                    completed: 'Completed',
+                    cancelled: 'Cancelled'
+                },
+                es: {
+                    pending: 'Pendiente',
+                    in_progress: 'En Progreso',
+                    completed: 'Completada',
+                    cancelled: 'Cancelada'
+                }
             };
-            return names[status] || status;
+            return names[currentLang][status] || status;
         }
         
         function formatDate(dateStr) {
