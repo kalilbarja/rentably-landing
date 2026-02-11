@@ -1203,6 +1203,26 @@
                                 <span data-translate="add_unit">Add Unit</span>
                             </button>
                         </div>
+                        <!-- Filter Section -->
+                        <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-200); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                            <div class="form-group" style="margin: 0; min-width: 150px;">
+                                <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="filter_property">Property</label>
+                                <select class="form-select" id="unitFilterProperty" onchange="filterUnits()" style="padding: 0.5rem;">
+                                    <option value="all" data-translate="all_properties">All Properties</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin: 0; min-width: 150px;">
+                                <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="filter_status">Status</label>
+                                <select class="form-select" id="unitFilterStatus" onchange="filterUnits()" style="padding: 0.5rem;">
+                                    <option value="all" data-translate="all">All</option>
+                                    <option value="occupied" data-translate="occupied">Occupied</option>
+                                    <option value="vacant" data-translate="vacant">Vacant</option>
+                                </select>
+                            </div>
+                            <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
+                                <span id="unitsCount">0</span> <span data-translate="units_shown">units</span>
+                            </div>
+                        </div>
                         <div class="table-container">
                             <table>
                                 <thead>
@@ -1680,6 +1700,9 @@
                 occupied: 'Occupied',
                 vacant: 'Vacant',
                 no_units_yet: 'No units yet. Add your first unit!',
+                filter_property: 'Property',
+                filter_status: 'Status',
+                units_shown: 'units',
                 // Residents
                 all_residents: 'All Residents',
                 add_resident: 'Add Resident',
@@ -1803,6 +1826,9 @@
                 occupied: 'Ocupado',
                 vacant: 'Vacante',
                 no_units_yet: 'No hay unidades. ¡Agrega tu primera unidad!',
+                filter_property: 'Propiedad',
+                filter_status: 'Estado',
+                units_shown: 'unidades',
                 // Residents
                 all_residents: 'Todos los Residentes',
                 add_resident: 'Agregar Residente',
@@ -2201,6 +2227,9 @@
             }
         }
         
+        // Store all units for filtering
+        let allUnits = [];
+        
         async function loadUnits() {
             const { data: units } = await db
                 .from('units')
@@ -2208,14 +2237,56 @@
                 .eq('organization_id', currentOrg.id)
                 .order('identifier');
             
+            allUnits = units || [];
+            
+            // Populate property filter dropdown
+            const propertyFilter = document.getElementById('unitFilterProperty');
+            const { data: properties } = await db
+                .from('properties')
+                .select('id, name')
+                .eq('organization_id', currentOrg.id)
+                .order('name');
+            
+            if (properties) {
+                const allPropsText = currentLang === 'es' ? 'Todas las Propiedades' : 'All Properties';
+                propertyFilter.innerHTML = `<option value="all">${allPropsText}</option>`;
+                properties.forEach(p => {
+                    propertyFilter.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+                });
+            }
+            
+            filterUnits();
+        }
+        
+        function filterUnits() {
+            const propertyFilter = document.getElementById('unitFilterProperty').value;
+            const statusFilter = document.getElementById('unitFilterStatus').value;
+            
+            let filtered = allUnits;
+            
+            // Filter by property
+            if (propertyFilter !== 'all') {
+                filtered = filtered.filter(u => u.property_id === propertyFilter);
+            }
+            
+            // Filter by status
+            if (statusFilter === 'occupied') {
+                filtered = filtered.filter(u => u.is_occupied);
+            } else if (statusFilter === 'vacant') {
+                filtered = filtered.filter(u => !u.is_occupied);
+            }
+            
+            // Update count
+            document.getElementById('unitsCount').textContent = filtered.length;
+            
             const tbody = document.getElementById('unitsTable');
-            if (units && units.length > 0) {
+            if (filtered.length > 0) {
                 const occupiedText = currentLang === 'es' ? 'Ocupado' : 'Occupied';
                 const vacantText = currentLang === 'es' ? 'Vacante' : 'Vacant';
                 const editText = currentLang === 'es' ? 'Editar' : 'Edit';
                 const bedText = currentLang === 'es' ? 'hab' : 'bed';
                 const bathText = currentLang === 'es' ? 'baño' : 'bath';
-                tbody.innerHTML = units.map(u => `
+                tbody.innerHTML = filtered.map(u => `
                     <tr>
                         <td style="font-weight:500">${u.identifier}</td>
                         <td>${u.properties?.name || '-'}</td>
@@ -2233,7 +2304,7 @@
                     </tr>
                 `).join('');
             } else {
-                const noUnitsText = currentLang === 'es' ? 'No hay unidades. ¡Agrega tu primera unidad!' : 'No units yet. Add your first unit!';
+                const noUnitsText = currentLang === 'es' ? 'No hay unidades con estos filtros.' : 'No units match these filters.';
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align:center;padding:3rem;color:var(--gray-500)">
