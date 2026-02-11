@@ -972,6 +972,13 @@
                         </svg>
                         <span data-translate="nav_residents">Residents</span>
                     </a>
+                    <a class="nav-item" data-page="reports">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 21H3V3"/>
+                            <path d="M21 9l-6 6-4-4-6 6"/>
+                        </svg>
+                        <span data-translate="nav_reports">Reports</span>
+                    </a>
                 </div>
                 
                 <div class="nav-section">
@@ -1275,6 +1282,150 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Reports Page -->
+                <div class="page" id="page-reports">
+                    <!-- Report Filters -->
+                    <div class="card" style="margin-bottom:1.5rem">
+                        <div class="card-body" style="padding:1rem 1.5rem">
+                            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+                                <div class="form-group" style="margin:0">
+                                    <label class="form-label" style="margin-bottom:0.25rem" data-translate="report_period">Period</label>
+                                    <select class="form-select" id="reportPeriod" onchange="loadReports()" style="min-width:150px">
+                                        <option value="month" data-translate="this_month">This Month</option>
+                                        <option value="last_month" data-translate="last_month">Last Month</option>
+                                        <option value="quarter" data-translate="this_quarter">This Quarter</option>
+                                        <option value="year" data-translate="this_year">This Year</option>
+                                        <option value="all" data-translate="all_time">All Time</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin:0">
+                                    <label class="form-label" style="margin-bottom:0.25rem" data-translate="property">Property</label>
+                                    <select class="form-select" id="reportProperty" onchange="loadReports()" style="min-width:180px">
+                                        <option value="all" data-translate="all_properties">All Properties</option>
+                                    </select>
+                                </div>
+                                <div style="margin-left:auto">
+                                    <button class="btn btn-secondary" onclick="exportReport()">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="7 10 12 15 17 10"/>
+                                            <line x1="12" y1="15" x2="12" y2="3"/>
+                                        </svg>
+                                        <span data-translate="export_csv">Export CSV</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Stats -->
+                    <div class="stats-grid" style="margin-bottom:1.5rem">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(79,70,229,0.1);color:var(--primary)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="reportTotalRequests">0</div>
+                                <div class="stat-label" data-translate="total_requests">Total Requests</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:var(--success)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="reportCompletedRequests">0</div>
+                                <div class="stat-label" data-translate="completed">Completed</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(245,158,11,0.1);color:var(--warning)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="reportAvgDays">0</div>
+                                <div class="stat-label" data-translate="avg_completion_days">Avg. Days to Complete</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(239,68,68,0.1);color:var(--danger)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23"/>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                </svg>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="reportTotalCost">$0</div>
+                                <div class="stat-label" data-translate="total_cost">Total Cost</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+                        <!-- By Category -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" data-translate="requests_by_category">Requests by Category</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="categoryChart" style="min-height:250px"></div>
+                            </div>
+                        </div>
+
+                        <!-- By Status -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" data-translate="requests_by_status">Requests by Status</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="statusChart" style="min-height:250px"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cost by Category -->
+                    <div class="card" style="margin-bottom:1.5rem">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="cost_by_category">Cost by Category</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="costChart" style="min-height:200px"></div>
+                        </div>
+                    </div>
+
+                    <!-- Property Breakdown -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="property_breakdown">Property Breakdown</h3>
+                        </div>
+                        <div class="card-body" style="padding:0">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th data-translate="property">Property</th>
+                                        <th data-translate="total_requests">Total Requests</th>
+                                        <th data-translate="pending">Pending</th>
+                                        <th data-translate="in_progress">In Progress</th>
+                                        <th data-translate="completed">Completed</th>
+                                        <th data-translate="total_cost">Total Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="propertyBreakdownTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -1486,6 +1637,7 @@
                 nav_properties: 'Properties',
                 nav_units: 'Units',
                 nav_residents: 'Residents',
+                nav_reports: 'Reports',
                 nav_settings: 'Settings',
                 // Dashboard
                 pending_requests: 'Pending Requests',
@@ -1608,6 +1760,7 @@
                 nav_properties: 'Propiedades',
                 nav_units: 'Unidades',
                 nav_residents: 'Residentes',
+                nav_reports: 'Reportes',
                 nav_settings: 'Configuración',
                 // Dashboard
                 pending_requests: 'Solicitudes Pendientes',
@@ -1848,6 +2001,7 @@
                     properties: 'Properties',
                     units: 'Units',
                     residents: 'Residents',
+                    reports: 'Reports & Analytics',
                     settings: 'Settings'
                 },
                 es: {
@@ -1856,6 +2010,7 @@
                     properties: 'Propiedades',
                     units: 'Unidades',
                     residents: 'Residentes',
+                    reports: 'Reportes y Análisis',
                     settings: 'Configuración'
                 }
             };
@@ -1867,6 +2022,7 @@
             if (pageId === 'properties') loadProperties();
             if (pageId === 'units') loadUnits();
             if (pageId === 'residents') loadResidents();
+            if (pageId === 'reports') loadReports();
         }
         
         // ==============================================
@@ -2687,6 +2843,262 @@
             await db.from('organizations').update({ name }).eq('id', currentOrg.id);
             currentOrg.name = name;
             showToast(translations[currentLang].saved_success);
+        }
+
+        // ==============================================
+        // REPORTS
+        // ==============================================
+        async function loadReports() {
+            const period = document.getElementById('reportPeriod')?.value || 'month';
+            const propertyId = document.getElementById('reportProperty')?.value || 'all';
+            
+            // Calculate date range
+            const now = new Date();
+            let startDate;
+            
+            switch(period) {
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    break;
+                case 'last_month':
+                    startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    break;
+                case 'quarter':
+                    const quarter = Math.floor(now.getMonth() / 3);
+                    startDate = new Date(now.getFullYear(), quarter * 3, 1);
+                    break;
+                case 'year':
+                    startDate = new Date(now.getFullYear(), 0, 1);
+                    break;
+                default:
+                    startDate = new Date(2020, 0, 1); // All time
+            }
+
+            // Fetch requests
+            let query = db
+                .from('maintenance_requests')
+                .select('*, properties(name), units(identifier)')
+                .eq('organization_id', currentOrg.id)
+                .gte('created_at', startDate.toISOString());
+
+            if (propertyId !== 'all') {
+                query = query.eq('property_id', propertyId);
+            }
+
+            const { data: requests } = await query;
+            
+            if (!requests) return;
+
+            // Calculate stats
+            const totalRequests = requests.length;
+            const completedRequests = requests.filter(r => r.status === 'completed').length;
+            const totalCost = requests.reduce((sum, r) => sum + (parseFloat(r.total_cost) || 0), 0);
+            
+            // Avg days to complete
+            const completedWithDates = requests.filter(r => r.status === 'completed' && r.completed_at);
+            let avgDays = 0;
+            if (completedWithDates.length > 0) {
+                const totalDays = completedWithDates.reduce((sum, r) => {
+                    const created = new Date(r.created_at);
+                    const completed = new Date(r.completed_at);
+                    return sum + Math.ceil((completed - created) / (1000 * 60 * 60 * 24));
+                }, 0);
+                avgDays = Math.round(totalDays / completedWithDates.length);
+            }
+
+            // Update stat cards
+            document.getElementById('reportTotalRequests').textContent = totalRequests;
+            document.getElementById('reportCompletedRequests').textContent = completedRequests;
+            document.getElementById('reportAvgDays').textContent = avgDays;
+            document.getElementById('reportTotalCost').textContent = '$' + totalCost.toLocaleString();
+
+            // Category breakdown
+            const categoryNames = {
+                plumbing: currentLang === 'es' ? 'Plomería' : 'Plumbing',
+                electrical: currentLang === 'es' ? 'Eléctrico' : 'Electrical',
+                hvac: 'HVAC',
+                appliances: currentLang === 'es' ? 'Electrodomésticos' : 'Appliances',
+                doors_windows: currentLang === 'es' ? 'Puertas/Ventanas' : 'Doors/Windows',
+                pest_control: currentLang === 'es' ? 'Plagas' : 'Pest Control',
+                structural: currentLang === 'es' ? 'Estructural' : 'Structural',
+                other: currentLang === 'es' ? 'Otro' : 'Other'
+            };
+
+            const byCategory = {};
+            const costByCategory = {};
+            requests.forEach(r => {
+                const cat = r.category || 'other';
+                byCategory[cat] = (byCategory[cat] || 0) + 1;
+                costByCategory[cat] = (costByCategory[cat] || 0) + (parseFloat(r.total_cost) || 0);
+            });
+
+            // Render category chart
+            const categoryChart = document.getElementById('categoryChart');
+            const maxCat = Math.max(...Object.values(byCategory), 1);
+            categoryChart.innerHTML = Object.entries(byCategory)
+                .sort((a, b) => b[1] - a[1])
+                .map(([cat, count]) => `
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                        <div style="width:120px;font-size:0.85rem;color:var(--gray-600)">${categoryNames[cat] || cat}</div>
+                        <div style="flex:1;height:24px;background:var(--gray-100);border-radius:4px;overflow:hidden">
+                            <div style="width:${(count/maxCat)*100}%;height:100%;background:var(--primary);border-radius:4px"></div>
+                        </div>
+                        <div style="width:40px;text-align:right;font-weight:600">${count}</div>
+                    </div>
+                `).join('');
+
+            // Status breakdown
+            const byStatus = {
+                pending: requests.filter(r => r.status === 'pending').length,
+                in_progress: requests.filter(r => r.status === 'in_progress').length,
+                completed: requests.filter(r => r.status === 'completed').length
+            };
+
+            const statusNames = {
+                pending: currentLang === 'es' ? 'Pendiente' : 'Pending',
+                in_progress: currentLang === 'es' ? 'En Progreso' : 'In Progress',
+                completed: currentLang === 'es' ? 'Completado' : 'Completed'
+            };
+
+            const statusColors = {
+                pending: 'var(--warning)',
+                in_progress: 'var(--primary)',
+                completed: 'var(--success)'
+            };
+
+            // Render status chart (donut-style with bars)
+            const statusChart = document.getElementById('statusChart');
+            const maxStatus = Math.max(...Object.values(byStatus), 1);
+            statusChart.innerHTML = Object.entries(byStatus).map(([status, count]) => `
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                    <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${statusNames[status]}</div>
+                    <div style="flex:1;height:24px;background:var(--gray-100);border-radius:4px;overflow:hidden">
+                        <div style="width:${(count/maxStatus)*100}%;height:100%;background:${statusColors[status]};border-radius:4px"></div>
+                    </div>
+                    <div style="width:40px;text-align:right;font-weight:600">${count}</div>
+                </div>
+            `).join('');
+
+            // Cost by category chart
+            const costChart = document.getElementById('costChart');
+            const maxCost = Math.max(...Object.values(costByCategory), 1);
+            costChart.innerHTML = Object.entries(costByCategory)
+                .filter(([_, cost]) => cost > 0)
+                .sort((a, b) => b[1] - a[1])
+                .map(([cat, cost]) => `
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                        <div style="width:120px;font-size:0.85rem;color:var(--gray-600)">${categoryNames[cat] || cat}</div>
+                        <div style="flex:1;height:24px;background:var(--gray-100);border-radius:4px;overflow:hidden">
+                            <div style="width:${(cost/maxCost)*100}%;height:100%;background:var(--danger);border-radius:4px"></div>
+                        </div>
+                        <div style="width:80px;text-align:right;font-weight:600">$${cost.toLocaleString()}</div>
+                    </div>
+                `).join('') || '<p style="color:var(--gray-500);text-align:center;padding:2rem">No cost data recorded</p>';
+
+            // Property breakdown table
+            const { data: properties } = await db
+                .from('properties')
+                .select('*')
+                .eq('organization_id', currentOrg.id);
+
+            const propertyTable = document.getElementById('propertyBreakdownTable');
+            propertyTable.innerHTML = (properties || []).map(prop => {
+                const propRequests = requests.filter(r => r.property_id === prop.id);
+                const pending = propRequests.filter(r => r.status === 'pending').length;
+                const inProgress = propRequests.filter(r => r.status === 'in_progress').length;
+                const completed = propRequests.filter(r => r.status === 'completed').length;
+                const cost = propRequests.reduce((sum, r) => sum + (parseFloat(r.total_cost) || 0), 0);
+                
+                return `
+                    <tr>
+                        <td><strong>${prop.name}</strong></td>
+                        <td>${propRequests.length}</td>
+                        <td><span class="status pending"><span class="status-dot"></span>${pending}</span></td>
+                        <td><span class="status in-progress"><span class="status-dot"></span>${inProgress}</span></td>
+                        <td><span class="status completed"><span class="status-dot"></span>${completed}</span></td>
+                        <td>$${cost.toLocaleString()}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Populate property filter dropdown
+            const reportPropertySelect = document.getElementById('reportProperty');
+            const currentValue = reportPropertySelect.value;
+            reportPropertySelect.innerHTML = `<option value="all" data-translate="all_properties">${currentLang === 'es' ? 'Todas las Propiedades' : 'All Properties'}</option>`;
+            (properties || []).forEach(prop => {
+                reportPropertySelect.innerHTML += `<option value="${prop.id}" ${prop.id === currentValue ? 'selected' : ''}>${prop.name}</option>`;
+            });
+        }
+
+        function exportReport() {
+            const period = document.getElementById('reportPeriod').value;
+            const propertyId = document.getElementById('reportProperty').value;
+            
+            // Build query for export
+            const now = new Date();
+            let startDate;
+            
+            switch(period) {
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    break;
+                case 'last_month':
+                    startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    break;
+                case 'quarter':
+                    const quarter = Math.floor(now.getMonth() / 3);
+                    startDate = new Date(now.getFullYear(), quarter * 3, 1);
+                    break;
+                case 'year':
+                    startDate = new Date(now.getFullYear(), 0, 1);
+                    break;
+                default:
+                    startDate = new Date(2020, 0, 1);
+            }
+
+            // Fetch and export
+            let query = db
+                .from('maintenance_requests')
+                .select('*, properties(name), units(identifier), residents(name)')
+                .eq('organization_id', currentOrg.id)
+                .gte('created_at', startDate.toISOString());
+
+            if (propertyId !== 'all') {
+                query = query.eq('property_id', propertyId);
+            }
+
+            query.then(({ data: requests }) => {
+                if (!requests || requests.length === 0) {
+                    showToast(currentLang === 'es' ? 'No hay datos para exportar' : 'No data to export');
+                    return;
+                }
+
+                // Build CSV
+                const headers = ['Date', 'Property', 'Unit', 'Resident', 'Category', 'Status', 'Cost', 'Description'];
+                const rows = requests.map(r => [
+                    new Date(r.created_at).toLocaleDateString(),
+                    r.properties?.name || '',
+                    r.units?.identifier || '',
+                    r.residents?.name || '',
+                    r.category || '',
+                    r.status || '',
+                    r.total_cost || '0',
+                    (r.description || '').replace(/,/g, ';').replace(/\n/g, ' ')
+                ]);
+
+                const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+                
+                // Download
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `rentably-report-${period}-${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                showToast(currentLang === 'es' ? 'Reporte exportado' : 'Report exported');
+            });
         }
         
         // ==============================================
