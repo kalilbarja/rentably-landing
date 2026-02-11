@@ -2524,7 +2524,29 @@
                             <div style="font-weight:500">${timeWindows[currentLang][request.time_window] || request.time_window || '-'}</div>
                         </div>
                     </div>
+                    <div id="requestPhotosContainer" style="margin-top:1rem"></div>
                 `;
+
+                // Fetch photos for this request
+                const { data: photos } = await db
+                    .from('request_photos')
+                    .select('*')
+                    .eq('request_id', id)
+                    .order('created_at', { ascending: true });
+
+                if (photos && photos.length > 0) {
+                    const photosLabel = currentLang === 'es' ? 'Fotos' : 'Photos';
+                    document.getElementById('requestPhotosContainer').innerHTML = `
+                        <div style="font-size:0.8rem;color:var(--gray-500);margin-bottom:0.5rem">${photosLabel} (${photos.length})</div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:0.5rem">
+                            ${photos.map(p => `
+                                <a href="${p.photo_url}" target="_blank" style="display:block;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--gray-200)">
+                                    <img src="${p.photo_url}" style="width:100%;height:100%;object-fit:cover" alt="Request photo">
+                                </a>
+                            `).join('')}
+                        </div>
+                    `;
+                }
 
                 document.getElementById('requestStatus').value = request.status || 'pending';
                 document.getElementById('requestScheduledDate').value = request.scheduled_date || '';
