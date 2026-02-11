@@ -2566,11 +2566,22 @@
             if (!currentRequestId) return;
 
             const status = document.getElementById('requestStatus').value;
+            const scheduledDate = document.getElementById('requestScheduledDate').value;
             console.log('Saving request with status:', status);
+            
+            // Get current request data for email
+            const { data: currentRequest } = await db
+                .from('maintenance_requests')
+                .select('*, residents(name, email), units(identifier), properties(name)')
+                .eq('id', currentRequestId)
+                .single();
+            
+            const previousStatus = currentRequest?.status;
+            const previousScheduledDate = currentRequest?.scheduled_date;
             
             const data = {
                 status: status,
-                scheduled_date: document.getElementById('requestScheduledDate').value || null,
+                scheduled_date: scheduledDate || null,
                 internal_notes: document.getElementById('requestNotes').value || null,
                 total_cost: document.getElementById('requestCost').value || null
             };
@@ -2586,6 +2597,54 @@
                 console.error('Error saving request:', error);
                 alert('Error: ' + error.message);
                 return;
+            }
+
+            // Send email notifications
+            if (currentRequest?.residents?.email) {
+                const categoryNames = {
+                    plumbing: 'Plomería', electrical: 'Eléctrico', hvac: 'A/C', 
+                    appliances: 'Electrodomésticos', doors_windows: 'Puertas/Ventanas',
+                    pest_control: 'Plagas', structural: 'Estructural', other: 'Otro'
+                };
+
+                try {
+                    // Email when scheduled date is set/changed
+                    if (scheduledDate && scheduledDate !== previousScheduledDate) {
+                        await fetch('/api/send-email', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                type: 'request_scheduled',
+                                to: currentRequest.residents.email,
+                                residentName: currentRequest.residents.name,
+                                propertyName: currentRequest.properties?.name || '',
+                                unitNumber: currentRequest.units?.identifier || '',
+                                category: categoryNames[currentRequest.category] || currentRequest.category,
+                                scheduledDate: scheduledDate
+                            })
+                        });
+                        console.log('Scheduled email sent');
+                    }
+
+                    // Email when status changed to completed
+                    if (status === 'completed' && previousStatus !== 'completed') {
+                        await fetch('/api/send-email', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                type: 'request_completed',
+                                to: currentRequest.residents.email,
+                                residentName: currentRequest.residents.name,
+                                propertyName: currentRequest.properties?.name || '',
+                                unitNumber: currentRequest.units?.identifier || '',
+                                category: categoryNames[currentRequest.category] || currentRequest.category
+                            })
+                        });
+                        console.log('Completed email sent');
+                    }
+                } catch (emailErr) {
+                    console.error('Email notification failed:', emailErr);
+                }
             }
 
             closeRequestModal();
