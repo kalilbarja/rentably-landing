@@ -136,6 +136,84 @@
             min-height: 100px;
         }
 
+        .form-hint {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-top: 0.5rem;
+        }
+
+        /* Photo Upload */
+        .photo-upload-area {
+            margin-top: 0.5rem;
+        }
+
+        .photo-upload-placeholder {
+            border: 2px dashed var(--gray-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: var(--gray-500);
+        }
+
+        .photo-upload-placeholder:hover {
+            border-color: var(--primary);
+            background: rgba(79, 70, 229, 0.05);
+            color: var(--primary);
+        }
+
+        .photo-upload-placeholder svg {
+            margin-bottom: 0.5rem;
+        }
+
+        .photo-upload-placeholder span {
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .photo-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .photo-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .photo-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-preview-remove:hover {
+            background: var(--danger);
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -900,6 +978,23 @@
                             <option value="afternoon" data-translate="time_afternoon">Tarde (12pm - 5pm)</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-translate="photos">Fotos (opcional, máximo 5)</label>
+                        <div class="photo-upload-area" id="photoUploadArea">
+                            <input type="file" id="reqPhotos" accept="image/*" multiple style="display:none" onchange="handlePhotoSelect(event)">
+                            <div class="photo-upload-placeholder" onclick="document.getElementById('reqPhotos').click()">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                                <span data-translate="add_photos">Agregar fotos</span>
+                            </div>
+                            <div class="photo-preview-grid" id="photoPreviewGrid"></div>
+                        </div>
+                        <small class="form-hint" data-translate="photo_hint">Puedes agregar hasta 5 fotos del problema</small>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeNewRequestModal()" data-translate="cancel">Cancelar</button>
@@ -983,6 +1078,9 @@
                 time_window: 'Horario preferido',
                 time_morning: 'Mañana (8am - 12pm)',
                 time_afternoon: 'Tarde (12pm - 5pm)',
+                photos: 'Fotos (opcional, máximo 5)',
+                add_photos: 'Agregar fotos',
+                photo_hint: 'Puedes agregar hasta 5 fotos del problema',
                 cancel: 'Cancelar',
                 submit_request: 'Enviar Solicitud',
                 request_sent: '¡Solicitud enviada exitosamente!',
@@ -1049,6 +1147,9 @@
                 time_window: 'Preferred time',
                 time_morning: 'Morning (8am - 12pm)',
                 time_afternoon: 'Afternoon (12pm - 5pm)',
+                photos: 'Photos (optional, max 5)',
+                add_photos: 'Add photos',
+                photo_hint: 'You can add up to 5 photos of the problem',
                 cancel: 'Cancel',
                 submit_request: 'Submit Request',
                 request_sent: 'Request submitted successfully!',
@@ -1291,14 +1392,72 @@
         // ==============================================
         // NEW REQUEST MODAL
         // ==============================================
+        let selectedPhotos = [];
+
         function openNewRequestModal() {
             document.getElementById('newRequestModal').classList.add('active');
             document.getElementById('requestSuccess').classList.remove('show');
             document.getElementById('requestForm').reset();
+            selectedPhotos = [];
+            document.getElementById('photoPreviewGrid').innerHTML = '';
         }
 
         function closeNewRequestModal() {
             document.getElementById('newRequestModal').classList.remove('active');
+            selectedPhotos = [];
+            document.getElementById('photoPreviewGrid').innerHTML = '';
+        }
+
+        function handlePhotoSelect(event) {
+            const files = Array.from(event.target.files);
+            
+            // Limit to 5 photos total
+            const remaining = 5 - selectedPhotos.length;
+            const toAdd = files.slice(0, remaining);
+
+            toAdd.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    selectedPhotos.push(file);
+                    addPhotoPreview(file, selectedPhotos.length - 1);
+                }
+            });
+
+            // Clear input so same file can be selected again
+            event.target.value = '';
+
+            // Hide placeholder if we have photos
+            if (selectedPhotos.length >= 5) {
+                document.querySelector('.photo-upload-placeholder').style.display = 'none';
+            }
+        }
+
+        function addPhotoPreview(file, index) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const div = document.createElement('div');
+                div.className = 'photo-preview-item';
+                div.dataset.index = index;
+                div.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview">
+                    <button type="button" class="photo-preview-remove" onclick="removePhoto(${index})">×</button>
+                `;
+                document.getElementById('photoPreviewGrid').appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePhoto(index) {
+            selectedPhotos.splice(index, 1);
+            renderPhotoPreviews();
+            document.querySelector('.photo-upload-placeholder').style.display = 'block';
+        }
+
+        function renderPhotoPreviews() {
+            const grid = document.getElementById('photoPreviewGrid');
+            grid.innerHTML = '';
+            selectedPhotos.forEach((file, index) => {
+                addPhotoPreview(file, index);
+            });
         }
 
         async function submitRequest(e) {
@@ -1309,7 +1468,8 @@
             submitBtn.textContent = currentLang === 'es' ? 'Enviando...' : 'Submitting...';
 
             try {
-                const { error } = await db.from('maintenance_requests').insert({
+                // 1. Create the maintenance request
+                const { data: request, error } = await db.from('maintenance_requests').insert({
                     organization_id: currentResident.organization_id,
                     property_id: currentResident.units.property_id,
                     unit_id: currentResident.unit_id,
@@ -1322,12 +1482,48 @@
                     contact_phone: currentResident.phone,
                     contact_email: currentResident.email,
                     status: 'pending'
-                });
+                }).select().single();
 
                 if (error) throw error;
 
+                // 2. Upload photos if any
+                if (selectedPhotos.length > 0 && request) {
+                    submitBtn.textContent = currentLang === 'es' ? 'Subiendo fotos...' : 'Uploading photos...';
+                    
+                    for (let i = 0; i < selectedPhotos.length; i++) {
+                        const file = selectedPhotos[i];
+                        const fileExt = file.name.split('.').pop();
+                        const fileName = `${request.id}/${Date.now()}_${i}.${fileExt}`;
+                        
+                        // Upload to Supabase Storage
+                        const { error: uploadError } = await db.storage
+                            .from('request-photos')
+                            .upload(fileName, file);
+
+                        if (uploadError) {
+                            console.error('Photo upload error:', uploadError);
+                            continue;
+                        }
+
+                        // Get public URL
+                        const { data: urlData } = db.storage
+                            .from('request-photos')
+                            .getPublicUrl(fileName);
+
+                        // Save photo record
+                        await db.from('request_photos').insert({
+                            request_id: request.id,
+                            uploaded_by: currentResident.user_id,
+                            photo_url: urlData.publicUrl,
+                            photo_type: 'submission'
+                        });
+                    }
+                }
+
                 document.getElementById('requestSuccess').classList.add('show');
                 document.getElementById('requestForm').reset();
+                selectedPhotos = [];
+                document.getElementById('photoPreviewGrid').innerHTML = '';
                 
                 setTimeout(() => {
                     closeNewRequestModal();
