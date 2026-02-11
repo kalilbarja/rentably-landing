@@ -1536,6 +1536,32 @@
                 document.getElementById('requestForm').reset();
                 selectedPhotos = [];
                 document.getElementById('photoPreviewGrid').innerHTML = '';
+
+                // 3. Send email notification to admin
+                try {
+                    const categoryNames = {
+                        plumbing: 'Plomería', electrical: 'Eléctrico', hvac: 'A/C', 
+                        appliances: 'Electrodomésticos', doors_windows: 'Puertas/Ventanas',
+                        pest_control: 'Plagas', structural: 'Estructural', other: 'Otro'
+                    };
+                    
+                    await fetch('/api/send-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            type: 'new_request',
+                            to: 'mantenimiento@windsorproperties.co',
+                            residentName: currentResident.name,
+                            propertyName: currentResident.units.properties?.name || '',
+                            unitNumber: currentResident.units.identifier,
+                            category: categoryNames[request.category] || request.category,
+                            description: request.description
+                        })
+                    });
+                    console.log('Email notification sent');
+                } catch (emailErr) {
+                    console.error('Email notification failed:', emailErr);
+                }
                 
                 setTimeout(() => {
                     closeNewRequestModal();
