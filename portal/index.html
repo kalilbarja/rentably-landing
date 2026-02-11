@@ -1520,7 +1520,7 @@
                         // Save photo record
                         const { error: insertError } = await db.from('request_photos').insert({
                             request_id: request.id,
-                            uploaded_by: currentResident.user_id,
+                            uploaded_by: currentResident.user_id || null,
                             photo_url: urlData.publicUrl,
                             photo_type: 'submission'
                         });
