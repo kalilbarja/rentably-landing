@@ -2736,7 +2736,6 @@
 
             const status = document.getElementById('requestStatus').value;
             const scheduledDate = document.getElementById('requestScheduledDate').value;
-            console.log('Saving request with status:', status);
             
             // Get current request data for email
             const { data: currentRequest } = await db
@@ -2763,8 +2762,7 @@
             const { error } = await db.from('maintenance_requests').update(data).eq('id', currentRequestId);
             
             if (error) {
-                console.error('Error saving request:', error);
-                alert('Error: ' + error.message);
+                alert(translations[currentLang].error_saving || 'Error saving request');
                 return;
             }
 
@@ -2792,7 +2790,6 @@
                                 scheduledDate: scheduledDate
                             })
                         });
-                        console.log('Scheduled email sent');
 
                         // Also send SMS if resident has phone number
                         if (currentRequest.residents.phone) {
@@ -2804,7 +2801,6 @@
                                     message: `Rentably: Su solicitud de mantenimiento (${categoryNames[currentRequest.category] || currentRequest.category}) ha sido programada para ${scheduledDate}. Por favor esté disponible.`
                                 })
                             });
-                            console.log('Scheduled SMS sent');
                         }
                     }
 
@@ -2822,10 +2818,9 @@
                                 category: categoryNames[currentRequest.category] || currentRequest.category
                             })
                         });
-                        console.log('Completed email sent');
                     }
                 } catch (emailErr) {
-                    console.error('Email notification failed:', emailErr);
+                    // Silent fail - don't block the save operation
                 }
             }
 
