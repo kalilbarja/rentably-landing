@@ -2585,7 +2585,7 @@
             // Get current request data for email
             const { data: currentRequest } = await db
                 .from('maintenance_requests')
-                .select('*, residents(name, email), units(identifier), properties(name)')
+                .select('*, residents(name, email, phone), units(identifier), properties(name)')
                 .eq('id', currentRequestId)
                 .single();
             
