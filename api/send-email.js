@@ -1,7 +1,7 @@
 // Vercel Serverless Function: /api/send-email.js
 
 const RESEND_API_KEY = "re_6MZRjmmU_HtUjrzAa2t3PyKxzDZvir8Ff";
-const FROM_EMAIL = "Rentably <onboarding@resend.dev>";
+const FROM_EMAIL = "Rentably <noreply@rentably.io>";
 
 export default async function handler(req, res) {
   // Enable CORS
