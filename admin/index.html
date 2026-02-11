@@ -2637,6 +2637,19 @@
                             })
                         });
                         console.log('Scheduled email sent');
+
+                        // Also send SMS if resident has phone number
+                        if (currentRequest.residents.phone) {
+                            await fetch('/api/send-sms', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    to: currentRequest.residents.phone,
+                                    message: `Rentably: Su solicitud de mantenimiento (${categoryNames[currentRequest.category] || currentRequest.category}) ha sido programada para ${scheduledDate}. Por favor esté disponible.`
+                                })
+                            });
+                            console.log('Scheduled SMS sent');
+                        }
                     }
 
                     // Email when status changed to completed
