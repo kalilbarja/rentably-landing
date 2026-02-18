@@ -1110,7 +1110,7 @@
                         </svg>
                         <span data-translate="nav_clients">Clients</span>
                     </a>
-                    <a class="nav-item" data-page="reports">
+                    <a class="nav-item pro-only" data-page="reports" style="display:none">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 21H3V3"/>
                             <path d="M21 9l-6 6-4-4-6 6"/>
@@ -1556,7 +1556,7 @@
                 </div>
 
                 <!-- Reports Page -->
-                <div class="page" id="page-reports">
+                <div class="page pro-only" id="page-reports" style="display:none">
                     <!-- Quick Date Range Buttons -->
                     <div class="card" style="margin-bottom:1.5rem">
                         <div class="card-body" style="padding:1rem 1.5rem">
@@ -2353,11 +2353,29 @@
             document.getElementById('orgSlug').value = currentOrg.slug;
             document.getElementById('orgPlan').value = currentOrg.plan.charAt(0).toUpperCase() + currentOrg.plan.slice(1);
             
-            // Show/hide enterprise features based on plan
+            // Plan-based feature visibility
+            // Starter: basic features only
+            // Professional: + Reports
+            // Business: + Reports + Clients
             const isEnterprise = currentOrg.plan === 'business';
+            const isPro = currentOrg.plan === 'professional' || currentOrg.plan === 'business';
+            
+            // Get feature flags (default to true for backwards compatibility)
+            const features = currentOrg.features || { clients: true, income_reports: true };
+            const showClients = isEnterprise && features.clients !== false;
+            
+            // Show enterprise-only features (Clients tab, client filters) - only if clients feature is enabled
             document.querySelectorAll('.enterprise-only').forEach(el => {
-                el.style.display = isEnterprise ? '' : 'none';
+                el.style.display = showClients ? '' : 'none';
             });
+            
+            // Show pro-only features (Reports tab) - available for professional and business plans
+            document.querySelectorAll('.pro-only').forEach(el => {
+                el.style.display = isPro ? '' : 'none';
+            });
+            
+            // Store feature flags globally for other functions
+            window.orgFeatures = features;
             
             // Load data
             loadDashboard();
@@ -2419,9 +2437,16 @@
         // ==============================================
         // DATA LOADING
         // ==============================================
+        
+        // Helper function to check if clients feature is enabled
+        function isClientsEnabled() {
+            const features = currentOrg.features || { clients: true };
+            return currentOrg.plan === 'business' && features.clients !== false;
+        }
+        
         async function loadDashboard() {
-            // Show client filter if business plan
-            if (currentOrg.plan === 'business') {
+            // Show client filter if business plan AND clients feature enabled
+            if (isClientsEnabled()) {
                 document.getElementById('dashboardClientFilter').style.display = '';
                 await loadDashboardClientOptions();
             }
@@ -2430,7 +2455,7 @@
             
             // Get property IDs for selected client
             let propertyIds = null;
-            if (clientId !== 'all' && currentOrg.plan === 'business') {
+            if (clientId !== 'all' && isClientsEnabled()) {
                 const { data: clientProps } = await db
                     .from('properties')
                     .select('id')
@@ -2510,7 +2535,7 @@
                 .select('*, units(id, is_occupied), clients(name)')
                 .eq('organization_id', currentOrg.id);
             
-            if (clientId !== 'all' && currentOrg.plan === 'business') {
+            if (clientId !== 'all' && isClientsEnabled()) {
                 propsQuery = propsQuery.eq('client_id', clientId);
             }
             
@@ -2568,7 +2593,7 @@
         
         async function loadRequests(filter = 'pending') {
             // Show client filter if business plan
-            if (currentOrg.plan === 'business') {
+            if (isClientsEnabled()) {
                 document.getElementById('requestsClientFilter').style.display = '';
                 document.querySelectorAll('#page-requests .enterprise-only').forEach(el => el.style.display = '');
                 await loadRequestsClientOptions();
@@ -2578,7 +2603,7 @@
             
             // Get property IDs for selected client
             let propertyIds = null;
-            if (clientId !== 'all' && currentOrg.plan === 'business') {
+            if (clientId !== 'all' && isClientsEnabled()) {
                 const { data: clientProps } = await db
                     .from('properties')
                     .select('id')
@@ -2606,7 +2631,7 @@
             document.getElementById('requestsCount').textContent = requests?.length || 0;
             
             const tbody = document.getElementById('requestsTable');
-            const isBusiness = currentOrg.plan === 'business';
+            const isBusiness = isClientsEnabled();
             
             if (requests && requests.length > 0) {
                 const viewText = currentLang === 'es' ? 'Ver' : 'View';
@@ -2682,7 +2707,7 @@
         
         async function loadProperties() {
             // Show client filter if business plan
-            if (currentOrg.plan === 'business') {
+            if (isClientsEnabled()) {
                 document.getElementById('propertiesFilterSection').style.display = '';
                 document.querySelectorAll('#page-properties .business-only').forEach(el => el.style.display = '');
                 await loadPropertiesClientOptions();
@@ -2724,7 +2749,7 @@
         function filterProperties() {
             const clientId = document.getElementById('propertiesClientFilter')?.value || 'all';
             const sortBy = document.getElementById('propertiesSortBy')?.value || 'name_asc';
-            const isBusiness = currentOrg.plan === 'business';
+            const isBusiness = isClientsEnabled();
             
             let filtered = [...allProperties];
             
@@ -2799,7 +2824,7 @@
         
         async function loadUnits() {
             // Show client filter if business plan
-            if (currentOrg.plan === 'business') {
+            if (isClientsEnabled()) {
                 document.getElementById('unitClientFilterGroup').style.display = '';
                 await loadUnitsClientOptions();
             }
@@ -2863,7 +2888,7 @@
             let filtered = allUnits;
             
             // Filter by client
-            if (clientFilter !== 'all' && currentOrg.plan === 'business') {
+            if (clientFilter !== 'all' && isClientsEnabled()) {
                 filtered = filtered.filter(u => u.properties?.client_id === clientFilter);
             }
             
@@ -3330,7 +3355,7 @@
             document.getElementById('propertyModalTitle').textContent = translations[currentLang].add_property;
             
             // Load clients dropdown if enterprise
-            if (currentOrg.plan === 'business') {
+            if (isClientsEnabled()) {
                 await loadClientOptions();
                 document.getElementById('propertyClientGroup').style.display = '';
             }
@@ -3348,7 +3373,7 @@
                 document.getElementById('propertyCountry').value = property.country || 'DO';
                 
                 // Load clients dropdown if enterprise
-                if (currentOrg.plan === 'business') {
+                if (isClientsEnabled()) {
                     await loadClientOptions();
                     document.getElementById('propertyClient').value = property.client_id || '';
                     document.getElementById('propertyClientGroup').style.display = '';
@@ -3395,7 +3420,7 @@
             };
             
             // Add client_id if enterprise
-            if (currentOrg.plan === 'business') {
+            if (isClientsEnabled()) {
                 data.client_id = document.getElementById('propertyClient').value || null;
             }
 
@@ -3798,7 +3823,7 @@
             const clientId = document.getElementById('reportClient')?.value || 'all';
             
             // Load client dropdown if enterprise
-            if (currentOrg.plan === 'business') {
+            if (isClientsEnabled()) {
                 document.getElementById('reportClientGroup').style.display = '';
                 document.getElementById('clientIncomeSection').style.display = '';
                 document.getElementById('propertyBreakdownSection').style.display = 'none';
@@ -3952,7 +3977,7 @@
             }
             
             // Client accordion (Business Plan)
-            if (currentOrg.plan === 'business' && clients && clients.length > 0) {
+            if (isClientsEnabled() && clients && clients.length > 0) {
                 renderClientAccordion(clients, expensesByUnit, requests);
             }
             
