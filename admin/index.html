@@ -717,6 +717,136 @@
             display: block;
         }
 
+        /* Date Range Buttons */
+        .date-range-btn {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            border: 1px solid var(--gray-200);
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .date-range-btn:hover {
+            background: var(--gray-200);
+        }
+
+        .date-range-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Client Accordion */
+        .client-accordion-item {
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .client-accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .client-accordion-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .client-accordion-header:hover {
+            background: var(--gray-50);
+        }
+
+        .client-accordion-toggle {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .client-accordion-item.open .client-accordion-toggle {
+            transform: rotate(90deg);
+        }
+
+        .client-accordion-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            flex: 1;
+        }
+
+        .client-accordion-stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .client-accordion-stat {
+            text-align: center;
+        }
+
+        .client-accordion-stat-value {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .client-accordion-stat-label {
+            color: var(--gray-500);
+            font-size: 0.75rem;
+        }
+
+        .client-accordion-content {
+            display: none;
+            padding: 0 1.5rem 1rem;
+            background: var(--gray-50);
+        }
+
+        .client-accordion-item.open .client-accordion-content {
+            display: block;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .property-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .property-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .property-card-title {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .unit-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-top: 1px solid var(--gray-100);
+            font-size: 0.85rem;
+        }
+
+        .unit-row:first-child {
+            border-top: none;
+        }
+
         /* Hide app when not logged in */
         .app-container {
             display: none;
@@ -1427,132 +1557,99 @@
 
                 <!-- Reports Page -->
                 <div class="page" id="page-reports">
-                    <!-- Report Filters -->
+                    <!-- Quick Date Range Buttons -->
                     <div class="card" style="margin-bottom:1.5rem">
                         <div class="card-body" style="padding:1rem 1.5rem">
-                            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-                                <div class="form-group" style="margin:0">
-                                    <label class="form-label" style="margin-bottom:0.25rem" data-translate="report_period">Period</label>
-                                    <select class="form-select" id="reportPeriod" onchange="loadReports()" style="min-width:150px">
-                                        <option value="month" data-translate="this_month">This Month</option>
-                                        <option value="last_month" data-translate="last_month">Last Month</option>
-                                        <option value="quarter" data-translate="this_quarter">This Quarter</option>
-                                        <option value="year" data-translate="this_year">This Year</option>
-                                        <option value="all" data-translate="all_time">All Time</option>
-                                    </select>
-                                </div>
-                                <div class="form-group enterprise-only" id="reportClientGroup" style="margin:0;display:none">
-                                    <label class="form-label" style="margin-bottom:0.25rem" data-translate="client">Client</label>
-                                    <select class="form-select" id="reportClient" onchange="loadReports()" style="min-width:180px">
-                                        <option value="all" data-translate="all_clients">All Clients</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" style="margin:0">
-                                    <label class="form-label" style="margin-bottom:0.25rem" data-translate="property">Property</label>
-                                    <select class="form-select" id="reportProperty" onchange="loadReports()" style="min-width:180px">
-                                        <option value="all" data-translate="all_properties">All Properties</option>
-                                    </select>
-                                </div>
-                                <div style="margin-left:auto">
-                                    <button class="btn btn-secondary" onclick="exportReport()">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+                                <span style="font-weight:500;color:var(--gray-600);margin-right:0.5rem" data-translate="quick_select">Quick Select:</span>
+                                <button class="btn btn-sm date-range-btn active" data-period="7days" onclick="setReportPeriod('7days')">7 Days</button>
+                                <button class="btn btn-sm date-range-btn" data-period="30days" onclick="setReportPeriod('30days')">30 Days</button>
+                                <button class="btn btn-sm date-range-btn" data-period="month" onclick="setReportPeriod('month')" data-translate="this_month">This Month</button>
+                                <button class="btn btn-sm date-range-btn" data-period="last_month" onclick="setReportPeriod('last_month')" data-translate="last_month">Last Month</button>
+                                <button class="btn btn-sm date-range-btn" data-period="quarter" onclick="setReportPeriod('quarter')" data-translate="this_quarter">This Quarter</button>
+                                <button class="btn btn-sm date-range-btn" data-period="year" onclick="setReportPeriod('year')" data-translate="this_year">This Year</button>
+                                <button class="btn btn-sm date-range-btn" data-period="all" onclick="setReportPeriod('all')" data-translate="all_time">All Time</button>
+                                
+                                <div style="margin-left:auto;display:flex;gap:0.5rem;align-items:center">
+                                    <div class="form-group enterprise-only" id="reportClientGroup" style="margin:0;display:none">
+                                        <select class="form-select" id="reportClient" onchange="loadReports()" style="min-width:160px;padding:0.4rem 0.75rem;font-size:0.85rem">
+                                            <option value="all" data-translate="all_clients">All Clients</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm" onclick="exportIncomeReport()">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                             <polyline points="7 10 12 15 17 10"/>
                                             <line x1="12" y1="15" x2="12" y2="3"/>
                                         </svg>
-                                        <span data-translate="export_csv">Export CSV</span>
+                                        <span data-translate="export">Export</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Summary Stats -->
-                    <div class="stats-grid" style="margin-bottom:1.5rem">
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:rgba(79,70,229,0.1);color:var(--primary)">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                    <polyline points="14 2 14 8 20 8"/>
-                                </svg>
+                    <!-- Summary Cards - Key Metrics -->
+                    <div class="stats-grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(5, 1fr)">
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--success);font-size:1.75rem" id="reportTotalRevenue">$0</div>
+                            <div class="stat-label" data-translate="total_revenue">Total Revenue</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--danger);font-size:1.75rem" id="reportTotalExpenses">$0</div>
+                            <div class="stat-label" data-translate="total_expenses">Total Expenses</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="font-size:1.75rem" id="reportNetIncome">$0</div>
+                            <div class="stat-label" data-translate="net_income">Net Income</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--primary);font-size:1.75rem" id="reportTotalRequests">0</div>
+                            <div class="stat-label" data-translate="maintenance_requests">Maintenance Requests</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportOccupancyRate">0%</div>
+                            <div class="stat-label" data-translate="occupancy_rate">Occupancy Rate</div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Charts Row -->
+                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+                        <!-- Revenue vs Expenses Chart -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" data-translate="revenue_vs_expenses">Revenue vs Expenses</h3>
                             </div>
-                            <div class="stat-details">
-                                <div class="stat-value" id="reportTotalRequests">0</div>
-                                <div class="stat-label" data-translate="total_requests">Total Requests</div>
+                            <div class="card-body">
+                                <div id="revenueExpenseChart" style="min-height:200px"></div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:var(--success)">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"/>
-                                </svg>
+
+                        <!-- Expense Breakdown Donut -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" data-translate="expense_breakdown">Expense Breakdown</h3>
                             </div>
-                            <div class="stat-details">
-                                <div class="stat-value" id="reportCompletedRequests">0</div>
-                                <div class="stat-label" data-translate="completed">Completed</div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:rgba(245,158,11,0.1);color:var(--warning)">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <polyline points="12 6 12 12 16 14"/>
-                                </svg>
-                            </div>
-                            <div class="stat-details">
-                                <div class="stat-value" id="reportAvgDays">0</div>
-                                <div class="stat-label" data-translate="avg_completion_days">Avg. Days to Complete</div>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:rgba(239,68,68,0.1);color:var(--danger)">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="1" x2="12" y2="23"/>
-                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                                </svg>
-                            </div>
-                            <div class="stat-details">
-                                <div class="stat-value" id="reportTotalCost">$0</div>
-                                <div class="stat-label" data-translate="total_cost">Total Cost</div>
+                            <div class="card-body">
+                                <div id="expenseDonutChart" style="min-height:200px"></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Charts Row -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
-                        <!-- By Category -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title" data-translate="requests_by_category">Requests by Category</h3>
-                            </div>
-                            <div class="card-body">
-                                <div id="categoryChart" style="min-height:250px"></div>
-                            </div>
-                        </div>
-
-                        <!-- By Status -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title" data-translate="requests_by_status">Requests by Status</h3>
-                            </div>
-                            <div class="card-body">
-                                <div id="statusChart" style="min-height:250px"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cost by Category -->
-                    <div class="card" style="margin-bottom:1.5rem">
+                    <!-- Collapsible Client Income Sections (Business Plan Only) -->
+                    <div class="card enterprise-only" id="clientIncomeSection" style="display:none">
                         <div class="card-header">
-                            <h3 class="card-title" data-translate="cost_by_category">Cost by Category</h3>
+                            <h3 class="card-title" data-translate="income_by_client">Income by Client</h3>
                         </div>
-                        <div class="card-body">
-                            <div id="costChart" style="min-height:200px"></div>
+                        <div class="card-body" style="padding:0">
+                            <div id="clientIncomeAccordion">
+                                <!-- Accordion items will be inserted here -->
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Property Breakdown -->
-                    <div class="card">
+                    <!-- Property Breakdown (Non-Business Plan) -->
+                    <div class="card" id="propertyBreakdownSection">
                         <div class="card-header">
                             <h3 class="card-title" data-translate="property_breakdown">Property Breakdown</h3>
                         </div>
@@ -1561,82 +1658,15 @@
                                 <thead>
                                     <tr>
                                         <th data-translate="property">Property</th>
-                                        <th data-translate="total_requests">Total Requests</th>
-                                        <th data-translate="pending">Pending</th>
-                                        <th data-translate="in_progress">In Progress</th>
-                                        <th data-translate="completed">Completed</th>
-                                        <th data-translate="total_cost">Total Cost</th>
+                                        <th data-translate="units">Units</th>
+                                        <th data-translate="monthly_rent">Monthly Rent</th>
+                                        <th data-translate="expenses">Expenses</th>
+                                        <th data-translate="net_income">Net Income</th>
+                                        <th data-translate="requests">Requests</th>
                                     </tr>
                                 </thead>
                                 <tbody id="propertyBreakdownTable">
                                 </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Client Revenue (Business Plan Only) -->
-                    <div class="card enterprise-only" id="clientRevenueSection" style="display:none;margin-top:1.5rem">
-                        <div class="card-header">
-                            <h3 class="card-title" data-translate="client_revenue">Client Revenue</h3>
-                            <button class="btn btn-secondary btn-sm" onclick="exportClientRevenue()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7 10 12 15 17 10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
-                                <span data-translate="export_csv">Export CSV</span>
-                            </button>
-                        </div>
-                        <div class="card-body" style="padding:0">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th data-translate="client">Client</th>
-                                        <th data-translate="properties">Properties</th>
-                                        <th data-translate="units">Units</th>
-                                        <th data-translate="occupied">Occupied</th>
-                                        <th data-translate="monthly_revenue">Monthly Revenue</th>
-                                        <th data-translate="potential_revenue">Potential Revenue</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="clientRevenueTable">
-                                </tbody>
-                                <tfoot id="clientRevenueTotals" style="background:var(--gray-50);font-weight:600">
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Detailed Income Report (Business Plan Only) -->
-                    <div class="card enterprise-only" id="incomeReportSection" style="display:none;margin-top:1.5rem">
-                        <div class="card-header">
-                            <h3 class="card-title" data-translate="income_report">Income Report</h3>
-                            <button class="btn btn-secondary btn-sm" onclick="exportIncomeReport()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7 10 12 15 17 10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
-                                <span data-translate="export_csv">Export CSV</span>
-                            </button>
-                        </div>
-                        <div class="card-body" style="padding:0">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th data-translate="client">Client</th>
-                                        <th data-translate="property">Property</th>
-                                        <th data-translate="unit">Unit</th>
-                                        <th data-translate="monthly_rent">Monthly Rent</th>
-                                        <th data-translate="expenses">Expenses</th>
-                                        <th data-translate="net_income">Net Income</th>
-                                        <th data-translate="status">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="incomeReportTable">
-                                </tbody>
-                                <tfoot id="incomeReportTotals" style="background:var(--gray-50);font-weight:600">
-                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -1932,6 +1962,16 @@
                 monthly_rent: 'Monthly Rent',
                 expenses: 'Expenses',
                 net_income: 'Net Income',
+                // Reports - New Design
+                quick_select: 'Quick Select',
+                total_revenue: 'Total Revenue',
+                total_expenses: 'Total Expenses',
+                maintenance_requests: 'Maintenance Requests',
+                occupancy_rate: 'Occupancy Rate',
+                revenue_vs_expenses: 'Revenue vs Expenses',
+                expense_breakdown: 'Expense Breakdown',
+                income_by_client: 'Income by Client',
+                export: 'Export',
                 // Dashboard
                 pending_requests: 'Pending Requests',
                 in_progress: 'In Progress',
@@ -2088,6 +2128,16 @@
                 monthly_rent: 'Renta Mensual',
                 expenses: 'Gastos',
                 net_income: 'Ingreso Neto',
+                // Reports - New Design
+                quick_select: 'Selección Rápida',
+                total_revenue: 'Ingresos Totales',
+                total_expenses: 'Gastos Totales',
+                maintenance_requests: 'Solicitudes de Mantenimiento',
+                occupancy_rate: 'Tasa de Ocupación',
+                revenue_vs_expenses: 'Ingresos vs Gastos',
+                expense_breakdown: 'Desglose de Gastos',
+                income_by_client: 'Ingresos por Cliente',
+                export: 'Exportar',
                 // Dashboard
                 pending_requests: 'Solicitudes Pendientes',
                 in_progress: 'En Progreso',
@@ -3744,13 +3794,14 @@
         }
         
         async function loadReports() {
-            const period = document.getElementById('reportPeriod')?.value || 'month';
-            const propertyId = document.getElementById('reportProperty')?.value || 'all';
+            const period = currentReportPeriod || '7days';
             const clientId = document.getElementById('reportClient')?.value || 'all';
             
             // Load client dropdown if enterprise
             if (currentOrg.plan === 'business') {
                 document.getElementById('reportClientGroup').style.display = '';
+                document.getElementById('clientIncomeSection').style.display = '';
+                document.getElementById('propertyBreakdownSection').style.display = 'none';
                 await loadReportClientOptions();
             }
             
@@ -3759,6 +3810,12 @@
             let startDate;
             
             switch(period) {
+                case '7days':
+                    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    break;
+                case '30days':
+                    startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    break;
                 case 'month':
                     startDate = new Date(now.getFullYear(), now.getMonth(), 1);
                     break;
@@ -3773,60 +3830,97 @@
                     startDate = new Date(now.getFullYear(), 0, 1);
                     break;
                 default:
-                    startDate = new Date(2020, 0, 1); // All time
+                    startDate = new Date(2020, 0, 1);
             }
             
-            // If client is selected, get their property IDs first
-            let clientPropertyIds = null;
-            if (clientId !== 'all' && currentOrg.plan === 'business') {
-                const { data: clientProps } = await db
-                    .from('properties')
-                    .select('id')
-                    .eq('client_id', clientId);
-                clientPropertyIds = clientProps?.map(p => p.id) || [];
-            }
-
-            // Fetch requests
-            let query = db
+            // Fetch all data for calculations
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name, properties(id, name, units(id, identifier, rent_amount, is_occupied))')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            const { data: requests } = await db
                 .from('maintenance_requests')
-                .select('*, properties(name, client_id), units(identifier)')
+                .select('*, units(identifier), properties(name, client_id)')
                 .eq('organization_id', currentOrg.id)
                 .gte('created_at', startDate.toISOString());
-
-            if (propertyId !== 'all') {
-                query = query.eq('property_id', propertyId);
-            } else if (clientPropertyIds && clientPropertyIds.length > 0) {
-                query = query.in('property_id', clientPropertyIds);
-            }
-
-            const { data: requests } = await query;
             
-            if (!requests) return;
-
-            // Calculate stats
-            const totalRequests = requests.length;
-            const completedRequests = requests.filter(r => r.status === 'completed').length;
-            const totalCost = requests.reduce((sum, r) => sum + (parseFloat(r.total_cost) || 0), 0);
+            // Calculate expenses by unit
+            const expensesByUnit = {};
+            const expensesByCategory = {};
+            (requests || []).forEach(r => {
+                if (r.unit_id && r.total_cost) {
+                    expensesByUnit[r.unit_id] = (expensesByUnit[r.unit_id] || 0) + parseFloat(r.total_cost);
+                }
+                const cat = r.category || 'other';
+                expensesByCategory[cat] = (expensesByCategory[cat] || 0) + (parseFloat(r.total_cost) || 0);
+            });
             
-            // Avg days to complete
-            const completedWithDates = requests.filter(r => r.status === 'completed' && r.completed_at);
-            let avgDays = 0;
-            if (completedWithDates.length > 0) {
-                const totalDays = completedWithDates.reduce((sum, r) => {
-                    const created = new Date(r.created_at);
-                    const completed = new Date(r.completed_at);
-                    return sum + Math.ceil((completed - created) / (1000 * 60 * 60 * 24));
-                }, 0);
-                avgDays = Math.round(totalDays / completedWithDates.length);
-            }
-
-            // Update stat cards
-            document.getElementById('reportTotalRequests').textContent = totalRequests;
-            document.getElementById('reportCompletedRequests').textContent = completedRequests;
-            document.getElementById('reportAvgDays').textContent = avgDays;
-            document.getElementById('reportTotalCost').textContent = '$' + totalCost.toLocaleString();
-
-            // Category breakdown
+            // Calculate totals
+            let totalRevenue = 0;
+            let totalExpenses = 0;
+            let totalUnits = 0;
+            let occupiedUnits = 0;
+            
+            (clients || []).forEach(client => {
+                (client.properties || []).forEach(prop => {
+                    (prop.units || []).forEach(unit => {
+                        totalUnits++;
+                        if (unit.is_occupied) {
+                            occupiedUnits++;
+                            totalRevenue += parseFloat(unit.rent_amount) || 0;
+                        }
+                        totalExpenses += expensesByUnit[unit.id] || 0;
+                    });
+                });
+            });
+            
+            const netIncome = totalRevenue - totalExpenses;
+            const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
+            
+            // Update summary cards
+            document.getElementById('reportTotalRevenue').textContent = '$' + totalRevenue.toLocaleString();
+            document.getElementById('reportTotalExpenses').textContent = '-$' + totalExpenses.toLocaleString();
+            document.getElementById('reportNetIncome').textContent = (netIncome >= 0 ? '$' : '-$') + Math.abs(netIncome).toLocaleString();
+            document.getElementById('reportNetIncome').style.color = netIncome >= 0 ? 'var(--success)' : 'var(--danger)';
+            document.getElementById('reportTotalRequests').textContent = (requests || []).length;
+            document.getElementById('reportOccupancyRate').textContent = occupancyRate + '%';
+            
+            // Revenue vs Expenses Chart
+            const chartContainer = document.getElementById('revenueExpenseChart');
+            const maxValue = Math.max(totalRevenue, totalExpenses, 1);
+            const revenueLabel = currentLang === 'es' ? 'Ingresos' : 'Revenue';
+            const expensesLabel = currentLang === 'es' ? 'Gastos' : 'Expenses';
+            const netLabel = currentLang === 'es' ? 'Neto' : 'Net';
+            
+            chartContainer.innerHTML = `
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <div style="width:80px;font-size:0.85rem;color:var(--gray-600)">${revenueLabel}</div>
+                    <div style="flex:1;height:32px;background:var(--gray-100);border-radius:6px;overflow:hidden">
+                        <div style="width:${(totalRevenue/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #10B981, #34D399);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
+                            <span style="color:white;font-weight:600;font-size:0.85rem">$${totalRevenue.toLocaleString()}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <div style="width:80px;font-size:0.85rem;color:var(--gray-600)">${expensesLabel}</div>
+                    <div style="flex:1;height:32px;background:var(--gray-100);border-radius:6px;overflow:hidden">
+                        <div style="width:${(totalExpenses/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #EF4444, #F87171);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
+                            <span style="color:white;font-weight:600;font-size:0.85rem">$${totalExpenses.toLocaleString()}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem;padding-top:0.5rem;border-top:2px solid var(--gray-200)">
+                    <div style="width:80px;font-size:0.85rem;font-weight:600;color:var(--gray-700)">${netLabel}</div>
+                    <div style="flex:1;font-size:1.25rem;font-weight:700;color:${netIncome >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                        ${netIncome >= 0 ? '+' : '-'}$${Math.abs(netIncome).toLocaleString()}
+                    </div>
+                </div>
+            `;
+            
+            // Expense breakdown donut
             const categoryNames = {
                 plumbing: currentLang === 'es' ? 'Plomería' : 'Plumbing',
                 electrical: currentLang === 'es' ? 'Eléctrico' : 'Electrical',
@@ -3837,118 +3931,169 @@
                 structural: currentLang === 'es' ? 'Estructural' : 'Structural',
                 other: currentLang === 'es' ? 'Otro' : 'Other'
             };
-
-            const byCategory = {};
-            const costByCategory = {};
-            requests.forEach(r => {
-                const cat = r.category || 'other';
-                byCategory[cat] = (byCategory[cat] || 0) + 1;
-                costByCategory[cat] = (costByCategory[cat] || 0) + (parseFloat(r.total_cost) || 0);
+            
+            const categoryColors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280', '#14B8A6'];
+            const donutContainer = document.getElementById('expenseDonutChart');
+            const sortedCategories = Object.entries(expensesByCategory).sort((a, b) => b[1] - a[1]);
+            
+            if (sortedCategories.length > 0 && totalExpenses > 0) {
+                donutContainer.innerHTML = sortedCategories.map(([cat, cost], i) => {
+                    const pct = Math.round((cost / totalExpenses) * 100);
+                    return `
+                        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+                            <div style="width:12px;height:12px;border-radius:3px;background:${categoryColors[i % categoryColors.length]}"></div>
+                            <div style="flex:1;font-size:0.85rem;color:var(--gray-600)">${categoryNames[cat] || cat}</div>
+                            <div style="font-weight:600;font-size:0.85rem">${pct}%</div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                donutContainer.innerHTML = `<p style="color:var(--gray-400);text-align:center;padding:2rem;font-size:0.9rem">${currentLang === 'es' ? 'Sin gastos registrados' : 'No expenses recorded'}</p>`;
+            }
+            
+            // Client accordion (Business Plan)
+            if (currentOrg.plan === 'business' && clients && clients.length > 0) {
+                renderClientAccordion(clients, expensesByUnit, requests);
+            }
+            
+            // Property breakdown (non-business)
+            if (currentOrg.plan !== 'business') {
+                const { data: properties } = await db
+                    .from('properties')
+                    .select('*, units(id, identifier, rent_amount, is_occupied)')
+                    .eq('organization_id', currentOrg.id);
+                
+                const propertyTable = document.getElementById('propertyBreakdownTable');
+                propertyTable.innerHTML = (properties || []).map(prop => {
+                    const unitCount = prop.units?.length || 0;
+                    const propRent = prop.units?.reduce((sum, u) => sum + (u.is_occupied ? (parseFloat(u.rent_amount) || 0) : 0), 0) || 0;
+                    const propExpenses = prop.units?.reduce((sum, u) => sum + (expensesByUnit[u.id] || 0), 0) || 0;
+                    const propNet = propRent - propExpenses;
+                    const propRequests = (requests || []).filter(r => r.property_id === prop.id).length;
+                    
+                    return `
+                        <tr>
+                            <td><strong>${prop.name}</strong></td>
+                            <td>${unitCount}</td>
+                            <td style="color:var(--success)">$${propRent.toLocaleString()}</td>
+                            <td style="color:var(--danger)">${propExpenses > 0 ? '-$' + propExpenses.toLocaleString() : '$0'}</td>
+                            <td style="color:${propNet >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600">${propNet >= 0 ? '$' : '-$'}${Math.abs(propNet).toLocaleString()}</td>
+                            <td>${propRequests}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+        
+        let currentReportPeriod = '7days';
+        
+        function setReportPeriod(period) {
+            currentReportPeriod = period;
+            // Update active button
+            document.querySelectorAll('.date-range-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.period === period) {
+                    btn.classList.add('active');
+                }
             });
-
-            // Render category chart
-            const categoryChart = document.getElementById('categoryChart');
-            const maxCat = Math.max(...Object.values(byCategory), 1);
-            categoryChart.innerHTML = Object.entries(byCategory)
-                .sort((a, b) => b[1] - a[1])
-                .map(([cat, count]) => `
-                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
-                        <div style="width:120px;font-size:0.85rem;color:var(--gray-600)">${categoryNames[cat] || cat}</div>
-                        <div style="flex:1;height:24px;background:var(--gray-100);border-radius:4px;overflow:hidden">
-                            <div style="width:${(count/maxCat)*100}%;height:100%;background:var(--primary);border-radius:4px"></div>
+            loadReports();
+        }
+        
+        function renderClientAccordion(clients, expensesByUnit, requests) {
+            const container = document.getElementById('clientIncomeAccordion');
+            const occupiedText = currentLang === 'es' ? 'Ocupado' : 'Occupied';
+            const vacantText = currentLang === 'es' ? 'Vacante' : 'Vacant';
+            const unitsText = currentLang === 'es' ? 'Unidades' : 'Units';
+            const revenueText = currentLang === 'es' ? 'Ingreso' : 'Revenue';
+            const expensesText = currentLang === 'es' ? 'Gastos' : 'Expenses';
+            const netText = currentLang === 'es' ? 'Neto' : 'Net';
+            
+            container.innerHTML = clients.map((client, idx) => {
+                let clientRevenue = 0;
+                let clientExpenses = 0;
+                let clientUnits = 0;
+                
+                (client.properties || []).forEach(prop => {
+                    (prop.units || []).forEach(unit => {
+                        clientUnits++;
+                        if (unit.is_occupied) {
+                            clientRevenue += parseFloat(unit.rent_amount) || 0;
+                        }
+                        clientExpenses += expensesByUnit[unit.id] || 0;
+                    });
+                });
+                
+                const clientNet = clientRevenue - clientExpenses;
+                const clientName = client.company_name ? `${client.name} (${client.company_name})` : client.name;
+                
+                const propertiesHtml = (client.properties || []).map(prop => {
+                    const propUnitsHtml = (prop.units || []).map(unit => {
+                        const rent = parseFloat(unit.rent_amount) || 0;
+                        const expenses = expensesByUnit[unit.id] || 0;
+                        const net = (unit.is_occupied ? rent : 0) - expenses;
+                        
+                        return `
+                            <div class="unit-row">
+                                <span style="font-weight:500">${unit.identifier}</span>
+                                <span style="color:${unit.is_occupied ? 'var(--success)' : 'var(--gray-400)'}">${unit.is_occupied ? occupiedText : vacantText}</span>
+                                <span>$${rent.toLocaleString()}/mo</span>
+                                <span style="color:var(--danger)">${expenses > 0 ? '-$' + expenses.toLocaleString() : '$0'}</span>
+                                <span style="color:${net >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600">${net >= 0 ? '$' : '-$'}${Math.abs(net).toLocaleString()}</span>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    return `
+                        <div class="property-card">
+                            <div class="property-card-header">
+                                <span class="property-card-title">${prop.name}</span>
+                                <span style="color:var(--gray-500);font-size:0.85rem">${prop.units?.length || 0} ${unitsText.toLowerCase()}</span>
+                            </div>
+                            ${propUnitsHtml}
                         </div>
-                        <div style="width:40px;text-align:right;font-weight:600">${count}</div>
-                    </div>
-                `).join('');
-
-            // Status breakdown
-            const byStatus = {
-                pending: requests.filter(r => r.status === 'pending').length,
-                in_progress: requests.filter(r => r.status === 'in_progress').length,
-                completed: requests.filter(r => r.status === 'completed').length
-            };
-
-            const statusNames = {
-                pending: currentLang === 'es' ? 'Pendiente' : 'Pending',
-                in_progress: currentLang === 'es' ? 'En Progreso' : 'In Progress',
-                completed: currentLang === 'es' ? 'Completado' : 'Completed'
-            };
-
-            const statusColors = {
-                pending: 'var(--warning)',
-                in_progress: 'var(--primary)',
-                completed: 'var(--success)'
-            };
-
-            // Render status chart (donut-style with bars)
-            const statusChart = document.getElementById('statusChart');
-            const maxStatus = Math.max(...Object.values(byStatus), 1);
-            statusChart.innerHTML = Object.entries(byStatus).map(([status, count]) => `
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
-                    <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${statusNames[status]}</div>
-                    <div style="flex:1;height:24px;background:var(--gray-100);border-radius:4px;overflow:hidden">
-                        <div style="width:${(count/maxStatus)*100}%;height:100%;background:${statusColors[status]};border-radius:4px"></div>
-                    </div>
-                    <div style="width:40px;text-align:right;font-weight:600">${count}</div>
-                </div>
-            `).join('');
-
-            // Cost by category chart
-            const costChart = document.getElementById('costChart');
-            const maxCost = Math.max(...Object.values(costByCategory), 1);
-            costChart.innerHTML = Object.entries(costByCategory)
-                .filter(([_, cost]) => cost > 0)
-                .sort((a, b) => b[1] - a[1])
-                .map(([cat, cost]) => `
-                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
-                        <div style="width:120px;font-size:0.85rem;color:var(--gray-600)">${categoryNames[cat] || cat}</div>
-                        <div style="flex:1;height:24px;background:var(--gray-100);border-radius:4px;overflow:hidden">
-                            <div style="width:${(cost/maxCost)*100}%;height:100%;background:var(--danger);border-radius:4px"></div>
-                        </div>
-                        <div style="width:80px;text-align:right;font-weight:600">$${cost.toLocaleString()}</div>
-                    </div>
-                `).join('') || '<p style="color:var(--gray-500);text-align:center;padding:2rem">No cost data recorded</p>';
-
-            // Property breakdown table
-            const { data: properties } = await db
-                .from('properties')
-                .select('*')
-                .eq('organization_id', currentOrg.id);
-
-            const propertyTable = document.getElementById('propertyBreakdownTable');
-            propertyTable.innerHTML = (properties || []).map(prop => {
-                const propRequests = requests.filter(r => r.property_id === prop.id);
-                const pending = propRequests.filter(r => r.status === 'pending').length;
-                const inProgress = propRequests.filter(r => r.status === 'in_progress').length;
-                const completed = propRequests.filter(r => r.status === 'completed').length;
-                const cost = propRequests.reduce((sum, r) => sum + (parseFloat(r.total_cost) || 0), 0);
+                    `;
+                }).join('');
                 
                 return `
-                    <tr>
-                        <td><strong>${prop.name}</strong></td>
-                        <td>${propRequests.length}</td>
-                        <td><span class="status pending"><span class="status-dot"></span>${pending}</span></td>
-                        <td><span class="status in-progress"><span class="status-dot"></span>${inProgress}</span></td>
-                        <td><span class="status completed"><span class="status-dot"></span>${completed}</span></td>
-                        <td>$${cost.toLocaleString()}</td>
-                    </tr>
+                    <div class="client-accordion-item ${idx === 0 ? 'open' : ''}" data-client="${client.id}">
+                        <div class="client-accordion-header" onclick="toggleClientAccordion('${client.id}')">
+                            <div class="client-accordion-toggle">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                                    <polyline points="9 18 15 12 9 6"/>
+                                </svg>
+                            </div>
+                            <div class="client-accordion-title">${clientName}</div>
+                            <div class="client-accordion-stats">
+                                <div class="client-accordion-stat">
+                                    <div class="client-accordion-stat-value">${clientUnits}</div>
+                                    <div class="client-accordion-stat-label">${unitsText}</div>
+                                </div>
+                                <div class="client-accordion-stat">
+                                    <div class="client-accordion-stat-value" style="color:var(--success)">$${clientRevenue.toLocaleString()}</div>
+                                    <div class="client-accordion-stat-label">${revenueText}</div>
+                                </div>
+                                <div class="client-accordion-stat">
+                                    <div class="client-accordion-stat-value" style="color:var(--danger)">${clientExpenses > 0 ? '-$' + clientExpenses.toLocaleString() : '$0'}</div>
+                                    <div class="client-accordion-stat-label">${expensesText}</div>
+                                </div>
+                                <div class="client-accordion-stat">
+                                    <div class="client-accordion-stat-value" style="color:${clientNet >= 0 ? 'var(--success)' : 'var(--danger)'}">${clientNet >= 0 ? '$' : '-$'}${Math.abs(clientNet).toLocaleString()}</div>
+                                    <div class="client-accordion-stat-label">${netText}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="client-accordion-content">
+                            ${propertiesHtml}
+                        </div>
+                    </div>
                 `;
             }).join('');
-
-            // Populate property filter dropdown
-            const reportPropertySelect = document.getElementById('reportProperty');
-            const currentValue = reportPropertySelect.value;
-            reportPropertySelect.innerHTML = `<option value="all" data-translate="all_properties">${currentLang === 'es' ? 'Todas las Propiedades' : 'All Properties'}</option>`;
-            (properties || []).forEach(prop => {
-                reportPropertySelect.innerHTML += `<option value="${prop.id}" ${prop.id === currentValue ? 'selected' : ''}>${prop.name}</option>`;
-            });
-            
-            // Client Revenue (Business Plan Only)
-            if (currentOrg.plan === 'business') {
-                document.getElementById('clientRevenueSection').style.display = '';
-                document.getElementById('incomeReportSection').style.display = '';
-                await loadClientRevenue();
-                await loadIncomeReport(startDate);
+        }
+        
+        function toggleClientAccordion(clientId) {
+            const item = document.querySelector(`.client-accordion-item[data-client="${clientId}"]`);
+            if (item) {
+                item.classList.toggle('open');
             }
         }
         
