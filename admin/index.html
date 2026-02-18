@@ -1573,6 +1573,73 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Client Revenue (Business Plan Only) -->
+                    <div class="card enterprise-only" id="clientRevenueSection" style="display:none;margin-top:1.5rem">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="client_revenue">Client Revenue</h3>
+                            <button class="btn btn-secondary btn-sm" onclick="exportClientRevenue()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                <span data-translate="export_csv">Export CSV</span>
+                            </button>
+                        </div>
+                        <div class="card-body" style="padding:0">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th data-translate="client">Client</th>
+                                        <th data-translate="properties">Properties</th>
+                                        <th data-translate="units">Units</th>
+                                        <th data-translate="occupied">Occupied</th>
+                                        <th data-translate="monthly_revenue">Monthly Revenue</th>
+                                        <th data-translate="potential_revenue">Potential Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientRevenueTable">
+                                </tbody>
+                                <tfoot id="clientRevenueTotals" style="background:var(--gray-50);font-weight:600">
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Income Report (Business Plan Only) -->
+                    <div class="card enterprise-only" id="incomeReportSection" style="display:none;margin-top:1.5rem">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="income_report">Income Report</h3>
+                            <button class="btn btn-secondary btn-sm" onclick="exportIncomeReport()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                <span data-translate="export_csv">Export CSV</span>
+                            </button>
+                        </div>
+                        <div class="card-body" style="padding:0">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th data-translate="client">Client</th>
+                                        <th data-translate="property">Property</th>
+                                        <th data-translate="unit">Unit</th>
+                                        <th data-translate="monthly_rent">Monthly Rent</th>
+                                        <th data-translate="expenses">Expenses</th>
+                                        <th data-translate="net_income">Net Income</th>
+                                        <th data-translate="status">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="incomeReportTable">
+                                </tbody>
+                                <tfoot id="incomeReportTotals" style="background:var(--gray-50);font-weight:600">
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -1855,6 +1922,16 @@
                 least_properties: 'Least Properties',
                 most_units: 'Most Units',
                 least_units: 'Least Units',
+                // Reports - Client Revenue
+                client_revenue: 'Client Revenue',
+                monthly_revenue: 'Monthly Revenue',
+                potential_revenue: 'Potential Revenue',
+                occupied: 'Occupied',
+                // Reports - Income Report
+                income_report: 'Income Report',
+                monthly_rent: 'Monthly Rent',
+                expenses: 'Expenses',
+                net_income: 'Net Income',
                 // Dashboard
                 pending_requests: 'Pending Requests',
                 in_progress: 'In Progress',
@@ -2001,6 +2078,16 @@
                 least_properties: 'Menos Propiedades',
                 most_units: 'Más Unidades',
                 least_units: 'Menos Unidades',
+                // Reports - Client Revenue
+                client_revenue: 'Ingresos por Cliente',
+                monthly_revenue: 'Ingreso Mensual',
+                potential_revenue: 'Ingreso Potencial',
+                occupied: 'Ocupado',
+                // Reports - Income Report
+                income_report: 'Reporte de Ingresos',
+                monthly_rent: 'Renta Mensual',
+                expenses: 'Gastos',
+                net_income: 'Ingreso Neto',
                 // Dashboard
                 pending_requests: 'Solicitudes Pendientes',
                 in_progress: 'En Progreso',
@@ -3855,6 +3942,286 @@
             (properties || []).forEach(prop => {
                 reportPropertySelect.innerHTML += `<option value="${prop.id}" ${prop.id === currentValue ? 'selected' : ''}>${prop.name}</option>`;
             });
+            
+            // Client Revenue (Business Plan Only)
+            if (currentOrg.plan === 'business') {
+                document.getElementById('clientRevenueSection').style.display = '';
+                document.getElementById('incomeReportSection').style.display = '';
+                await loadClientRevenue();
+                await loadIncomeReport(startDate);
+            }
+        }
+        
+        async function loadClientRevenue() {
+            // Fetch clients with their properties and units
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name, properties(id, name, units(id, identifier, rent_amount, is_occupied))')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            if (!clients || clients.length === 0) {
+                document.getElementById('clientRevenueTable').innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-500)">
+                            ${currentLang === 'es' ? 'No hay clientes' : 'No clients found'}
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('clientRevenueTotals').innerHTML = '';
+                return;
+            }
+            
+            let totalProperties = 0;
+            let totalUnits = 0;
+            let totalOccupied = 0;
+            let totalMonthlyRevenue = 0;
+            let totalPotentialRevenue = 0;
+            
+            const rows = clients.map(client => {
+                const propCount = client.properties?.length || 0;
+                let unitCount = 0;
+                let occupiedCount = 0;
+                let monthlyRevenue = 0;
+                let potentialRevenue = 0;
+                
+                (client.properties || []).forEach(prop => {
+                    (prop.units || []).forEach(unit => {
+                        unitCount++;
+                        const rent = parseFloat(unit.rent_amount) || 0;
+                        potentialRevenue += rent;
+                        if (unit.is_occupied) {
+                            occupiedCount++;
+                            monthlyRevenue += rent;
+                        }
+                    });
+                });
+                
+                totalProperties += propCount;
+                totalUnits += unitCount;
+                totalOccupied += occupiedCount;
+                totalMonthlyRevenue += monthlyRevenue;
+                totalPotentialRevenue += potentialRevenue;
+                
+                const clientName = client.company_name ? `${client.name} (${client.company_name})` : client.name;
+                
+                return `
+                    <tr>
+                        <td style="font-weight:500">${clientName}</td>
+                        <td>${propCount}</td>
+                        <td>${unitCount}</td>
+                        <td>${occupiedCount} / ${unitCount}</td>
+                        <td style="color:var(--success);font-weight:600">$${monthlyRevenue.toLocaleString()}</td>
+                        <td style="color:var(--gray-500)">$${potentialRevenue.toLocaleString()}</td>
+                    </tr>
+                `;
+            }).join('');
+            
+            document.getElementById('clientRevenueTable').innerHTML = rows;
+            
+            const totalLabel = currentLang === 'es' ? 'Totales' : 'Totals';
+            document.getElementById('clientRevenueTotals').innerHTML = `
+                <tr>
+                    <td>${totalLabel}</td>
+                    <td>${totalProperties}</td>
+                    <td>${totalUnits}</td>
+                    <td>${totalOccupied} / ${totalUnits}</td>
+                    <td style="color:var(--success)">$${totalMonthlyRevenue.toLocaleString()}</td>
+                    <td>$${totalPotentialRevenue.toLocaleString()}</td>
+                </tr>
+            `;
+        }
+        
+        async function exportClientRevenue() {
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name, properties(id, name, units(id, identifier, rent_amount, is_occupied))')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            if (!clients || clients.length === 0) return;
+            
+            let csv = 'Client,Company,Property,Unit,Rent Amount,Status\n';
+            
+            clients.forEach(client => {
+                (client.properties || []).forEach(prop => {
+                    (prop.units || []).forEach(unit => {
+                        const status = unit.is_occupied ? 'Occupied' : 'Vacant';
+                        csv += `"${client.name}","${client.company_name || ''}","${prop.name}","${unit.identifier}","${unit.rent_amount || 0}","${status}"\n`;
+                    });
+                });
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `client-revenue-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        async function loadIncomeReport(startDate) {
+            // Fetch clients with their properties and units
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name, properties(id, name, units(id, identifier, rent_amount, is_occupied))')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            // Fetch maintenance costs for the period
+            const { data: requests } = await db
+                .from('maintenance_requests')
+                .select('unit_id, total_cost')
+                .eq('organization_id', currentOrg.id)
+                .gte('created_at', startDate.toISOString());
+            
+            // Calculate expenses per unit
+            const expensesByUnit = {};
+            (requests || []).forEach(r => {
+                if (r.unit_id && r.total_cost) {
+                    expensesByUnit[r.unit_id] = (expensesByUnit[r.unit_id] || 0) + parseFloat(r.total_cost);
+                }
+            });
+            
+            if (!clients || clients.length === 0) {
+                document.getElementById('incomeReportTable').innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center;padding:2rem;color:var(--gray-500)">
+                            ${currentLang === 'es' ? 'No hay datos' : 'No data available'}
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('incomeReportTotals').innerHTML = '';
+                return;
+            }
+            
+            let totalRent = 0;
+            let totalExpenses = 0;
+            let totalNet = 0;
+            const rows = [];
+            
+            const occupiedText = currentLang === 'es' ? 'Ocupado' : 'Occupied';
+            const vacantText = currentLang === 'es' ? 'Vacante' : 'Vacant';
+            
+            clients.forEach(client => {
+                const clientName = client.company_name ? `${client.name}` : client.name;
+                
+                (client.properties || []).forEach(prop => {
+                    (prop.units || []).forEach(unit => {
+                        const rent = unit.is_occupied ? (parseFloat(unit.rent_amount) || 0) : 0;
+                        const potentialRent = parseFloat(unit.rent_amount) || 0;
+                        const expenses = expensesByUnit[unit.id] || 0;
+                        const net = rent - expenses;
+                        
+                        totalRent += rent;
+                        totalExpenses += expenses;
+                        totalNet += net;
+                        
+                        const netColor = net >= 0 ? 'var(--success)' : 'var(--danger)';
+                        const statusClass = unit.is_occupied ? 'completed' : 'pending';
+                        const statusText = unit.is_occupied ? occupiedText : vacantText;
+                        
+                        rows.push(`
+                            <tr>
+                                <td>${clientName}</td>
+                                <td>${prop.name}</td>
+                                <td style="font-weight:500">${unit.identifier}</td>
+                                <td>$${potentialRent.toLocaleString()}${!unit.is_occupied ? ' <span style="color:var(--gray-400)">(vacant)</span>' : ''}</td>
+                                <td style="color:var(--danger)">${expenses > 0 ? '-$' + expenses.toLocaleString() : '$0'}</td>
+                                <td style="color:${netColor};font-weight:600">${net >= 0 ? '$' + net.toLocaleString() : '-$' + Math.abs(net).toLocaleString()}</td>
+                                <td><span class="status ${statusClass}"><span class="status-dot"></span>${statusText}</span></td>
+                            </tr>
+                        `);
+                    });
+                });
+            });
+            
+            document.getElementById('incomeReportTable').innerHTML = rows.join('');
+            
+            const totalLabel = currentLang === 'es' ? 'Totales' : 'Totals';
+            const netColor = totalNet >= 0 ? 'var(--success)' : 'var(--danger)';
+            document.getElementById('incomeReportTotals').innerHTML = `
+                <tr>
+                    <td colspan="3">${totalLabel}</td>
+                    <td>$${totalRent.toLocaleString()}</td>
+                    <td style="color:var(--danger)">${totalExpenses > 0 ? '-$' + totalExpenses.toLocaleString() : '$0'}</td>
+                    <td style="color:${netColor}">${totalNet >= 0 ? '$' + totalNet.toLocaleString() : '-$' + Math.abs(totalNet).toLocaleString()}</td>
+                    <td></td>
+                </tr>
+            `;
+        }
+        
+        async function exportIncomeReport() {
+            const period = document.getElementById('reportPeriod')?.value || 'month';
+            const now = new Date();
+            let startDate;
+            
+            switch(period) {
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    break;
+                case 'last_month':
+                    startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    break;
+                case 'quarter':
+                    const quarter = Math.floor(now.getMonth() / 3);
+                    startDate = new Date(now.getFullYear(), quarter * 3, 1);
+                    break;
+                case 'year':
+                    startDate = new Date(now.getFullYear(), 0, 1);
+                    break;
+                default:
+                    startDate = new Date(2020, 0, 1);
+            }
+            
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name, properties(id, name, units(id, identifier, rent_amount, is_occupied))')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            const { data: requests } = await db
+                .from('maintenance_requests')
+                .select('unit_id, total_cost')
+                .eq('organization_id', currentOrg.id)
+                .gte('created_at', startDate.toISOString());
+            
+            const expensesByUnit = {};
+            (requests || []).forEach(r => {
+                if (r.unit_id && r.total_cost) {
+                    expensesByUnit[r.unit_id] = (expensesByUnit[r.unit_id] || 0) + parseFloat(r.total_cost);
+                }
+            });
+            
+            if (!clients || clients.length === 0) return;
+            
+            let csv = 'Client,Company,Property,Unit,Monthly Rent,Expenses,Net Income,Status\n';
+            
+            clients.forEach(client => {
+                (client.properties || []).forEach(prop => {
+                    (prop.units || []).forEach(unit => {
+                        const rent = unit.is_occupied ? (parseFloat(unit.rent_amount) || 0) : 0;
+                        const expenses = expensesByUnit[unit.id] || 0;
+                        const net = rent - expenses;
+                        const status = unit.is_occupied ? 'Occupied' : 'Vacant';
+                        
+                        csv += `"${client.name}","${client.company_name || ''}","${prop.name}","${unit.identifier}","${rent}","${expenses}","${net}","${status}"\n`;
+                    });
+                });
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `income-report-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         function exportReport() {
