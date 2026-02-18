@@ -847,6 +847,59 @@
             border-top: none;
         }
 
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        .toggle-switch input:disabled + .toggle-slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         /* Hide app when not logged in */
         .app-container {
             display: none;
@@ -1530,7 +1583,8 @@
 
                 <!-- Settings Page -->
                 <div class="page" id="page-settings">
-                    <div class="card">
+                    <!-- Organization Settings -->
+                    <div class="card" style="margin-bottom:1.5rem">
                         <div class="card-header">
                             <h3 class="card-title" data-translate="org_settings">Organization Settings</h3>
                         </div>
@@ -1550,6 +1604,62 @@
                                     <input type="text" class="form-input" id="orgPlan" value="" disabled>
                                 </div>
                                 <button class="btn btn-primary" onclick="saveSettings()" data-translate="save_changes">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features (Business Plan Only) -->
+                    <div class="card business-plan-only" id="featuresCard" style="display:none">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="features">Features</h3>
+                        </div>
+                        <div class="card-body">
+                            <p style="color:var(--gray-600);margin-bottom:1.5rem;font-size:0.9rem" data-translate="features_description">
+                                Customize which features are enabled for your organization. Changes take effect immediately.
+                            </p>
+                            
+                            <div style="max-width:500px">
+                                <!-- Client Management Feature -->
+                                <div class="feature-toggle" style="display:flex;align-items:flex-start;justify-content:space-between;padding:1rem;background:var(--gray-50);border-radius:8px;margin-bottom:1rem">
+                                    <div style="flex:1">
+                                        <div style="font-weight:600;color:var(--gray-900);margin-bottom:0.25rem" data-translate="feature_clients">Client Management</div>
+                                        <div style="font-size:0.85rem;color:var(--gray-500)" data-translate="feature_clients_desc">
+                                            Enable if you manage properties for multiple clients/landlords. Adds Clients tab and client filters throughout the dashboard.
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" style="margin-left:1rem">
+                                        <input type="checkbox" id="featureClients" onchange="toggleFeature('clients', this.checked)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Income Reports Feature -->
+                                <div class="feature-toggle" style="display:flex;align-items:flex-start;justify-content:space-between;padding:1rem;background:var(--gray-50);border-radius:8px;margin-bottom:1rem">
+                                    <div style="flex:1">
+                                        <div style="font-weight:600;color:var(--gray-900);margin-bottom:0.25rem" data-translate="feature_income_reports">Income Reports</div>
+                                        <div style="font-size:0.85rem;color:var(--gray-500)" data-translate="feature_income_reports_desc">
+                                            Track rental income, expenses, and net profit per property and unit in the Reports section.
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" style="margin-left:1rem">
+                                        <input type="checkbox" id="featureIncomeReports" onchange="toggleFeature('income_reports', this.checked)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- SMS Notifications Feature -->
+                                <div class="feature-toggle" style="display:flex;align-items:flex-start;justify-content:space-between;padding:1rem;background:var(--gray-50);border-radius:8px;margin-bottom:1rem">
+                                    <div style="flex:1">
+                                        <div style="font-weight:600;color:var(--gray-900);margin-bottom:0.25rem" data-translate="feature_sms">SMS Notifications</div>
+                                        <div style="font-size:0.85rem;color:var(--gray-500)" data-translate="feature_sms_desc">
+                                            Send SMS notifications to tenants for maintenance updates and announcements.
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" style="margin-left:1rem">
+                                        <input type="checkbox" id="featureSMS" onchange="toggleFeature('sms_notifications', this.checked)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2034,6 +2144,15 @@
                 subdomain: 'Subdomain',
                 plan: 'Plan',
                 save_changes: 'Save Changes',
+                // Features
+                features: 'Features',
+                features_description: 'Customize which features are enabled for your organization. Changes take effect immediately.',
+                feature_clients: 'Client Management',
+                feature_clients_desc: 'Enable if you manage properties for multiple clients/landlords. Adds Clients tab and client filters throughout the dashboard.',
+                feature_income_reports: 'Income Reports',
+                feature_income_reports_desc: 'Track rental income, expenses, and net profit per property and unit in the Reports section.',
+                feature_sms: 'SMS Notifications',
+                feature_sms_desc: 'Send SMS notifications to tenants for maintenance updates and announcements.',
                 // Search
                 search: 'Search...',
                 // Modals
@@ -2200,6 +2319,15 @@
                 subdomain: 'Subdominio',
                 plan: 'Plan',
                 save_changes: 'Guardar Cambios',
+                // Features
+                features: 'Funcionalidades',
+                features_description: 'Personaliza qué funcionalidades están habilitadas para tu organización. Los cambios se aplican inmediatamente.',
+                feature_clients: 'Gestión de Clientes',
+                feature_clients_desc: 'Habilita si administras propiedades para múltiples clientes/propietarios. Agrega la pestaña Clientes y filtros de clientes en todo el panel.',
+                feature_income_reports: 'Reportes de Ingresos',
+                feature_income_reports_desc: 'Rastrea ingresos por alquiler, gastos y ganancia neta por propiedad y unidad en la sección de Reportes.',
+                feature_sms: 'Notificaciones SMS',
+                feature_sms_desc: 'Envía notificaciones SMS a inquilinos para actualizaciones de mantenimiento y anuncios.',
                 // Search
                 search: 'Buscar...',
                 // Modals
@@ -2432,6 +2560,7 @@
             if (pageId === 'residents') loadResidents();
             if (pageId === 'clients') loadClients();
             if (pageId === 'reports') loadReports();
+            if (pageId === 'settings') loadFeatureSettings();
         }
         
         // ==============================================
@@ -3787,6 +3916,72 @@
             await db.from('organizations').update({ name }).eq('id', currentOrg.id);
             currentOrg.name = name;
             showToast(translations[currentLang].saved_success);
+        }
+        
+        function loadFeatureSettings() {
+            // Populate org settings fields
+            document.getElementById('orgName').value = currentOrg.name || '';
+            document.getElementById('orgSlug').value = currentOrg.slug || '';
+            
+            const planNames = {
+                starter: 'Starter',
+                professional: 'Professional', 
+                business: 'Business'
+            };
+            document.getElementById('orgPlan').value = planNames[currentOrg.plan] || currentOrg.plan;
+            
+            // Show features card only for business plan
+            if (currentOrg.plan === 'business') {
+                document.getElementById('featuresCard').style.display = '';
+            }
+            
+            // Set toggle states based on current features
+            const features = currentOrg.features || { clients: true, income_reports: true, sms_notifications: true };
+            
+            document.getElementById('featureClients').checked = features.clients !== false;
+            document.getElementById('featureIncomeReports').checked = features.income_reports !== false;
+            document.getElementById('featureSMS').checked = features.sms_notifications !== false;
+        }
+        
+        async function toggleFeature(featureName, enabled) {
+            // Get current features
+            const features = currentOrg.features || { clients: true, income_reports: true, sms_notifications: true };
+            
+            // Update the specific feature
+            features[featureName] = enabled;
+            
+            // Save to database
+            const { error } = await db
+                .from('organizations')
+                .update({ features })
+                .eq('id', currentOrg.id);
+            
+            if (error) {
+                showToast(currentLang === 'es' ? 'Error al guardar' : 'Error saving', 'error');
+                return;
+            }
+            
+            // Update local state
+            currentOrg.features = features;
+            
+            // Show success message
+            const featureNames = {
+                clients: currentLang === 'es' ? 'Gestión de Clientes' : 'Client Management',
+                income_reports: currentLang === 'es' ? 'Reportes de Ingresos' : 'Income Reports',
+                sms_notifications: currentLang === 'es' ? 'Notificaciones SMS' : 'SMS Notifications'
+            };
+            
+            const status = enabled 
+                ? (currentLang === 'es' ? 'habilitado' : 'enabled')
+                : (currentLang === 'es' ? 'deshabilitado' : 'disabled');
+            
+            showToast(`${featureNames[featureName]} ${status}`);
+            
+            // Refresh UI to show/hide elements based on new feature settings
+            const showClients = currentOrg.plan === 'business' && features.clients !== false;
+            document.querySelectorAll('.enterprise-only').forEach(el => {
+                el.style.display = showClients ? '' : 'none';
+            });
         }
 
         // ==============================================
