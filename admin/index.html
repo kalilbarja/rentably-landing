@@ -1163,7 +1163,7 @@
                         </svg>
                         <span data-translate="nav_clients">Clients</span>
                     </a>
-                    <a class="nav-item pro-only" data-page="reports" style="display:none">
+                    <a class="nav-item" data-page="reports">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 21H3V3"/>
                             <path d="M21 9l-6 6-4-4-6 6"/>
@@ -1699,8 +1699,28 @@
                         </div>
                     </div>
 
-                    <!-- Summary Cards - Key Metrics -->
-                    <div class="stats-grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(5, 1fr)">
+                    <!-- Summary Cards - Basic Stats (All Plans) -->
+                    <div class="stats-grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(4, 1fr)" id="basicStatsGrid">
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--primary);font-size:1.75rem" id="reportTotalRequests">0</div>
+                            <div class="stat-label" data-translate="total_requests">Total Requests</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportPendingRequests">0</div>
+                            <div class="stat-label" data-translate="pending">Pending</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--success);font-size:1.75rem" id="reportCompletedRequests">0</div>
+                            <div class="stat-label" data-translate="completed">Completed</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--gray-600);font-size:1.75rem" id="reportAvgDays">0</div>
+                            <div class="stat-label" data-translate="avg_days">Avg. Days to Complete</div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Stats (Pro+ Only) -->
+                    <div class="stats-grid pro-only" style="margin-bottom:1.5rem;grid-template-columns:repeat(4, 1fr);display:none" id="financialStatsGrid">
                         <div class="stat-card" style="text-align:center">
                             <div class="stat-value" style="color:var(--success);font-size:1.75rem" id="reportTotalRevenue">$0</div>
                             <div class="stat-label" data-translate="total_revenue">Total Revenue</div>
@@ -1714,35 +1734,65 @@
                             <div class="stat-label" data-translate="net_income">Net Income</div>
                         </div>
                         <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--primary);font-size:1.75rem" id="reportTotalRequests">0</div>
-                            <div class="stat-label" data-translate="maintenance_requests">Maintenance Requests</div>
-                        </div>
-                        <div class="stat-card" style="text-align:center">
                             <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportOccupancyRate">0%</div>
                             <div class="stat-label" data-translate="occupancy_rate">Occupancy Rate</div>
                         </div>
                     </div>
 
-                    <!-- Visual Charts Row -->
-                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
-                        <!-- Revenue vs Expenses Chart -->
+                    <!-- Basic Charts (All Plans) -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+                        <!-- Requests by Category -->
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title" data-translate="revenue_vs_expenses">Revenue vs Expenses</h3>
+                                <h3 class="card-title" data-translate="requests_by_category">Requests by Category</h3>
                             </div>
                             <div class="card-body">
-                                <div id="revenueExpenseChart" style="min-height:200px"></div>
+                                <div id="categoryChart" style="min-height:200px"></div>
                             </div>
                         </div>
 
-                        <!-- Expense Breakdown Donut -->
+                        <!-- Requests by Status -->
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title" data-translate="expense_breakdown">Expense Breakdown</h3>
+                                <h3 class="card-title" data-translate="requests_by_status">Requests by Status</h3>
                             </div>
                             <div class="card-body">
-                                <div id="expenseDonutChart" style="min-height:200px"></div>
+                                <div id="statusChart" style="min-height:200px"></div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Charts (Pro+ Only) -->
+                    <div class="pro-only" style="display:none" id="financialChartsSection">
+                        <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+                            <!-- Revenue vs Expenses Chart -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title" data-translate="revenue_vs_expenses">Revenue vs Expenses</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div id="revenueExpenseChart" style="min-height:200px"></div>
+                                </div>
+                            </div>
+
+                            <!-- Expense Breakdown Donut -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title" data-translate="expense_breakdown">Expense Breakdown</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div id="expenseDonutChart" style="min-height:200px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upgrade Banner (Starter Only) -->
+                    <div class="card starter-only" id="upgradeReportsBanner" style="display:none;margin-bottom:1.5rem;background:linear-gradient(135deg, var(--primary) 0%, #6366F1 100%);color:white">
+                        <div class="card-body" style="padding:1.5rem;text-align:center">
+                            <h3 style="margin-bottom:0.5rem;font-size:1.25rem" data-translate="unlock_financial_reports">Unlock Financial Reports</h3>
+                            <p style="opacity:0.9;margin-bottom:1rem;font-size:0.95rem" data-translate="upgrade_pro_desc">Upgrade to Pro to access income tracking, expense reports, and detailed financial analytics for all your properties.</p>
+                            <button class="btn" style="background:white;color:var(--primary);font-weight:600" onclick="showPage('settings')" data-translate="upgrade_now">Upgrade Now</button>
                         </div>
                     </div>
 
@@ -1758,8 +1808,30 @@
                         </div>
                     </div>
 
-                    <!-- Property Breakdown (Non-Business Plan) -->
-                    <div class="card" id="propertyBreakdownSection">
+                    <!-- Property Breakdown - Basic (Starter) -->
+                    <div class="card starter-only" id="propertyBreakdownBasic" style="display:none">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="property_breakdown">Property Breakdown</h3>
+                        </div>
+                        <div class="card-body" style="padding:0">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th data-translate="property">Property</th>
+                                        <th data-translate="units">Units</th>
+                                        <th data-translate="total_requests">Total Requests</th>
+                                        <th data-translate="pending">Pending</th>
+                                        <th data-translate="completed">Completed</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="propertyBreakdownTableBasic">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Property Breakdown - Full (Pro+) -->
+                    <div class="card pro-only" id="propertyBreakdownSection" style="display:none">
                         <div class="card-header">
                             <h3 class="card-title" data-translate="property_breakdown">Property Breakdown</h3>
                         </div>
@@ -2082,6 +2154,13 @@
                 expense_breakdown: 'Expense Breakdown',
                 income_by_client: 'Income by Client',
                 export: 'Export',
+                total_requests: 'Total Requests',
+                avg_days: 'Avg. Days to Complete',
+                requests_by_category: 'Requests by Category',
+                requests_by_status: 'Requests by Status',
+                unlock_financial_reports: 'Unlock Financial Reports',
+                upgrade_pro_desc: 'Upgrade to Pro to access income tracking, expense reports, and detailed financial analytics for all your properties.',
+                upgrade_now: 'Upgrade Now',
                 // Dashboard
                 pending_requests: 'Pending Requests',
                 in_progress: 'In Progress',
@@ -2257,6 +2336,13 @@
                 expense_breakdown: 'Desglose de Gastos',
                 income_by_client: 'Ingresos por Cliente',
                 export: 'Exportar',
+                total_requests: 'Total de Solicitudes',
+                avg_days: 'Días Promedio para Completar',
+                requests_by_category: 'Solicitudes por Categoría',
+                requests_by_status: 'Solicitudes por Estado',
+                unlock_financial_reports: 'Desbloquea Reportes Financieros',
+                upgrade_pro_desc: 'Actualiza a Pro para acceder al seguimiento de ingresos, reportes de gastos y análisis financieros detallados de todas tus propiedades.',
+                upgrade_now: 'Actualizar Ahora',
                 // Dashboard
                 pending_requests: 'Solicitudes Pendientes',
                 in_progress: 'En Progreso',
@@ -4017,11 +4103,18 @@
             const period = currentReportPeriod || '7days';
             const clientId = document.getElementById('reportClient')?.value || 'all';
             
+            // Determine plan level
+            const isStarter = currentOrg.plan === 'starter';
+            const isPro = currentOrg.plan === 'professional' || currentOrg.plan === 'business';
+            
+            // Show/hide sections based on plan
+            document.querySelectorAll('.pro-only').forEach(el => el.style.display = isPro ? '' : 'none');
+            document.querySelectorAll('.starter-only').forEach(el => el.style.display = isStarter ? '' : 'none');
+            
             // Load client dropdown if enterprise
             if (isClientsEnabled()) {
                 document.getElementById('reportClientGroup').style.display = '';
                 document.getElementById('clientIncomeSection').style.display = '';
-                document.getElementById('propertyBreakdownSection').style.display = 'none';
                 await loadReportClientOptions();
             }
             
@@ -4053,21 +4146,43 @@
                     startDate = new Date(2020, 0, 1);
             }
             
-            // Fetch all data for calculations
-            const { data: clients } = await db
-                .from('clients')
-                .select('id, name, company_name, properties(id, name, units(id, identifier, rent_amount, is_occupied))')
-                .eq('organization_id', currentOrg.id)
-                .eq('is_active', true)
-                .order('name');
-            
+            // Fetch requests
             const { data: requests } = await db
                 .from('maintenance_requests')
                 .select('*, units(identifier), properties(name, client_id)')
                 .eq('organization_id', currentOrg.id)
                 .gte('created_at', startDate.toISOString());
             
-            // Calculate expenses by unit
+            // Fetch properties with units
+            const { data: properties } = await db
+                .from('properties')
+                .select('*, units(id, identifier, rent_amount, is_occupied)')
+                .eq('organization_id', currentOrg.id);
+            
+            // Calculate basic stats (all plans)
+            const totalRequests = (requests || []).length;
+            const pendingRequests = (requests || []).filter(r => r.status === 'pending').length;
+            const completedRequests = (requests || []).filter(r => r.status === 'completed').length;
+            
+            // Avg days to complete
+            const completedWithDates = (requests || []).filter(r => r.status === 'completed' && r.completed_at);
+            let avgDays = 0;
+            if (completedWithDates.length > 0) {
+                const totalDays = completedWithDates.reduce((sum, r) => {
+                    const created = new Date(r.created_at);
+                    const completed = new Date(r.completed_at);
+                    return sum + Math.ceil((completed - created) / (1000 * 60 * 60 * 24));
+                }, 0);
+                avgDays = Math.round(totalDays / completedWithDates.length);
+            }
+            
+            // Update basic stats cards
+            document.getElementById('reportTotalRequests').textContent = totalRequests;
+            document.getElementById('reportPendingRequests').textContent = pendingRequests;
+            document.getElementById('reportCompletedRequests').textContent = completedRequests;
+            document.getElementById('reportAvgDays').textContent = avgDays;
+            
+            // Calculate expenses by unit and category
             const expensesByUnit = {};
             const expensesByCategory = {};
             (requests || []).forEach(r => {
@@ -4078,69 +4193,7 @@
                 expensesByCategory[cat] = (expensesByCategory[cat] || 0) + (parseFloat(r.total_cost) || 0);
             });
             
-            // Calculate totals
-            let totalRevenue = 0;
-            let totalExpenses = 0;
-            let totalUnits = 0;
-            let occupiedUnits = 0;
-            
-            (clients || []).forEach(client => {
-                (client.properties || []).forEach(prop => {
-                    (prop.units || []).forEach(unit => {
-                        totalUnits++;
-                        if (unit.is_occupied) {
-                            occupiedUnits++;
-                            totalRevenue += parseFloat(unit.rent_amount) || 0;
-                        }
-                        totalExpenses += expensesByUnit[unit.id] || 0;
-                    });
-                });
-            });
-            
-            const netIncome = totalRevenue - totalExpenses;
-            const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
-            
-            // Update summary cards
-            document.getElementById('reportTotalRevenue').textContent = '$' + totalRevenue.toLocaleString();
-            document.getElementById('reportTotalExpenses').textContent = '-$' + totalExpenses.toLocaleString();
-            document.getElementById('reportNetIncome').textContent = (netIncome >= 0 ? '$' : '-$') + Math.abs(netIncome).toLocaleString();
-            document.getElementById('reportNetIncome').style.color = netIncome >= 0 ? 'var(--success)' : 'var(--danger)';
-            document.getElementById('reportTotalRequests').textContent = (requests || []).length;
-            document.getElementById('reportOccupancyRate').textContent = occupancyRate + '%';
-            
-            // Revenue vs Expenses Chart
-            const chartContainer = document.getElementById('revenueExpenseChart');
-            const maxValue = Math.max(totalRevenue, totalExpenses, 1);
-            const revenueLabel = currentLang === 'es' ? 'Ingresos' : 'Revenue';
-            const expensesLabel = currentLang === 'es' ? 'Gastos' : 'Expenses';
-            const netLabel = currentLang === 'es' ? 'Neto' : 'Net';
-            
-            chartContainer.innerHTML = `
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-                    <div style="width:80px;font-size:0.85rem;color:var(--gray-600)">${revenueLabel}</div>
-                    <div style="flex:1;height:32px;background:var(--gray-100);border-radius:6px;overflow:hidden">
-                        <div style="width:${(totalRevenue/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #10B981, #34D399);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
-                            <span style="color:white;font-weight:600;font-size:0.85rem">$${totalRevenue.toLocaleString()}</span>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-                    <div style="width:80px;font-size:0.85rem;color:var(--gray-600)">${expensesLabel}</div>
-                    <div style="flex:1;height:32px;background:var(--gray-100);border-radius:6px;overflow:hidden">
-                        <div style="width:${(totalExpenses/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #EF4444, #F87171);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
-                            <span style="color:white;font-weight:600;font-size:0.85rem">$${totalExpenses.toLocaleString()}</span>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items:center;gap:1rem;padding-top:0.5rem;border-top:2px solid var(--gray-200)">
-                    <div style="width:80px;font-size:0.85rem;font-weight:600;color:var(--gray-700)">${netLabel}</div>
-                    <div style="flex:1;font-size:1.25rem;font-weight:700;color:${netIncome >= 0 ? 'var(--success)' : 'var(--danger)'}">
-                        ${netIncome >= 0 ? '+' : '-'}$${Math.abs(netIncome).toLocaleString()}
-                    </div>
-                </div>
-            `;
-            
-            // Expense breakdown donut
+            // Requests by category chart (all plans)
             const categoryNames = {
                 plumbing: currentLang === 'es' ? 'Plomería' : 'Plumbing',
                 electrical: currentLang === 'es' ? 'Eléctrico' : 'Electrical',
@@ -4152,56 +4205,197 @@
                 other: currentLang === 'es' ? 'Otro' : 'Other'
             };
             
-            const categoryColors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280', '#14B8A6'];
-            const donutContainer = document.getElementById('expenseDonutChart');
-            const sortedCategories = Object.entries(expensesByCategory).sort((a, b) => b[1] - a[1]);
+            const byCategory = {};
+            (requests || []).forEach(r => {
+                const cat = r.category || 'other';
+                byCategory[cat] = (byCategory[cat] || 0) + 1;
+            });
             
-            if (sortedCategories.length > 0 && totalExpenses > 0) {
-                donutContainer.innerHTML = sortedCategories.map(([cat, cost], i) => {
-                    const pct = Math.round((cost / totalExpenses) * 100);
-                    return `
-                        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-                            <div style="width:12px;height:12px;border-radius:3px;background:${categoryColors[i % categoryColors.length]}"></div>
-                            <div style="flex:1;font-size:0.85rem;color:var(--gray-600)">${categoryNames[cat] || cat}</div>
-                            <div style="font-weight:600;font-size:0.85rem">${pct}%</div>
+            const categoryChart = document.getElementById('categoryChart');
+            const maxCat = Math.max(...Object.values(byCategory), 1);
+            if (Object.keys(byCategory).length > 0) {
+                categoryChart.innerHTML = Object.entries(byCategory)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([cat, count]) => `
+                        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                            <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${categoryNames[cat] || cat}</div>
+                            <div style="flex:1;height:24px;background:var(--gray-100);border-radius:4px;overflow:hidden">
+                                <div style="width:${(count/maxCat)*100}%;height:100%;background:var(--primary);border-radius:4px"></div>
+                            </div>
+                            <div style="width:40px;text-align:right;font-weight:600">${count}</div>
                         </div>
-                    `;
-                }).join('');
+                    `).join('');
             } else {
-                donutContainer.innerHTML = `<p style="color:var(--gray-400);text-align:center;padding:2rem;font-size:0.9rem">${currentLang === 'es' ? 'Sin gastos registrados' : 'No expenses recorded'}</p>`;
+                categoryChart.innerHTML = `<p style="color:var(--gray-400);text-align:center;padding:2rem">${currentLang === 'es' ? 'Sin solicitudes' : 'No requests'}</p>`;
             }
             
-            // Client accordion (Business Plan)
-            if (isClientsEnabled() && clients && clients.length > 0) {
-                renderClientAccordion(clients, expensesByUnit, requests);
-            }
+            // Requests by status chart (all plans)
+            const statusNames = {
+                pending: currentLang === 'es' ? 'Pendiente' : 'Pending',
+                in_progress: currentLang === 'es' ? 'En Progreso' : 'In Progress',
+                completed: currentLang === 'es' ? 'Completado' : 'Completed'
+            };
+            const statusColors = {
+                pending: 'var(--warning)',
+                in_progress: 'var(--primary)',
+                completed: 'var(--success)'
+            };
+            const byStatus = {
+                pending: pendingRequests,
+                in_progress: (requests || []).filter(r => r.status === 'in_progress').length,
+                completed: completedRequests
+            };
             
-            // Property breakdown (non-business)
-            if (currentOrg.plan !== 'business') {
-                const { data: properties } = await db
-                    .from('properties')
-                    .select('*, units(id, identifier, rent_amount, is_occupied)')
-                    .eq('organization_id', currentOrg.id);
-                
-                const propertyTable = document.getElementById('propertyBreakdownTable');
-                propertyTable.innerHTML = (properties || []).map(prop => {
+            const statusChart = document.getElementById('statusChart');
+            const maxStatus = Math.max(...Object.values(byStatus), 1);
+            statusChart.innerHTML = Object.entries(byStatus).map(([status, count]) => `
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                    <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${statusNames[status]}</div>
+                    <div style="flex:1;height:24px;background:var(--gray-100);border-radius:4px;overflow:hidden">
+                        <div style="width:${(count/maxStatus)*100}%;height:100%;background:${statusColors[status]};border-radius:4px"></div>
+                    </div>
+                    <div style="width:40px;text-align:right;font-weight:600">${count}</div>
+                </div>
+            `).join('');
+            
+            // Starter plan: Basic property breakdown
+            if (isStarter) {
+                const basicTable = document.getElementById('propertyBreakdownTableBasic');
+                basicTable.innerHTML = (properties || []).map(prop => {
                     const unitCount = prop.units?.length || 0;
-                    const propRent = prop.units?.reduce((sum, u) => sum + (u.is_occupied ? (parseFloat(u.rent_amount) || 0) : 0), 0) || 0;
-                    const propExpenses = prop.units?.reduce((sum, u) => sum + (expensesByUnit[u.id] || 0), 0) || 0;
-                    const propNet = propRent - propExpenses;
-                    const propRequests = (requests || []).filter(r => r.property_id === prop.id).length;
+                    const propRequests = (requests || []).filter(r => r.property_id === prop.id);
+                    const pending = propRequests.filter(r => r.status === 'pending').length;
+                    const completed = propRequests.filter(r => r.status === 'completed').length;
                     
                     return `
                         <tr>
                             <td><strong>${prop.name}</strong></td>
                             <td>${unitCount}</td>
-                            <td style="color:var(--success)">$${propRent.toLocaleString()}</td>
-                            <td style="color:var(--danger)">${propExpenses > 0 ? '-$' + propExpenses.toLocaleString() : '$0'}</td>
-                            <td style="color:${propNet >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600">${propNet >= 0 ? '$' : '-$'}${Math.abs(propNet).toLocaleString()}</td>
-                            <td>${propRequests}</td>
+                            <td>${propRequests.length}</td>
+                            <td><span class="status pending"><span class="status-dot"></span>${pending}</span></td>
+                            <td><span class="status completed"><span class="status-dot"></span>${completed}</span></td>
                         </tr>
                     `;
                 }).join('');
+            }
+            
+            // Pro+ plans: Financial stats and charts
+            if (isPro) {
+                // Calculate financial totals
+                let totalRevenue = 0;
+                let totalExpenses = 0;
+                let totalUnits = 0;
+                let occupiedUnits = 0;
+                
+                (properties || []).forEach(prop => {
+                    (prop.units || []).forEach(unit => {
+                        totalUnits++;
+                        if (unit.is_occupied) {
+                            occupiedUnits++;
+                            totalRevenue += parseFloat(unit.rent_amount) || 0;
+                        }
+                        totalExpenses += expensesByUnit[unit.id] || 0;
+                    });
+                });
+                
+                const netIncome = totalRevenue - totalExpenses;
+                const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
+                
+                // Update financial stats cards
+                document.getElementById('reportTotalRevenue').textContent = '$' + totalRevenue.toLocaleString();
+                document.getElementById('reportTotalExpenses').textContent = '-$' + totalExpenses.toLocaleString();
+                document.getElementById('reportNetIncome').textContent = (netIncome >= 0 ? '$' : '-$') + Math.abs(netIncome).toLocaleString();
+                document.getElementById('reportNetIncome').style.color = netIncome >= 0 ? 'var(--success)' : 'var(--danger)';
+                document.getElementById('reportOccupancyRate').textContent = occupancyRate + '%';
+                
+                // Revenue vs Expenses Chart
+                const chartContainer = document.getElementById('revenueExpenseChart');
+                const maxValue = Math.max(totalRevenue, totalExpenses, 1);
+                const revenueLabel = currentLang === 'es' ? 'Ingresos' : 'Revenue';
+                const expensesLabel = currentLang === 'es' ? 'Gastos' : 'Expenses';
+                const netLabel = currentLang === 'es' ? 'Neto' : 'Net';
+                
+                chartContainer.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                        <div style="width:80px;font-size:0.85rem;color:var(--gray-600)">${revenueLabel}</div>
+                        <div style="flex:1;height:32px;background:var(--gray-100);border-radius:6px;overflow:hidden">
+                            <div style="width:${(totalRevenue/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #10B981, #34D399);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
+                                <span style="color:white;font-weight:600;font-size:0.85rem">$${totalRevenue.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                        <div style="width:80px;font-size:0.85rem;color:var(--gray-600)">${expensesLabel}</div>
+                        <div style="flex:1;height:32px;background:var(--gray-100);border-radius:6px;overflow:hidden">
+                            <div style="width:${(totalExpenses/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #EF4444, #F87171);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
+                                <span style="color:white;font-weight:600;font-size:0.85rem">$${totalExpenses.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:1rem;padding-top:0.5rem;border-top:2px solid var(--gray-200)">
+                        <div style="width:80px;font-size:0.85rem;font-weight:600;color:var(--gray-700)">${netLabel}</div>
+                        <div style="flex:1;font-size:1.25rem;font-weight:700;color:${netIncome >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                            ${netIncome >= 0 ? '+' : '-'}$${Math.abs(netIncome).toLocaleString()}
+                        </div>
+                    </div>
+                `;
+                
+                // Expense breakdown donut
+                const categoryColors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280', '#14B8A6'];
+                const donutContainer = document.getElementById('expenseDonutChart');
+                const sortedCategories = Object.entries(expensesByCategory).sort((a, b) => b[1] - a[1]);
+                
+                if (sortedCategories.length > 0 && totalExpenses > 0) {
+                    donutContainer.innerHTML = sortedCategories.map(([cat, cost], i) => {
+                        const pct = Math.round((cost / totalExpenses) * 100);
+                        return `
+                            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+                                <div style="width:12px;height:12px;border-radius:3px;background:${categoryColors[i % categoryColors.length]}"></div>
+                                <div style="flex:1;font-size:0.85rem;color:var(--gray-600)">${categoryNames[cat] || cat}</div>
+                                <div style="font-weight:600;font-size:0.85rem">${pct}%</div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    donutContainer.innerHTML = `<p style="color:var(--gray-400);text-align:center;padding:2rem;font-size:0.9rem">${currentLang === 'es' ? 'Sin gastos registrados' : 'No expenses recorded'}</p>`;
+                }
+                
+                // Property breakdown table (Pro, non-business)
+                if (currentOrg.plan !== 'business' || !isClientsEnabled()) {
+                    const propertyTable = document.getElementById('propertyBreakdownTable');
+                    propertyTable.innerHTML = (properties || []).map(prop => {
+                        const unitCount = prop.units?.length || 0;
+                        const propRent = prop.units?.reduce((sum, u) => sum + (u.is_occupied ? (parseFloat(u.rent_amount) || 0) : 0), 0) || 0;
+                        const propExpenses = prop.units?.reduce((sum, u) => sum + (expensesByUnit[u.id] || 0), 0) || 0;
+                        const propNet = propRent - propExpenses;
+                        const propRequests = (requests || []).filter(r => r.property_id === prop.id).length;
+                        
+                        return `
+                            <tr>
+                                <td><strong>${prop.name}</strong></td>
+                                <td>${unitCount}</td>
+                                <td style="color:var(--success)">$${propRent.toLocaleString()}</td>
+                                <td style="color:var(--danger)">${propExpenses > 0 ? '-$' + propExpenses.toLocaleString() : '$0'}</td>
+                                <td style="color:${propNet >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600">${propNet >= 0 ? '$' : '-$'}${Math.abs(propNet).toLocaleString()}</td>
+                                <td>${propRequests}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+                
+                // Client accordion (Business Plan with clients enabled)
+                if (isClientsEnabled()) {
+                    const { data: clients } = await db
+                        .from('clients')
+                        .select('id, name, company_name, properties(id, name, units(id, identifier, rent_amount, is_occupied))')
+                        .eq('organization_id', currentOrg.id)
+                        .eq('is_active', true)
+                        .order('name');
+                    
+                    if (clients && clients.length > 0) {
+                        renderClientAccordion(clients, expensesByUnit, requests);
+                    }
+                }
             }
         }
         
