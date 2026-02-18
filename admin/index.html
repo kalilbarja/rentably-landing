@@ -2130,7 +2130,7 @@
             document.getElementById('orgPlan').value = currentOrg.plan.charAt(0).toUpperCase() + currentOrg.plan.slice(1);
             
             // Show/hide enterprise features based on plan
-            const isEnterprise = currentOrg.plan === 'enterprise';
+            const isEnterprise = currentOrg.plan === 'business';
             document.querySelectorAll('.enterprise-only').forEach(el => {
                 el.style.display = isEnterprise ? '' : 'none';
             });
@@ -2503,7 +2503,7 @@
         let allClients = [];
         
         async function loadClients() {
-            if (currentOrg.plan !== 'enterprise') return;
+            if (currentOrg.plan !== 'business') return;
             
             const { data: clients } = await db
                 .from('clients')
@@ -2840,7 +2840,7 @@
             document.getElementById('propertyModalTitle').textContent = translations[currentLang].add_property;
             
             // Load clients dropdown if enterprise
-            if (currentOrg.plan === 'enterprise') {
+            if (currentOrg.plan === 'business') {
                 await loadClientOptions();
                 document.getElementById('propertyClientGroup').style.display = '';
             }
@@ -2858,7 +2858,7 @@
                 document.getElementById('propertyCountry').value = property.country || 'DO';
                 
                 // Load clients dropdown if enterprise
-                if (currentOrg.plan === 'enterprise') {
+                if (currentOrg.plan === 'business') {
                     await loadClientOptions();
                     document.getElementById('propertyClient').value = property.client_id || '';
                     document.getElementById('propertyClientGroup').style.display = '';
@@ -2905,7 +2905,7 @@
             };
             
             // Add client_id if enterprise
-            if (currentOrg.plan === 'enterprise') {
+            if (currentOrg.plan === 'business') {
                 data.client_id = document.getElementById('propertyClient').value || null;
             }
 
@@ -3309,7 +3309,7 @@
             const clientId = document.getElementById('reportClient')?.value || 'all';
             
             // Load client dropdown if enterprise
-            if (currentOrg.plan === 'enterprise') {
+            if (currentOrg.plan === 'business') {
                 document.getElementById('reportClientGroup').style.display = '';
                 await loadReportClientOptions();
             }
@@ -3338,7 +3338,7 @@
             
             // If client is selected, get their property IDs first
             let clientPropertyIds = null;
-            if (clientId !== 'all' && currentOrg.plan === 'enterprise') {
+            if (clientId !== 'all' && currentOrg.plan === 'business') {
                 const { data: clientProps } = await db
                     .from('properties')
                     .select('id')
