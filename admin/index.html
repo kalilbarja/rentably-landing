@@ -1047,6 +1047,19 @@
             <div class="page-content">
                 <!-- Dashboard Page -->
                 <div class="page active" id="page-dashboard">
+                    <!-- Client Filter (Business Plan Only) -->
+                    <div class="card enterprise-only" id="dashboardClientFilter" style="display:none;margin-bottom:1.5rem">
+                        <div class="card-body" style="padding:1rem 1.5rem">
+                            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+                                <div class="form-group" style="margin:0;min-width:250px">
+                                    <label class="form-label" style="margin-bottom:0.25rem" data-translate="filter_by_client">Filter by Client</label>
+                                    <select class="form-select" id="dashboardClient" onchange="loadDashboard()" style="padding:0.5rem">
+                                        <option value="all" data-translate="all_clients">All Clients</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-header">
@@ -1143,11 +1156,26 @@
                                 <div class="tab" data-tab="all" data-translate="all">All</div>
                             </div>
                         </div>
+                        <!-- Client Filter (Business Plan Only) -->
+                        <div class="enterprise-only" id="requestsClientFilter" style="display:none;padding:1rem 1.5rem;border-bottom:1px solid var(--gray-200)">
+                            <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+                                <div class="form-group" style="margin:0;min-width:200px">
+                                    <label class="form-label" style="margin-bottom:0.25rem;font-size:0.75rem" data-translate="filter_by_client">Filter by Client</label>
+                                    <select class="form-select" id="requestsClient" onchange="loadRequests()" style="padding:0.5rem">
+                                        <option value="all" data-translate="all_clients">All Clients</option>
+                                    </select>
+                                </div>
+                                <div style="margin-left:auto;color:var(--gray-500);font-size:0.85rem">
+                                    <span id="requestsCount">0</span> <span data-translate="requests">requests</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
                                         <th data-translate="request">Request</th>
+                                        <th class="enterprise-only" style="display:none" data-translate="client">Client</th>
                                         <th data-translate="unit">Unit</th>
                                         <th data-translate="resident">Resident</th>
                                         <th data-translate="date">Date</th>
@@ -1180,11 +1208,26 @@
                                 <span data-translate="add_property">Add Property</span>
                             </button>
                         </div>
+                        <!-- Client Filter (Business Plan Only) -->
+                        <div class="business-only" id="propertiesFilterSection" style="display:none;padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-200);">
+                            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                                <div class="form-group" style="margin: 0; min-width: 200px;">
+                                    <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="filter_by_client">Filter by Client</label>
+                                    <select class="form-select" id="propertiesClientFilter" onchange="filterProperties()" style="padding: 0.5rem;">
+                                        <option value="all" data-translate="all_clients">All Clients</option>
+                                    </select>
+                                </div>
+                                <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
+                                    <span id="propertiesCount">0</span> <span data-translate="properties">properties</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
                                         <th data-translate="property">Property</th>
+                                        <th class="business-only" style="display:none" data-translate="client">Client</th>
                                         <th data-translate="address">Address</th>
                                         <th data-translate="units">Units</th>
                                         <th data-translate="occupancy">Occupancy</th>
@@ -1213,6 +1256,12 @@
                         </div>
                         <!-- Filter Section -->
                         <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-200); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                            <div class="form-group enterprise-only" style="margin: 0; min-width: 200px; display:none" id="unitClientFilterGroup">
+                                <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="filter_by_client">Client</label>
+                                <select class="form-select" id="unitFilterClient" onchange="filterUnits()" style="padding: 0.5rem;">
+                                    <option value="all" data-translate="all_clients">All Clients</option>
+                                </select>
+                            </div>
                             <div class="form-group" style="margin: 0; min-width: 150px;">
                                 <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="filter_property">Property</label>
                                 <select class="form-select" id="unitFilterProperty" onchange="filterUnits()" style="padding: 0.5rem;">
@@ -1824,7 +1873,10 @@
                 no_units_yet: 'No units yet. Add your first unit!',
                 filter_property: 'Property',
                 filter_status: 'Status',
+                filter_by_client: 'Filter by Client',
                 units_shown: 'units',
+                requests: 'requests',
+                properties: 'properties',
                 // Residents
                 all_residents: 'All Residents',
                 add_resident: 'Add Resident',
@@ -1960,7 +2012,10 @@
                 no_units_yet: 'No hay unidades. ¡Agrega tu primera unidad!',
                 filter_property: 'Propiedad',
                 filter_status: 'Estado',
+                filter_by_client: 'Filtrar por Cliente',
                 units_shown: 'unidades',
+                requests: 'solicitudes',
+                properties: 'propiedades',
                 // Residents
                 all_residents: 'Todos los Residentes',
                 add_resident: 'Agregar Residente',
@@ -2196,16 +2251,46 @@
         // DATA LOADING
         // ==============================================
         async function loadDashboard() {
-            // Load stats
-            const { data: requests } = await db
+            // Show client filter if business plan
+            if (currentOrg.plan === 'business') {
+                document.getElementById('dashboardClientFilter').style.display = '';
+                await loadDashboardClientOptions();
+            }
+            
+            const clientId = document.getElementById('dashboardClient')?.value || 'all';
+            
+            // Get property IDs for selected client
+            let propertyIds = null;
+            if (clientId !== 'all' && currentOrg.plan === 'business') {
+                const { data: clientProps } = await db
+                    .from('properties')
+                    .select('id')
+                    .eq('client_id', clientId);
+                propertyIds = clientProps?.map(p => p.id) || [];
+            }
+            
+            // Load stats - filter by client's properties
+            let requestsQuery = db
                 .from('maintenance_requests')
-                .select('status')
+                .select('status, property_id')
                 .eq('organization_id', currentOrg.id);
             
-            const { data: units } = await db
+            if (propertyIds && propertyIds.length > 0) {
+                requestsQuery = requestsQuery.in('property_id', propertyIds);
+            }
+            
+            const { data: requests } = await requestsQuery;
+            
+            let unitsQuery = db
                 .from('units')
-                .select('id')
+                .select('id, property_id')
                 .eq('organization_id', currentOrg.id);
+            
+            if (propertyIds && propertyIds.length > 0) {
+                unitsQuery = unitsQuery.in('property_id', propertyIds);
+            }
+            
+            const { data: units } = await unitsQuery;
             
             const pending = requests?.filter(r => r.status === 'pending').length || 0;
             const inProgress = requests?.filter(r => r.status === 'in_progress').length || 0;
@@ -2218,12 +2303,18 @@
             document.getElementById('requestsBadge').textContent = pending;
             
             // Load recent requests
-            const { data: recentRequests } = await db
+            let recentQuery = db
                 .from('maintenance_requests')
                 .select('*, residents(name), units(identifier)')
                 .eq('organization_id', currentOrg.id)
                 .order('created_at', { ascending: false })
                 .limit(5);
+            
+            if (propertyIds && propertyIds.length > 0) {
+                recentQuery = recentQuery.in('property_id', propertyIds);
+            }
+            
+            const { data: recentRequests } = await recentQuery;
             
             const recentEl = document.getElementById('recentRequests');
             if (recentRequests && recentRequests.length > 0) {
@@ -2240,13 +2331,21 @@
                         </span>
                     </div>
                 `).join('');
+            } else {
+                recentEl.innerHTML = `<div class="empty-state"><p>${translations[currentLang].no_requests}</p></div>`;
             }
             
             // Load properties overview
-            const { data: properties } = await db
+            let propsQuery = db
                 .from('properties')
-                .select('*, units(id, is_occupied)')
+                .select('*, units(id, is_occupied), clients(name)')
                 .eq('organization_id', currentOrg.id);
+            
+            if (clientId !== 'all' && currentOrg.plan === 'business') {
+                propsQuery = propsQuery.eq('client_id', clientId);
+            }
+            
+            const { data: properties } = await propsQuery;
             
             const propertiesEl = document.getElementById('propertiesOverview');
             if (properties && properties.length > 0) {
@@ -2256,38 +2355,96 @@
                     const occupancy = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
                     const unitsWord = translations[currentLang].units_word;
                     const occupiedWord = translations[currentLang].occupied_pct;
+                    const clientName = p.clients?.name ? ` • ${p.clients.name}` : '';
                     return `
                         <div class="request-item">
                             <div class="request-icon">🏢</div>
                             <div class="request-details">
                                 <div class="request-title">${p.name}</div>
-                                <div class="request-meta">${p.city || 'No address'} • ${totalUnits} ${unitsWord}</div>
+                                <div class="request-meta">${p.city || 'No address'}${clientName} • ${totalUnits} ${unitsWord}</div>
                             </div>
                             <span style="font-weight:600;color:var(--gray-700)">${occupancy}% ${occupiedWord}</span>
                         </div>
                     `;
                 }).join('');
+            } else {
+                propertiesEl.innerHTML = `<div class="empty-state"><p>${translations[currentLang].no_properties}</p></div>`;
             }
         }
         
+        let dashboardClientsLoaded = false;
+        async function loadDashboardClientOptions() {
+            if (dashboardClientsLoaded) return;
+            
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            const select = document.getElementById('dashboardClient');
+            const allText = currentLang === 'es' ? 'Todos los Clientes' : 'All Clients';
+            select.innerHTML = `<option value="all">${allText}</option>`;
+            
+            if (clients) {
+                clients.forEach(c => {
+                    const displayName = c.company_name ? `${c.name} (${c.company_name})` : c.name;
+                    select.innerHTML += `<option value="${c.id}">${displayName}</option>`;
+                });
+            }
+            
+            dashboardClientsLoaded = true;
+        }
+        
         async function loadRequests(filter = 'pending') {
-            const query = db
+            // Show client filter if business plan
+            if (currentOrg.plan === 'business') {
+                document.getElementById('requestsClientFilter').style.display = '';
+                document.querySelectorAll('#page-requests .enterprise-only').forEach(el => el.style.display = '');
+                await loadRequestsClientOptions();
+            }
+            
+            const clientId = document.getElementById('requestsClient')?.value || 'all';
+            
+            // Get property IDs for selected client
+            let propertyIds = null;
+            if (clientId !== 'all' && currentOrg.plan === 'business') {
+                const { data: clientProps } = await db
+                    .from('properties')
+                    .select('id')
+                    .eq('client_id', clientId);
+                propertyIds = clientProps?.map(p => p.id) || [];
+            }
+            
+            let query = db
                 .from('maintenance_requests')
-                .select('*, residents(name), units(identifier), properties(name)')
+                .select('*, residents(name), units(identifier), properties(name, client_id, clients(name))')
                 .eq('organization_id', currentOrg.id)
                 .order('created_at', { ascending: false });
             
             if (filter !== 'all') {
-                query.eq('status', filter);
+                query = query.eq('status', filter);
+            }
+            
+            if (propertyIds && propertyIds.length > 0) {
+                query = query.in('property_id', propertyIds);
             }
             
             const { data: requests } = await query;
             
+            // Update count
+            document.getElementById('requestsCount').textContent = requests?.length || 0;
+            
             const tbody = document.getElementById('requestsTable');
+            const isBusiness = currentOrg.plan === 'business';
+            
             if (requests && requests.length > 0) {
                 const viewText = currentLang === 'es' ? 'Ver' : 'View';
                 const unknownText = currentLang === 'es' ? 'Desconocido' : 'Unknown';
-                tbody.innerHTML = requests.map(r => `
+                tbody.innerHTML = requests.map(r => {
+                    const clientCell = isBusiness ? `<td>${r.properties?.clients?.name || '-'}</td>` : '';
+                    return `
                     <tr>
                         <td>
                             <div style="display:flex;align-items:center;gap:0.75rem">
@@ -2298,6 +2455,7 @@
                                 </div>
                             </div>
                         </td>
+                        ${clientCell}
                         <td>${r.units?.identifier || 'N/A'}</td>
                         <td>${r.residents?.name || unknownText}</td>
                         <td>${formatDate(r.created_at)}</td>
@@ -2311,12 +2469,13 @@
                             <button class="btn btn-secondary btn-sm" onclick="viewRequest('${r.id}')">${viewText}</button>
                         </td>
                     </tr>
-                `).join('');
+                `}).join('');
             } else {
                 const noRequestsText = currentLang === 'es' ? 'No se encontraron solicitudes' : 'No requests found';
+                const colspan = isBusiness ? 7 : 6;
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align:center;padding:3rem;color:var(--gray-500)">
+                        <td colspan="${colspan}" style="text-align:center;padding:3rem;color:var(--gray-500)">
                             ${noRequestsText}
                         </td>
                     </tr>
@@ -2324,22 +2483,99 @@
             }
         }
         
+        let requestsClientsLoaded = false;
+        async function loadRequestsClientOptions() {
+            if (requestsClientsLoaded) return;
+            
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            const select = document.getElementById('requestsClient');
+            const allText = currentLang === 'es' ? 'Todos los Clientes' : 'All Clients';
+            select.innerHTML = `<option value="all">${allText}</option>`;
+            
+            if (clients) {
+                clients.forEach(c => {
+                    const displayName = c.company_name ? `${c.name} (${c.company_name})` : c.name;
+                    select.innerHTML += `<option value="${c.id}">${displayName}</option>`;
+                });
+            }
+            
+            requestsClientsLoaded = true;
+        }
+        
+        let allProperties = [];
+        let propertiesClientsLoaded = false;
+        
         async function loadProperties() {
+            // Show client filter if business plan
+            if (currentOrg.plan === 'business') {
+                document.getElementById('propertiesFilterSection').style.display = '';
+                document.querySelectorAll('#page-properties .business-only').forEach(el => el.style.display = '');
+                await loadPropertiesClientOptions();
+            }
+            
             const { data: properties } = await db
                 .from('properties')
-                .select('*, units(id, is_occupied)')
+                .select('*, units(id, is_occupied), clients(name)')
                 .eq('organization_id', currentOrg.id);
             
+            allProperties = properties || [];
+            filterProperties();
+        }
+        
+        async function loadPropertiesClientOptions() {
+            if (propertiesClientsLoaded) return;
+            
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            const select = document.getElementById('propertiesClientFilter');
+            const allText = currentLang === 'es' ? 'Todos los Clientes' : 'All Clients';
+            select.innerHTML = `<option value="all">${allText}</option>`;
+            
+            if (clients) {
+                clients.forEach(c => {
+                    const displayName = c.company_name ? `${c.name} (${c.company_name})` : c.name;
+                    select.innerHTML += `<option value="${c.id}">${displayName}</option>`;
+                });
+            }
+            
+            propertiesClientsLoaded = true;
+        }
+        
+        function filterProperties() {
+            const clientId = document.getElementById('propertiesClientFilter')?.value || 'all';
+            const isBusiness = currentOrg.plan === 'business';
+            
+            let filtered = allProperties;
+            
+            if (clientId !== 'all' && isBusiness) {
+                filtered = filtered.filter(p => p.client_id === clientId);
+            }
+            
+            document.getElementById('propertiesCount').textContent = filtered.length;
+            
             const tbody = document.getElementById('propertiesTable');
-            if (properties && properties.length > 0) {
+            if (filtered && filtered.length > 0) {
                 const editText = currentLang === 'es' ? 'Editar' : 'Edit';
-                tbody.innerHTML = properties.map(p => {
+                tbody.innerHTML = filtered.map(p => {
                     const totalUnits = p.units?.length || 0;
                     const occupiedUnits = p.units?.filter(u => u.is_occupied).length || 0;
                     const occupancy = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
+                    const clientCell = isBusiness ? `<td>${p.clients?.name || '-'}</td>` : '';
                     return `
                         <tr>
                             <td style="font-weight:500">${p.name}</td>
+                            ${clientCell}
                             <td>${p.address || '-'}, ${p.city || ''}</td>
                             <td>${totalUnits}</td>
                             <td>
@@ -2358,9 +2594,10 @@
                 }).join('');
             } else {
                 const noPropertiesText = currentLang === 'es' ? 'No hay propiedades. ¡Agrega tu primera propiedad!' : 'No properties yet. Add your first property!';
+                const colspan = isBusiness ? 6 : 5;
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" style="text-align:center;padding:3rem;color:var(--gray-500)">
+                        <td colspan="${colspan}" style="text-align:center;padding:3rem;color:var(--gray-500)">
                             ${noPropertiesText}
                         </td>
                     </tr>
@@ -2371,10 +2608,18 @@
         // Store all units for filtering
         let allUnits = [];
         
+        let unitsClientsLoaded = false;
+        
         async function loadUnits() {
+            // Show client filter if business plan
+            if (currentOrg.plan === 'business') {
+                document.getElementById('unitClientFilterGroup').style.display = '';
+                await loadUnitsClientOptions();
+            }
+            
             const { data: units } = await db
                 .from('units')
-                .select('*, properties(name), residents(name)')
+                .select('*, properties(name, client_id), residents(name)')
                 .eq('organization_id', currentOrg.id)
                 .order('identifier');
             
@@ -2399,11 +2644,41 @@
             filterUnits();
         }
         
+        async function loadUnitsClientOptions() {
+            if (unitsClientsLoaded) return;
+            
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            const select = document.getElementById('unitFilterClient');
+            const allText = currentLang === 'es' ? 'Todos los Clientes' : 'All Clients';
+            select.innerHTML = `<option value="all">${allText}</option>`;
+            
+            if (clients) {
+                clients.forEach(c => {
+                    const displayName = c.company_name ? `${c.name} (${c.company_name})` : c.name;
+                    select.innerHTML += `<option value="${c.id}">${displayName}</option>`;
+                });
+            }
+            
+            unitsClientsLoaded = true;
+        }
+        
         function filterUnits() {
+            const clientFilter = document.getElementById('unitFilterClient')?.value || 'all';
             const propertyFilter = document.getElementById('unitFilterProperty').value;
             const statusFilter = document.getElementById('unitFilterStatus').value;
             
             let filtered = allUnits;
+            
+            // Filter by client
+            if (clientFilter !== 'all' && currentOrg.plan === 'business') {
+                filtered = filtered.filter(u => u.properties?.client_id === clientFilter);
+            }
             
             // Filter by property
             if (propertyFilter !== 'all') {
