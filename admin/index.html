@@ -1217,6 +1217,11 @@
                                         <option value="all" data-translate="all_clients">All Clients</option>
                                     </select>
                                 </div>
+                            </div>
+                        </div>
+                        <!-- Sort Filter (All Users) -->
+                        <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-200);">
+                            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                                 <div class="form-group" style="margin: 0; min-width: 180px;">
                                     <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="sort_by">Sort By</label>
                                     <select class="form-select" id="propertiesSortBy" onchange="filterProperties()" style="padding: 0.5rem;">
@@ -1364,6 +1369,8 @@
                                     <option value="name_desc" data-translate="name_za">Name (Z-A)</option>
                                     <option value="properties_desc" data-translate="most_properties">Most Properties</option>
                                     <option value="properties_asc" data-translate="least_properties">Least Properties</option>
+                                    <option value="units_desc" data-translate="most_units">Most Units</option>
+                                    <option value="units_asc" data-translate="least_units">Least Units</option>
                                 </select>
                             </div>
                             <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
@@ -1379,6 +1386,7 @@
                                         <th data-translate="email">Email</th>
                                         <th data-translate="phone">Phone</th>
                                         <th data-translate="properties">Properties</th>
+                                        <th data-translate="units">Units</th>
                                         <th data-translate="status">Status</th>
                                         <th data-translate="actions">Actions</th>
                                     </tr>
@@ -2824,11 +2832,21 @@
             
             const { data: clients } = await db
                 .from('clients')
-                .select('*, properties(id)')
+                .select('*, properties(id, units(id))')
                 .eq('organization_id', currentOrg.id)
                 .order('name');
             
-            allClients = clients || [];
+            // Calculate units count for each client
+            allClients = (clients || []).map(c => {
+                let unitsCount = 0;
+                if (c.properties) {
+                    c.properties.forEach(p => {
+                        unitsCount += p.units?.length || 0;
+                    });
+                }
+                return { ...c, unitsCount };
+            });
+            
             filterClients();
         }
         
@@ -2851,6 +2869,12 @@
                 case 'properties_asc':
                     filtered.sort((a, b) => (a.properties?.length || 0) - (b.properties?.length || 0));
                     break;
+                case 'units_desc':
+                    filtered.sort((a, b) => (b.unitsCount || 0) - (a.unitsCount || 0));
+                    break;
+                case 'units_asc':
+                    filtered.sort((a, b) => (a.unitsCount || 0) - (b.unitsCount || 0));
+                    break;
             }
             
             document.getElementById('clientsCount').textContent = filtered.length;
@@ -2864,6 +2888,7 @@
                 
                 tbody.innerHTML = filtered.map(c => {
                     const propCount = c.properties?.length || 0;
+                    const unitsCount = c.unitsCount || 0;
                     return `
                     <tr>
                         <td style="font-weight:500">${c.name}</td>
@@ -2871,6 +2896,7 @@
                         <td>${c.email || '-'}</td>
                         <td>${c.phone || '-'}</td>
                         <td>${propCount}</td>
+                        <td>${unitsCount}</td>
                         <td>
                             <span class="status ${c.is_active ? 'completed' : 'pending'}">
                                 ${c.is_active ? activeText : inactiveText}
@@ -2886,7 +2912,7 @@
                 const noClientsText = currentLang === 'es' ? 'No hay clientes. ¡Agrega tu primer cliente!' : 'No clients yet. Add your first client!';
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align:center;padding:3rem;color:var(--gray-500)">
+                        <td colspan="8" style="text-align:center;padding:3rem;color:var(--gray-500)">
                             ${noClientsText}
                         </td>
                     </tr>
