@@ -972,6 +972,14 @@
                         </svg>
                         <span data-translate="nav_residents">Residents</span>
                     </a>
+                    <a class="nav-item enterprise-only" data-page="clients" style="display:none">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                            <path d="M20 8v6M23 11h-6"/>
+                        </svg>
+                        <span data-translate="nav_clients">Clients</span>
+                    </a>
                     <a class="nav-item" data-page="reports">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 21H3V3"/>
@@ -1276,6 +1284,53 @@
                     </div>
                 </div>
 
+                <!-- Clients Page (Enterprise Only) -->
+                <div class="page" id="page-clients">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="all_clients">All Clients</h3>
+                            <button class="btn btn-primary btn-sm" onclick="showAddClientModal()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                                <span data-translate="add_client">Add Client</span>
+                            </button>
+                        </div>
+                        <!-- Client Filter -->
+                        <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-200); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                            <div class="form-group" style="margin: 0; min-width: 150px;">
+                                <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="filter_status">Status</label>
+                                <select class="form-select" id="clientFilterStatus" onchange="filterClients()" style="padding: 0.5rem;">
+                                    <option value="all" data-translate="all">All</option>
+                                    <option value="active" data-translate="active">Active</option>
+                                    <option value="inactive" data-translate="inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
+                                <span id="clientsCount">0</span> <span data-translate="clients_shown">clients</span>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th data-translate="name">Name</th>
+                                        <th data-translate="company">Company</th>
+                                        <th data-translate="email">Email</th>
+                                        <th data-translate="phone">Phone</th>
+                                        <th data-translate="properties">Properties</th>
+                                        <th data-translate="status">Status</th>
+                                        <th data-translate="actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientsTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Settings Page -->
                 <div class="page" id="page-settings">
                     <div class="card">
@@ -1317,6 +1372,12 @@
                                         <option value="quarter" data-translate="this_quarter">This Quarter</option>
                                         <option value="year" data-translate="this_year">This Year</option>
                                         <option value="all" data-translate="all_time">All Time</option>
+                                    </select>
+                                </div>
+                                <div class="form-group enterprise-only" id="reportClientGroup" style="margin:0;display:none">
+                                    <label class="form-label" style="margin-bottom:0.25rem" data-translate="client">Client</label>
+                                    <select class="form-select" id="reportClient" onchange="loadReports()" style="min-width:180px">
+                                        <option value="all" data-translate="all_clients">All Clients</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="margin:0">
@@ -1450,6 +1511,51 @@
         </main>
     </div>
 
+    <!-- Client Modal (Enterprise Only) -->
+    <div class="modal-overlay" id="clientModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="clientModalTitle" data-translate="add_client">Add Client</h3>
+                <button class="modal-close" onclick="closeClientModal()">×</button>
+            </div>
+            <form id="clientForm">
+                <div class="modal-body">
+                    <input type="hidden" id="clientId">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="client_name">Client Name *</label>
+                        <input type="text" class="form-input" id="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="company_name">Company Name</label>
+                        <input type="text" class="form-input" id="clientCompany">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="email">Email</label>
+                            <input type="email" class="form-input" id="clientEmail">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="phone">Phone</label>
+                            <input type="tel" class="form-input" id="clientPhone">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="address">Address</label>
+                        <input type="text" class="form-input" id="clientAddress">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="notes">Notes</label>
+                        <textarea class="form-input" id="clientNotes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeClientModal()" data-translate="cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-translate="save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Property Modal -->
     <div class="modal-overlay" id="propertyModal">
         <div class="modal">
@@ -1460,6 +1566,12 @@
             <form id="propertyForm">
                 <div class="modal-body">
                     <input type="hidden" id="propertyId">
+                    <div class="form-group enterprise-only" id="propertyClientGroup" style="display:none">
+                        <label class="form-label" data-translate="client">Client (Owner)</label>
+                        <select class="form-select" id="propertyClient">
+                            <option value="">-- Select Client --</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label class="form-label" data-translate="property_name">Property Name *</label>
                         <input type="text" class="form-input" id="propertyName" required>
@@ -1657,8 +1769,18 @@
                 nav_properties: 'Properties',
                 nav_units: 'Units',
                 nav_residents: 'Residents',
+                nav_clients: 'Clients',
                 nav_reports: 'Reports',
                 nav_settings: 'Settings',
+                // Clients (Enterprise)
+                all_clients: 'All Clients',
+                add_client: 'Add Client',
+                edit_client: 'Edit Client',
+                client_name: 'Client Name',
+                company_name: 'Company Name',
+                company: 'Company',
+                clients_shown: 'clients',
+                client: 'Client (Owner)',
                 // Dashboard
                 pending_requests: 'Pending Requests',
                 in_progress: 'In Progress',
@@ -1783,8 +1905,18 @@
                 nav_properties: 'Propiedades',
                 nav_units: 'Unidades',
                 nav_residents: 'Residentes',
+                nav_clients: 'Clientes',
                 nav_reports: 'Reportes',
                 nav_settings: 'Configuración',
+                // Clients (Enterprise)
+                all_clients: 'Todos los Clientes',
+                add_client: 'Agregar Cliente',
+                edit_client: 'Editar Cliente',
+                client_name: 'Nombre del Cliente',
+                company_name: 'Nombre de Empresa',
+                company: 'Empresa',
+                clients_shown: 'clientes',
+                client: 'Cliente (Propietario)',
                 // Dashboard
                 pending_requests: 'Solicitudes Pendientes',
                 in_progress: 'En Progreso',
@@ -1997,6 +2129,12 @@
             document.getElementById('orgSlug').value = currentOrg.slug;
             document.getElementById('orgPlan').value = currentOrg.plan.charAt(0).toUpperCase() + currentOrg.plan.slice(1);
             
+            // Show/hide enterprise features based on plan
+            const isEnterprise = currentOrg.plan === 'enterprise';
+            document.querySelectorAll('.enterprise-only').forEach(el => {
+                el.style.display = isEnterprise ? '' : 'none';
+            });
+            
             // Load data
             loadDashboard();
         }
@@ -2027,6 +2165,7 @@
                     properties: 'Properties',
                     units: 'Units',
                     residents: 'Residents',
+                    clients: 'Clients',
                     reports: 'Reports & Analytics',
                     settings: 'Settings'
                 },
@@ -2036,6 +2175,7 @@
                     properties: 'Propiedades',
                     units: 'Unidades',
                     residents: 'Residentes',
+                    clients: 'Clientes',
                     reports: 'Reportes y Análisis',
                     settings: 'Configuración'
                 }
@@ -2048,6 +2188,7 @@
             if (pageId === 'properties') loadProperties();
             if (pageId === 'units') loadUnits();
             if (pageId === 'residents') loadResidents();
+            if (pageId === 'clients') loadClients();
             if (pageId === 'reports') loadReports();
         }
         
@@ -2357,6 +2498,188 @@
         }
         
         // ==============================================
+        // CLIENTS (Enterprise Only)
+        // ==============================================
+        let allClients = [];
+        
+        async function loadClients() {
+            if (currentOrg.plan !== 'enterprise') return;
+            
+            const { data: clients } = await db
+                .from('clients')
+                .select('*, properties(id)')
+                .eq('organization_id', currentOrg.id)
+                .order('name');
+            
+            allClients = clients || [];
+            filterClients();
+        }
+        
+        function filterClients() {
+            const statusFilter = document.getElementById('clientFilterStatus')?.value || 'all';
+            
+            let filtered = allClients;
+            
+            if (statusFilter === 'active') {
+                filtered = filtered.filter(c => c.is_active);
+            } else if (statusFilter === 'inactive') {
+                filtered = filtered.filter(c => !c.is_active);
+            }
+            
+            document.getElementById('clientsCount').textContent = filtered.length;
+            
+            const tbody = document.getElementById('clientsTable');
+            if (filtered.length > 0) {
+                const activeText = currentLang === 'es' ? 'Activo' : 'Active';
+                const inactiveText = currentLang === 'es' ? 'Inactivo' : 'Inactive';
+                const editText = currentLang === 'es' ? 'Editar' : 'Edit';
+                const reportText = currentLang === 'es' ? 'Reporte' : 'Report';
+                
+                tbody.innerHTML = filtered.map(c => {
+                    const propCount = c.properties?.length || 0;
+                    return `
+                    <tr>
+                        <td style="font-weight:500">${c.name}</td>
+                        <td>${c.company_name || '-'}</td>
+                        <td>${c.email || '-'}</td>
+                        <td>${c.phone || '-'}</td>
+                        <td>${propCount}</td>
+                        <td>
+                            <span class="status ${c.is_active ? 'completed' : 'pending'}">
+                                ${c.is_active ? activeText : inactiveText}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="editClient('${c.id}')">${editText}</button>
+                            <button class="btn btn-secondary btn-sm" onclick="viewClientReport('${c.id}')" style="margin-left:0.25rem">${reportText}</button>
+                        </td>
+                    </tr>
+                `}).join('');
+            } else {
+                const noClientsText = currentLang === 'es' ? 'No hay clientes. ¡Agrega tu primer cliente!' : 'No clients yet. Add your first client!';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center;padding:3rem;color:var(--gray-500)">
+                            ${noClientsText}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        function showAddClientModal() {
+            document.getElementById('clientModalTitle').textContent = currentLang === 'es' ? 'Agregar Cliente' : 'Add Client';
+            document.getElementById('clientForm').reset();
+            document.getElementById('clientId').value = '';
+            document.getElementById('clientModal').classList.add('active');
+        }
+        
+        function closeClientModal() {
+            document.getElementById('clientModal').classList.remove('active');
+        }
+        
+        async function editClient(id) {
+            const client = allClients.find(c => c.id === id);
+            if (!client) return;
+            
+            document.getElementById('clientModalTitle').textContent = currentLang === 'es' ? 'Editar Cliente' : 'Edit Client';
+            document.getElementById('clientId').value = client.id;
+            document.getElementById('clientName').value = client.name;
+            document.getElementById('clientCompany').value = client.company_name || '';
+            document.getElementById('clientEmail').value = client.email || '';
+            document.getElementById('clientPhone').value = client.phone || '';
+            document.getElementById('clientAddress').value = client.address || '';
+            document.getElementById('clientNotes').value = client.notes || '';
+            document.getElementById('clientModal').classList.add('active');
+        }
+        
+        document.getElementById('clientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const clientId = document.getElementById('clientId').value;
+            const clientData = {
+                organization_id: currentOrg.id,
+                name: document.getElementById('clientName').value,
+                company_name: document.getElementById('clientCompany').value || null,
+                email: document.getElementById('clientEmail').value || null,
+                phone: document.getElementById('clientPhone').value || null,
+                address: document.getElementById('clientAddress').value || null,
+                notes: document.getElementById('clientNotes').value || null
+            };
+            
+            if (clientId) {
+                await db.from('clients').update(clientData).eq('id', clientId);
+            } else {
+                await db.from('clients').insert(clientData);
+            }
+            
+            closeClientModal();
+            loadClients();
+        });
+        
+        async function viewClientReport(clientId) {
+            const client = allClients.find(c => c.id === clientId);
+            if (!client) return;
+            
+            // Get properties for this client
+            const { data: properties } = await db
+                .from('properties')
+                .select('id, name')
+                .eq('client_id', clientId);
+            
+            if (!properties || properties.length === 0) {
+                alert(currentLang === 'es' ? 'Este cliente no tiene propiedades asignadas.' : 'This client has no assigned properties.');
+                return;
+            }
+            
+            const propertyIds = properties.map(p => p.id);
+            
+            // Get all requests for these properties
+            const { data: requests } = await db
+                .from('maintenance_requests')
+                .select('*, properties(name), units(identifier)')
+                .in('property_id', propertyIds)
+                .order('created_at', { ascending: false });
+            
+            // Calculate totals
+            const totalRequests = requests?.length || 0;
+            const completedRequests = requests?.filter(r => r.status === 'completed').length || 0;
+            const totalCost = requests?.reduce((sum, r) => sum + (r.cost || 0), 0) || 0;
+            
+            // Generate CSV report
+            const headers = ['Date', 'Property', 'Unit', 'Category', 'Status', 'Cost', 'Description'];
+            const rows = requests?.map(r => [
+                formatDate(r.created_at),
+                r.properties?.name || '',
+                r.units?.identifier || '',
+                getCategoryName(r.category),
+                r.status,
+                r.cost || 0,
+                r.description?.replace(/"/g, '""') || ''
+            ]) || [];
+            
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csv += row.map(cell => `"${cell}"`).join(',') + '\n';
+            });
+            
+            // Add summary
+            csv += '\n';
+            csv += `"Total Requests","${totalRequests}"\n`;
+            csv += `"Completed","${completedRequests}"\n`;
+            csv += `"Total Cost","$${totalCost.toLocaleString()}"\n`;
+            
+            // Download
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${client.name.replace(/\s+/g, '-')}-report-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // ==============================================
         // HELPERS
         // ==============================================
         function getCategoryIcon(category) {
@@ -2511,10 +2834,17 @@
         // ==============================================
         // MODALS - Property
         // ==============================================
-        function showAddPropertyModal() {
+        async function showAddPropertyModal() {
             document.getElementById('propertyId').value = '';
             document.getElementById('propertyForm').reset();
             document.getElementById('propertyModalTitle').textContent = translations[currentLang].add_property;
+            
+            // Load clients dropdown if enterprise
+            if (currentOrg.plan === 'enterprise') {
+                await loadClientOptions();
+                document.getElementById('propertyClientGroup').style.display = '';
+            }
+            
             document.getElementById('propertyModal').classList.add('active');
         }
 
@@ -2526,6 +2856,14 @@
                 document.getElementById('propertyAddress').value = property.address || '';
                 document.getElementById('propertyCity').value = property.city || '';
                 document.getElementById('propertyCountry').value = property.country || 'DO';
+                
+                // Load clients dropdown if enterprise
+                if (currentOrg.plan === 'enterprise') {
+                    await loadClientOptions();
+                    document.getElementById('propertyClient').value = property.client_id || '';
+                    document.getElementById('propertyClientGroup').style.display = '';
+                }
+                
                 document.getElementById('propertyModalTitle').textContent = translations[currentLang].edit_property;
                 document.getElementById('propertyModal').classList.add('active');
             }
@@ -2533,6 +2871,26 @@
 
         function closePropertyModal() {
             document.getElementById('propertyModal').classList.remove('active');
+        }
+        
+        async function loadClientOptions() {
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            const select = document.getElementById('propertyClient');
+            const noClientText = currentLang === 'es' ? '-- Sin Cliente --' : '-- No Client --';
+            select.innerHTML = `<option value="">${noClientText}</option>`;
+            
+            if (clients) {
+                clients.forEach(c => {
+                    const displayName = c.company_name ? `${c.name} (${c.company_name})` : c.name;
+                    select.innerHTML += `<option value="${c.id}">${displayName}</option>`;
+                });
+            }
         }
 
         async function saveProperty(e) {
@@ -2545,6 +2903,11 @@
                 city: document.getElementById('propertyCity').value,
                 country: document.getElementById('propertyCountry').value
             };
+            
+            // Add client_id if enterprise
+            if (currentOrg.plan === 'enterprise') {
+                data.client_id = document.getElementById('propertyClient').value || null;
+            }
 
             if (id) {
                 await db.from('properties').update(data).eq('id', id);
@@ -2914,9 +3277,42 @@
         // ==============================================
         // REPORTS
         // ==============================================
+        let reportClientsLoaded = false;
+        
+        async function loadReportClientOptions() {
+            if (reportClientsLoaded) return;
+            
+            const { data: clients } = await db
+                .from('clients')
+                .select('id, name, company_name')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true)
+                .order('name');
+            
+            const select = document.getElementById('reportClient');
+            const allText = currentLang === 'es' ? 'Todos los Clientes' : 'All Clients';
+            select.innerHTML = `<option value="all">${allText}</option>`;
+            
+            if (clients) {
+                clients.forEach(c => {
+                    const displayName = c.company_name ? `${c.name} (${c.company_name})` : c.name;
+                    select.innerHTML += `<option value="${c.id}">${displayName}</option>`;
+                });
+            }
+            
+            reportClientsLoaded = true;
+        }
+        
         async function loadReports() {
             const period = document.getElementById('reportPeriod')?.value || 'month';
             const propertyId = document.getElementById('reportProperty')?.value || 'all';
+            const clientId = document.getElementById('reportClient')?.value || 'all';
+            
+            // Load client dropdown if enterprise
+            if (currentOrg.plan === 'enterprise') {
+                document.getElementById('reportClientGroup').style.display = '';
+                await loadReportClientOptions();
+            }
             
             // Calculate date range
             const now = new Date();
@@ -2939,16 +3335,28 @@
                 default:
                     startDate = new Date(2020, 0, 1); // All time
             }
+            
+            // If client is selected, get their property IDs first
+            let clientPropertyIds = null;
+            if (clientId !== 'all' && currentOrg.plan === 'enterprise') {
+                const { data: clientProps } = await db
+                    .from('properties')
+                    .select('id')
+                    .eq('client_id', clientId);
+                clientPropertyIds = clientProps?.map(p => p.id) || [];
+            }
 
             // Fetch requests
             let query = db
                 .from('maintenance_requests')
-                .select('*, properties(name), units(identifier)')
+                .select('*, properties(name, client_id), units(identifier)')
                 .eq('organization_id', currentOrg.id)
                 .gte('created_at', startDate.toISOString());
 
             if (propertyId !== 'all') {
                 query = query.eq('property_id', propertyId);
+            } else if (clientPropertyIds && clientPropertyIds.length > 0) {
+                query = query.in('property_id', clientPropertyIds);
             }
 
             const { data: requests } = await query;
