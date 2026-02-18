@@ -900,6 +900,29 @@
             cursor: not-allowed;
         }
 
+        /* Onboarding Steps */
+        .onboarding-step {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .onboarding-step.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        .onboarding-step.completed {
+            background: #10B981;
+            color: white;
+        }
+
         /* Hide app when not logged in */
         .app-container {
             display: none;
@@ -1857,6 +1880,130 @@
         </main>
     </div>
 
+    <!-- Onboarding Wizard Modal -->
+    <div class="modal-overlay" id="onboardingModal" style="display:none">
+        <div class="modal" style="max-width:600px">
+            <div class="modal-header" style="background:var(--primary);color:white;border-radius:12px 12px 0 0">
+                <h3 class="modal-title" id="onboardingTitle">Welcome to Rentably! 🎉</h3>
+                <div style="display:flex;gap:0.5rem" id="onboardingSteps">
+                    <div class="onboarding-step active" data-step="1">1</div>
+                    <div class="onboarding-step" data-step="2">2</div>
+                    <div class="onboarding-step" data-step="3">3</div>
+                    <div class="onboarding-step" data-step="4">4</div>
+                </div>
+            </div>
+            <div class="modal-body" style="padding:2rem">
+                <!-- Step 1: Welcome & Video -->
+                <div class="onboarding-content" id="onboardingStep1">
+                    <div style="text-align:center;margin-bottom:1.5rem">
+                        <div style="width:80px;height:80px;background:linear-gradient(135deg, #EEF2FF, #E0E7FF);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="width:40px;height:40px">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                        </div>
+                        <h2 style="margin-bottom:0.5rem;color:var(--gray-900)">Let's Get You Started</h2>
+                        <p style="color:var(--gray-600)">Watch this quick 2-minute video to learn the basics</p>
+                    </div>
+                    <div style="background:var(--gray-900);border-radius:12px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;cursor:pointer" onclick="playVideo()">
+                        <div style="text-align:center;color:white">
+                            <svg viewBox="0 0 24 24" fill="white" style="width:64px;height:64px;opacity:0.9">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            <p style="margin-top:0.5rem;opacity:0.8">Click to play tutorial</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%" onclick="nextOnboardingStep()">Continue →</button>
+                    <button class="btn" style="width:100%;margin-top:0.5rem;background:transparent;color:var(--gray-500)" onclick="skipOnboarding()">Skip tutorial, I'll figure it out</button>
+                </div>
+
+                <!-- Step 2: Add First Property -->
+                <div class="onboarding-content" id="onboardingStep2" style="display:none">
+                    <h2 style="margin-bottom:0.5rem;color:var(--gray-900)">Add Your First Property</h2>
+                    <p style="color:var(--gray-600);margin-bottom:1.5rem">Enter the details of a property you manage</p>
+                    <div class="form-group">
+                        <label class="form-label">Property Name *</label>
+                        <input type="text" class="form-input" id="onboardPropertyName" placeholder="e.g., Sunset Apartments">
+                    </div>
+                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div class="form-group">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-input" id="onboardPropertyCity" placeholder="Miami">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Country</label>
+                            <input type="text" class="form-input" id="onboardPropertyCountry" placeholder="USA">
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:1rem;margin-top:1rem">
+                        <button class="btn" style="flex:1;background:var(--gray-100);color:var(--gray-700)" onclick="prevOnboardingStep()">← Back</button>
+                        <button class="btn btn-primary" style="flex:2" onclick="saveOnboardingProperty()">Save & Continue →</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Add First Unit -->
+                <div class="onboarding-content" id="onboardingStep3" style="display:none">
+                    <h2 style="margin-bottom:0.5rem;color:var(--gray-900)">Add Your First Unit</h2>
+                    <p style="color:var(--gray-600);margin-bottom:1.5rem">Add a unit to your property</p>
+                    <div class="form-group">
+                        <label class="form-label">Unit Number/Name *</label>
+                        <input type="text" class="form-input" id="onboardUnitName" placeholder="e.g., 101 or Apt A">
+                    </div>
+                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div class="form-group">
+                            <label class="form-label">Bedrooms</label>
+                            <select class="form-select" id="onboardUnitBedrooms">
+                                <option value="0">Studio</option>
+                                <option value="1" selected>1 Bed</option>
+                                <option value="2">2 Beds</option>
+                                <option value="3">3 Beds</option>
+                                <option value="4">4+ Beds</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rent Amount</label>
+                            <input type="number" class="form-input" id="onboardUnitRent" placeholder="1500">
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:1rem;margin-top:1rem">
+                        <button class="btn" style="flex:1;background:var(--gray-100);color:var(--gray-700)" onclick="prevOnboardingStep()">← Back</button>
+                        <button class="btn btn-primary" style="flex:2" onclick="saveOnboardingUnit()">Save & Continue →</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: All Done -->
+                <div class="onboarding-content" id="onboardingStep4" style="display:none">
+                    <div style="text-align:center">
+                        <div style="width:100px;height:100px;background:#D1FAE5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" style="width:50px;height:50px">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <h2 style="margin-bottom:0.5rem;color:var(--gray-900)">You're All Set! 🎉</h2>
+                        <p style="color:var(--gray-600);margin-bottom:2rem">Your account is ready. Here's what you can do next:</p>
+                        <div style="text-align:left;background:var(--gray-50);padding:1.5rem;border-radius:12px;margin-bottom:1.5rem">
+                            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                                <div style="width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:600">1</div>
+                                <span>Add more properties and units</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                                <div style="width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:600">2</div>
+                                <span>Add residents to your units</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:1rem">
+                                <div style="width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:600">3</div>
+                                <span>Share the resident portal link</span>
+                            </div>
+                        </div>
+                        <div style="background:linear-gradient(135deg, #EEF2FF, #E0E7FF);padding:1rem;border-radius:8px;margin-bottom:1.5rem">
+                            <p style="font-size:0.9rem;color:var(--gray-600)">💡 <strong>Pro tip:</strong> We've added some demo data to help you explore. You can delete it anytime.</p>
+                        </div>
+                        <button class="btn btn-primary" style="width:100%" onclick="finishOnboarding()">Start Using Rentably</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Client Modal (Enterprise Only) -->
     <div class="modal-overlay" id="clientModal">
         <div class="modal">
@@ -2593,11 +2740,146 @@
             
             // Load data
             loadDashboard();
+            
+            // Check if onboarding needed
+            if (currentOrg.onboarding_completed === false) {
+                showOnboarding();
+            }
         }
         
         // ==============================================
-        // NAVIGATION
+        // ONBOARDING WIZARD
         // ==============================================
+        let currentOnboardingStep = 1;
+        let onboardingPropertyId = null;
+
+        function showOnboarding() {
+            document.getElementById('onboardingModal').style.display = 'flex';
+            currentOnboardingStep = 1;
+            updateOnboardingUI();
+        }
+
+        function updateOnboardingUI() {
+            // Hide all steps
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`onboardingStep${i}`).style.display = 'none';
+                const stepEl = document.querySelector(`.onboarding-step[data-step="${i}"]`);
+                stepEl.classList.remove('active', 'completed');
+                if (i < currentOnboardingStep) stepEl.classList.add('completed');
+                if (i === currentOnboardingStep) stepEl.classList.add('active');
+            }
+            // Show current step
+            document.getElementById(`onboardingStep${currentOnboardingStep}`).style.display = 'block';
+        }
+
+        function nextOnboardingStep() {
+            if (currentOnboardingStep < 4) {
+                currentOnboardingStep++;
+                updateOnboardingUI();
+            }
+        }
+
+        function prevOnboardingStep() {
+            if (currentOnboardingStep > 1) {
+                currentOnboardingStep--;
+                updateOnboardingUI();
+            }
+        }
+
+        async function saveOnboardingProperty() {
+            const name = document.getElementById('onboardPropertyName').value.trim();
+            if (!name) {
+                showToast(currentLang === 'es' ? 'Ingrese nombre de propiedad' : 'Enter property name', 'error');
+                return;
+            }
+
+            const city = document.getElementById('onboardPropertyCity').value.trim();
+            const country = document.getElementById('onboardPropertyCountry').value.trim();
+
+            const { data, error } = await db.from('properties').insert({
+                name,
+                city,
+                country,
+                organization_id: currentOrg.id
+            }).select().single();
+
+            if (error) {
+                showToast('Error creating property', 'error');
+                return;
+            }
+
+            onboardingPropertyId = data.id;
+            nextOnboardingStep();
+        }
+
+        async function saveOnboardingUnit() {
+            const identifier = document.getElementById('onboardUnitName').value.trim();
+            if (!identifier) {
+                showToast(currentLang === 'es' ? 'Ingrese número de unidad' : 'Enter unit number', 'error');
+                return;
+            }
+
+            const bedrooms = document.getElementById('onboardUnitBedrooms').value;
+            const rent = document.getElementById('onboardUnitRent').value;
+
+            const { error } = await db.from('units').insert({
+                identifier,
+                bedrooms: parseInt(bedrooms),
+                rent_amount: parseFloat(rent) || 0,
+                property_id: onboardingPropertyId,
+                organization_id: currentOrg.id
+            });
+
+            if (error) {
+                showToast('Error creating unit', 'error');
+                return;
+            }
+
+            // Add demo data
+            await addDemoData();
+            nextOnboardingStep();
+        }
+
+        async function addDemoData() {
+            // Add a sample maintenance request
+            if (onboardingPropertyId) {
+                const { data: units } = await db.from('units').select('id').eq('property_id', onboardingPropertyId).limit(1);
+                if (units && units.length > 0) {
+                    await db.from('maintenance_requests').insert({
+                        organization_id: currentOrg.id,
+                        property_id: onboardingPropertyId,
+                        unit_id: units[0].id,
+                        category: 'plumbing',
+                        location: 'bathroom',
+                        description: 'Sample request: Leaky faucet in main bathroom. This is demo data you can delete.',
+                        status: 'pending',
+                        preferred_contact: 'email'
+                    });
+                }
+            }
+        }
+
+        async function finishOnboarding() {
+            // Mark onboarding as complete
+            await db.from('organizations').update({ onboarding_completed: true }).eq('id', currentOrg.id);
+            currentOrg.onboarding_completed = true;
+            
+            document.getElementById('onboardingModal').style.display = 'none';
+            loadDashboard();
+            loadProperties();
+            loadUnits();
+            showToast(currentLang === 'es' ? '¡Bienvenido a Rentably!' : 'Welcome to Rentably!');
+        }
+
+        function skipOnboarding() {
+            currentOnboardingStep = 4;
+            updateOnboardingUI();
+        }
+
+        function playVideo() {
+            // Open video tutorial in new tab or modal
+            window.open('https://www.youtube.com/watch?v=YOUR_VIDEO_ID', '_blank');
+        }
         function showPage(pageId) {
             // Update nav
             document.querySelectorAll('.nav-item').forEach(item => {
