@@ -1217,6 +1217,15 @@
                                         <option value="all" data-translate="all_clients">All Clients</option>
                                     </select>
                                 </div>
+                                <div class="form-group" style="margin: 0; min-width: 180px;">
+                                    <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="sort_by">Sort By</label>
+                                    <select class="form-select" id="propertiesSortBy" onchange="filterProperties()" style="padding: 0.5rem;">
+                                        <option value="name_asc" data-translate="name_az">Name (A-Z)</option>
+                                        <option value="name_desc" data-translate="name_za">Name (Z-A)</option>
+                                        <option value="units_desc" data-translate="most_units">Most Units</option>
+                                        <option value="units_asc" data-translate="least_units">Least Units</option>
+                                    </select>
+                                </div>
                                 <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
                                     <span id="propertiesCount">0</span> <span data-translate="properties">properties</span>
                                 </div>
@@ -1348,12 +1357,13 @@
                         </div>
                         <!-- Client Filter -->
                         <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-200); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                            <div class="form-group" style="margin: 0; min-width: 150px;">
-                                <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="filter_status">Status</label>
-                                <select class="form-select" id="clientFilterStatus" onchange="filterClients()" style="padding: 0.5rem;">
-                                    <option value="all" data-translate="all">All</option>
-                                    <option value="active" data-translate="active">Active</option>
-                                    <option value="inactive" data-translate="inactive">Inactive</option>
+                            <div class="form-group" style="margin: 0; min-width: 180px;">
+                                <label class="form-label" style="margin-bottom: 0.25rem; font-size: 0.75rem;" data-translate="sort_by">Sort By</label>
+                                <select class="form-select" id="clientSortBy" onchange="filterClients()" style="padding: 0.5rem;">
+                                    <option value="name_asc" data-translate="name_az">Name (A-Z)</option>
+                                    <option value="name_desc" data-translate="name_za">Name (Z-A)</option>
+                                    <option value="properties_desc" data-translate="most_properties">Most Properties</option>
+                                    <option value="properties_asc" data-translate="least_properties">Least Properties</option>
                                 </select>
                             </div>
                             <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
@@ -1830,6 +1840,13 @@
                 company: 'Company',
                 clients_shown: 'clients',
                 client: 'Client (Owner)',
+                sort_by: 'Sort By',
+                name_az: 'Name (A-Z)',
+                name_za: 'Name (Z-A)',
+                most_properties: 'Most Properties',
+                least_properties: 'Least Properties',
+                most_units: 'Most Units',
+                least_units: 'Least Units',
                 // Dashboard
                 pending_requests: 'Pending Requests',
                 in_progress: 'In Progress',
@@ -1969,6 +1986,13 @@
                 company: 'Empresa',
                 clients_shown: 'clientes',
                 client: 'Cliente (Propietario)',
+                sort_by: 'Ordenar Por',
+                name_az: 'Nombre (A-Z)',
+                name_za: 'Nombre (Z-A)',
+                most_properties: 'Más Propiedades',
+                least_properties: 'Menos Propiedades',
+                most_units: 'Más Unidades',
+                least_units: 'Menos Unidades',
                 // Dashboard
                 pending_requests: 'Solicitudes Pendientes',
                 in_progress: 'En Progreso',
@@ -2554,12 +2578,30 @@
         
         function filterProperties() {
             const clientId = document.getElementById('propertiesClientFilter')?.value || 'all';
+            const sortBy = document.getElementById('propertiesSortBy')?.value || 'name_asc';
             const isBusiness = currentOrg.plan === 'business';
             
-            let filtered = allProperties;
+            let filtered = [...allProperties];
             
+            // Filter by client
             if (clientId !== 'all' && isBusiness) {
                 filtered = filtered.filter(p => p.client_id === clientId);
+            }
+            
+            // Sort properties
+            switch (sortBy) {
+                case 'name_asc':
+                    filtered.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name_desc':
+                    filtered.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                case 'units_desc':
+                    filtered.sort((a, b) => (b.units?.length || 0) - (a.units?.length || 0));
+                    break;
+                case 'units_asc':
+                    filtered.sort((a, b) => (a.units?.length || 0) - (b.units?.length || 0));
+                    break;
             }
             
             document.getElementById('propertiesCount').textContent = filtered.length;
@@ -2791,14 +2833,24 @@
         }
         
         function filterClients() {
-            const statusFilter = document.getElementById('clientFilterStatus')?.value || 'all';
+            const sortBy = document.getElementById('clientSortBy')?.value || 'name_asc';
             
-            let filtered = allClients;
+            let filtered = [...allClients];
             
-            if (statusFilter === 'active') {
-                filtered = filtered.filter(c => c.is_active);
-            } else if (statusFilter === 'inactive') {
-                filtered = filtered.filter(c => !c.is_active);
+            // Sort clients
+            switch (sortBy) {
+                case 'name_asc':
+                    filtered.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name_desc':
+                    filtered.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                case 'properties_desc':
+                    filtered.sort((a, b) => (b.properties?.length || 0) - (a.properties?.length || 0));
+                    break;
+                case 'properties_asc':
+                    filtered.sort((a, b) => (a.properties?.length || 0) - (b.properties?.length || 0));
+                    break;
             }
             
             document.getElementById('clientsCount').textContent = filtered.length;
