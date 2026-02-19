@@ -271,6 +271,81 @@
             height: 18px;
         }
 
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-top: 4px;
+            max-height: 320px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .search-dropdown-section {
+            padding: 8px 12px 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .search-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .search-dropdown-item:hover {
+            background: var(--gray-50);
+        }
+
+        .search-dropdown-item .search-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: var(--gray-100);
+        }
+
+        .search-dropdown-item .search-icon.page { background: #EEF2FF; }
+        .search-dropdown-item .search-icon.action { background: #F0FDF4; }
+        .search-dropdown-item .search-icon.data { background: #FEF3C7; }
+
+        .search-dropdown-item .search-text {
+            flex: 1;
+        }
+
+        .search-dropdown-item .search-title {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--gray-900);
+        }
+
+        .search-dropdown-item .search-subtitle {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .search-dropdown-hint {
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            border-top: 1px solid var(--gray-100);
+            text-align: center;
+        }
+
         .icon-btn {
             width: 40px;
             height: 40px;
@@ -1275,12 +1350,14 @@
                     <h1 class="page-title" id="pageTitle">Dashboard</h1>
                 </div>
                 <div class="header-right">
-                    <div class="search-box">
+                    <div class="search-box" style="position:relative">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"/>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>
-                        <input type="text" id="globalSearchInput" placeholder="Search..." data-translate-placeholder="search">
+                        <input type="text" id="globalSearchInput" placeholder="Search..." data-translate-placeholder="search" autocomplete="off">
+                        <div id="searchDropdown" class="search-dropdown" style="display:none">
+                        </div>
                     </div>
                     <div class="lang-toggle">
                         <button class="lang-btn" onclick="setLanguage('es')">ES</button>
@@ -6484,26 +6561,186 @@
         
         function handleSearch(e) {
             const query = e.target.value.toLowerCase().trim();
+            const dropdown = document.getElementById('searchDropdown');
             
-            // Find which page is currently active and get its table
+            if (!query) {
+                dropdown.style.display = 'none';
+                // Reset table rows if on a page with a table
+                const activePage = document.querySelector('.page.active');
+                if (activePage) {
+                    const tbody = activePage.querySelector('tbody');
+                    if (tbody) {
+                        const rows = tbody.getElementsByTagName('tr');
+                        for (let i = 0; i < rows.length; i++) {
+                            rows[i].style.display = '';
+                        }
+                    }
+                }
+                return;
+            }
+            
+            // Define searchable items
+            const searchItems = [
+                // Pages
+                { type: 'page', icon: '📊', title: 'Dashboard', titleEs: 'Dashboard', keywords: ['dashboard', 'home', 'inicio', 'panel'], action: () => showPage('dashboard') },
+                { type: 'page', icon: '🔧', title: 'Maintenance Requests', titleEs: 'Solicitudes de Mantenimiento', keywords: ['requests', 'maintenance', 'solicitudes', 'mantenimiento', 'repairs', 'reparaciones'], action: () => showPage('requests') },
+                { type: 'page', icon: '🏢', title: 'Properties', titleEs: 'Propiedades', keywords: ['properties', 'buildings', 'propiedades', 'edificios'], action: () => showPage('properties') },
+                { type: 'page', icon: '🚪', title: 'Units', titleEs: 'Unidades', keywords: ['units', 'apartments', 'unidades', 'apartamentos'], action: () => showPage('units') },
+                { type: 'page', icon: '👥', title: 'Residents', titleEs: 'Residentes', keywords: ['residents', 'tenants', 'residentes', 'inquilinos'], action: () => showPage('residents') },
+                { type: 'page', icon: '📈', title: 'Reports & Analytics', titleEs: 'Reportes y Análisis', keywords: ['reports', 'analytics', 'reportes', 'analisis', 'statistics', 'estadisticas', 'income', 'ingresos'], action: () => showPage('reports') },
+                { type: 'page', icon: '⚙️', title: 'Settings', titleEs: 'Configuración', keywords: ['settings', 'configuration', 'configuracion', 'options', 'opciones'], action: () => showPage('settings') },
+                { type: 'page', icon: '💼', title: 'Clients', titleEs: 'Clientes', keywords: ['clients', 'clientes', 'landlords', 'propietarios'], action: () => showPage('clients') },
+                
+                // Actions
+                { type: 'action', icon: '➕', title: 'Add Property', titleEs: 'Agregar Propiedad', keywords: ['add property', 'new property', 'agregar propiedad', 'nueva propiedad', 'create property'], action: () => { showPage('properties'); setTimeout(() => showAddPropertyModal(), 100); } },
+                { type: 'action', icon: '➕', title: 'Add Unit', titleEs: 'Agregar Unidad', keywords: ['add unit', 'new unit', 'agregar unidad', 'nueva unidad', 'create unit'], action: () => { showPage('units'); setTimeout(() => showAddUnitModal(), 100); } },
+                { type: 'action', icon: '➕', title: 'Add Resident', titleEs: 'Agregar Residente', keywords: ['add resident', 'new resident', 'agregar residente', 'nuevo residente', 'add tenant', 'nuevo inquilino'], action: () => { showPage('residents'); setTimeout(() => showAddResidentModal(), 100); } },
+                { type: 'action', icon: '📤', title: 'Export Reports', titleEs: 'Exportar Reportes', keywords: ['export', 'download', 'exportar', 'descargar', 'csv'], action: () => { showPage('reports'); setTimeout(() => showExportModal(), 100); } },
+            ];
+            
+            // Filter items based on query
+            const matches = searchItems.filter(item => {
+                const title = (currentLang === 'es' ? item.titleEs : item.title).toLowerCase();
+                return title.includes(query) || item.keywords.some(k => k.includes(query));
+            });
+            
+            // Also search in table data if on appropriate page
             const activePage = document.querySelector('.page.active');
-            if (!activePage) return;
-            
-            // Find the tbody in the active page
-            const tbody = activePage.querySelector('tbody');
-            if (!tbody) return;
-            
-            const rows = tbody.getElementsByTagName('tr');
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                if (!query) {
-                    row.style.display = '';
-                } else {
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = text.includes(query) ? '' : 'none';
+            let tableMatches = [];
+            if (activePage) {
+                const tbody = activePage.querySelector('tbody');
+                if (tbody) {
+                    const rows = tbody.getElementsByTagName('tr');
+                    for (let i = 0; i < rows.length; i++) {
+                        const row = rows[i];
+                        const text = row.textContent.toLowerCase();
+                        if (text.includes(query)) {
+                            row.style.display = '';
+                            // Get first cell text as preview
+                            const firstCell = row.querySelector('td');
+                            if (firstCell && tableMatches.length < 3) {
+                                tableMatches.push({
+                                    type: 'data',
+                                    icon: '🔍',
+                                    title: firstCell.textContent.trim().substring(0, 40),
+                                    row: row
+                                });
+                            }
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
                 }
             }
+            
+            // Build dropdown HTML
+            if (matches.length > 0 || tableMatches.length > 0) {
+                let html = '';
+                
+                if (matches.length > 0) {
+                    const pages = matches.filter(m => m.type === 'page');
+                    const actions = matches.filter(m => m.type === 'action');
+                    
+                    if (pages.length > 0) {
+                        html += `<div class="search-dropdown-section">${currentLang === 'es' ? 'Páginas' : 'Pages'}</div>`;
+                        pages.forEach(item => {
+                            const title = currentLang === 'es' ? item.titleEs : item.title;
+                            html += `
+                                <div class="search-dropdown-item" onclick="executeSearchAction(${searchItems.indexOf(item)})">
+                                    <div class="search-icon page">${item.icon}</div>
+                                    <div class="search-text">
+                                        <div class="search-title">${title}</div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    if (actions.length > 0) {
+                        html += `<div class="search-dropdown-section">${currentLang === 'es' ? 'Acciones' : 'Actions'}</div>`;
+                        actions.forEach(item => {
+                            const title = currentLang === 'es' ? item.titleEs : item.title;
+                            html += `
+                                <div class="search-dropdown-item" onclick="executeSearchAction(${searchItems.indexOf(item)})">
+                                    <div class="search-icon action">${item.icon}</div>
+                                    <div class="search-text">
+                                        <div class="search-title">${title}</div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+                
+                if (tableMatches.length > 0) {
+                    html += `<div class="search-dropdown-section">${currentLang === 'es' ? 'Resultados' : 'Results'}</div>`;
+                    tableMatches.forEach((item, idx) => {
+                        html += `
+                            <div class="search-dropdown-item" onclick="scrollToSearchResult(${idx})">
+                                <div class="search-icon data">${item.icon}</div>
+                                <div class="search-text">
+                                    <div class="search-title">${item.title}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += `<div class="search-dropdown-hint">${currentLang === 'es' ? 'Presiona Enter para seleccionar' : 'Press Enter to select'}</div>`;
+                
+                dropdown.innerHTML = html;
+                dropdown.style.display = 'block';
+                
+                // Store for keyboard navigation
+                window.searchMatches = matches;
+                window.tableMatches = tableMatches;
+            } else {
+                dropdown.innerHTML = `<div class="search-dropdown-item"><div class="search-text"><div class="search-title" style="color:var(--gray-400)">${currentLang === 'es' ? 'Sin resultados' : 'No results'}</div></div></div>`;
+                dropdown.style.display = 'block';
+            }
         }
+        
+        // Store search items globally for onclick handlers
+        const globalSearchItems = [
+            { action: () => showPage('dashboard') },
+            { action: () => showPage('requests') },
+            { action: () => showPage('properties') },
+            { action: () => showPage('units') },
+            { action: () => showPage('residents') },
+            { action: () => showPage('reports') },
+            { action: () => showPage('settings') },
+            { action: () => showPage('clients') },
+            { action: () => { showPage('properties'); setTimeout(() => showAddPropertyModal(), 100); } },
+            { action: () => { showPage('units'); setTimeout(() => showAddUnitModal(), 100); } },
+            { action: () => { showPage('residents'); setTimeout(() => showAddResidentModal(), 100); } },
+            { action: () => { showPage('reports'); setTimeout(() => showExportModal(), 100); } },
+        ];
+        
+        function executeSearchAction(index) {
+            globalSearchItems[index].action();
+            document.getElementById('globalSearchInput').value = '';
+            document.getElementById('searchDropdown').style.display = 'none';
+        }
+        
+        function scrollToSearchResult(index) {
+            if (window.tableMatches && window.tableMatches[index]) {
+                window.tableMatches[index].row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                window.tableMatches[index].row.style.background = '#FEF3C7';
+                setTimeout(() => {
+                    window.tableMatches[index].row.style.background = '';
+                }, 2000);
+            }
+            document.getElementById('searchDropdown').style.display = 'none';
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const searchBox = document.querySelector('.search-box');
+            const dropdown = document.getElementById('searchDropdown');
+            if (searchBox && dropdown && !searchBox.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
