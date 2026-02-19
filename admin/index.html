@@ -6447,29 +6447,12 @@
                 login(email, password);
             });
             
-            // Global search
-            document.getElementById('globalSearchInput').addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase().trim();
-                
-                // Determine which table to search based on current page
-                let tableId = 'requestsTable';
-                if (currentPage === 'properties') tableId = 'propertiesTable';
-                else if (currentPage === 'units') tableId = 'unitsTable';
-                else if (currentPage === 'residents') tableId = 'residentsTable';
-                
-                const tbody = document.getElementById(tableId);
-                if (!tbody) return;
-                
-                const rows = tbody.querySelectorAll('tr');
-                rows.forEach(row => {
-                    if (!query) {
-                        row.style.display = '';
-                    } else {
-                        const text = row.textContent.toLowerCase();
-                        row.style.display = text.includes(query) ? '' : 'none';
-                    }
-                });
-            });
+            // Global search - attach after slight delay to ensure DOM is ready
+            const searchInput = document.getElementById('globalSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', handleSearch);
+                searchInput.addEventListener('keyup', handleSearch);
+            }
             
             // Navigation
             document.querySelectorAll('.nav-item[data-page]').forEach(item => {
@@ -6498,6 +6481,29 @@
             document.getElementById('unitForm').addEventListener('submit', saveUnit);
             document.getElementById('residentForm').addEventListener('submit', saveResident);
         });
+        
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase().trim();
+            
+            // Find which page is currently active and get its table
+            const activePage = document.querySelector('.page.active');
+            if (!activePage) return;
+            
+            // Find the tbody in the active page
+            const tbody = activePage.querySelector('tbody');
+            if (!tbody) return;
+            
+            const rows = tbody.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                if (!query) {
+                    row.style.display = '';
+                } else {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(query) ? '' : 'none';
+                }
+            }
+        }
     </script>
 </body>
 </html>
