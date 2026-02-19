@@ -109,24 +109,50 @@
             const orgId = params.get('org');
             const inviteEmail = params.get('email'); // Optional: pre-fill email from invite link
             
-            if (!orgId) { showInvalidState(); return; }
-
-            const { data: org, error } = await db.from('organizations').select('*').eq('id', orgId).single();
-            if (error || !org) { showInvalidState(); return; }
-
-            currentOrg = org;
-            document.getElementById('orgBadge').textContent = org.name;
+            console.log('Signup init - orgId:', orgId);
             
-            // Pre-fill email if provided in URL or from org
-            const emailField = document.getElementById('email');
-            if (inviteEmail) {
-                emailField.value = inviteEmail;
-            } else if (org.created_by_email) {
-                emailField.value = org.created_by_email;
+            if (!orgId) { 
+                console.log('No orgId provided');
+                showInvalidState(); 
+                return; 
             }
-            emailField.readOnly = !!inviteEmail; // Only readonly if invite email provided
-            
-            document.getElementById('signupForm').style.display = 'block';
+
+            try {
+                const { data: org, error } = await db.from('organizations').select('*').eq('id', orgId).single();
+                
+                console.log('Query result:', { org, error });
+                
+                if (error) {
+                    console.error('Supabase error:', error);
+                    document.getElementById('invalidState').querySelector('p').textContent = 'Error: ' + error.message;
+                    showInvalidState(); 
+                    return;
+                }
+                
+                if (!org) { 
+                    console.log('No org found');
+                    showInvalidState(); 
+                    return; 
+                }
+
+                currentOrg = org;
+                document.getElementById('orgBadge').textContent = org.name;
+                
+                // Pre-fill email if provided in URL or from org
+                const emailField = document.getElementById('email');
+                if (inviteEmail) {
+                    emailField.value = inviteEmail;
+                } else if (org.created_by_email) {
+                    emailField.value = org.created_by_email;
+                }
+                emailField.readOnly = !!inviteEmail; // Only readonly if invite email provided
+                
+                document.getElementById('signupForm').style.display = 'block';
+            } catch (err) {
+                console.error('Caught error:', err);
+                document.getElementById('invalidState').querySelector('p').textContent = 'Error: ' + err.message;
+                showInvalidState();
+            }
         }
 
         function showInvalidState() {
