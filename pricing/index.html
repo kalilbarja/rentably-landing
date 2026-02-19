@@ -223,12 +223,13 @@
 
     <script>
         const STRIPE_PUBLISHABLE_KEY = 'pk_live_51T1gLpEOGLTjV8SIzXXDwSjZXWZeata1uYug9lg7EdAUO4Yw5FxRlvIyZ0y4v68gfL31TXpfAKk87psF11Riax6J00UPACscbm';
+        const CHECKOUT_API = 'https://udmqecapkpkaluzuqjjk.supabase.co/functions/v1/create-checkout';
         const PLAN_DETAILS = {
             starter: { name: 'Starter', units: 'Up to 5', price: '$49/mo', priceId: 'price_1T2KhpEOGLTjV8SIIviOjAAP' },
             pro: { name: 'Pro', units: 'Up to 13', price: '$99/mo', priceId: 'price_1T2KiqEOGLTjV8SINREyAaBG' },
             business: { name: 'Business', units: 'Up to 30', price: '$250/mo', priceId: 'price_1T2KjFEOGLTjV8SIHMRV9C9a' }
         };
-        let stripe, elements, selectedPlan = null;
+        let stripe, selectedPlan = null;
 
         async function initStripe() { stripe = Stripe(STRIPE_PUBLISHABLE_KEY); }
 
@@ -241,11 +242,7 @@
             document.getElementById('checkoutModal').classList.add('active');
             document.getElementById('checkout-form').style.display = 'block';
             document.getElementById('successMessage').classList.remove('show');
-            
-            document.getElementById('payment-element').innerHTML = `
-                <div style="background:var(--gray-100);border-radius:8px;padding:1.5rem;text-align:center;color:var(--gray-500)">
-                    <p>💳 Configure Stripe keys to enable payments</p>
-                </div>`;
+            document.getElementById('payment-element').innerHTML = '';
         }
 
         function closeCheckout() {
@@ -257,19 +254,37 @@
             const orgName = document.getElementById('orgName').value.trim();
             const email = document.getElementById('customerEmail').value.trim();
             if (!orgName || !email) { showError('Please fill in all fields'); return; }
+            if (!selectedPlan) { showError('Please select a plan'); return; }
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing...';
+            submitBtn.textContent = 'Redirecting to checkout...';
 
             try {
-                // In production: Create Stripe Checkout Session and redirect
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                document.getElementById('checkout-form').style.display = 'none';
-                document.getElementById('successMessage').classList.add('show');
+                const details = PLAN_DETAILS[selectedPlan];
+                
+                const response = await fetch(CHECKOUT_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        priceId: details.priceId,
+                        orgName: orgName,
+                        email: email
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Redirect to Stripe Checkout
+                window.location.href = data.url;
+                
             } catch (error) {
-                showError(error.message || 'Payment failed');
-            } finally {
+                console.error('Checkout error:', error);
+                showError(error.message || 'Failed to start checkout. Please try again.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Subscribe Now';
             }
