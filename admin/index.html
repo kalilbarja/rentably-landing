@@ -4029,17 +4029,19 @@
         }
 
         async function sendResidentInvite(residentId) {
-            const confirmMsg = currentLang === 'es' 
-                ? '¿Enviar invitación por correo a este residente?' 
-                : 'Send email invitation to this resident?';
-            
-            if (!confirm(confirmMsg)) return;
+            // Show language selection dialog
+            const langChoice = await showLanguageDialog();
+            if (!langChoice) return; // User cancelled
 
             try {
                 const response = await fetch('https://udmqecapkpkaluzuqjjk.supabase.co/functions/v1/resident-invite', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'send_invite', resident_id: residentId })
+                    body: JSON.stringify({ 
+                        action: 'send_invite', 
+                        resident_id: residentId,
+                        language: langChoice 
+                    })
                 });
 
                 const data = await response.json();
@@ -4060,6 +4062,33 @@
                     : 'Error sending invitation: ';
                 showToast(errorMsg + error.message, 'error');
             }
+        }
+
+        function showLanguageDialog() {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'modal-overlay active';
+                overlay.innerHTML = `
+                    <div class="modal" style="max-width:350px">
+                        <div class="modal-header">
+                            <h3 class="modal-title">${currentLang === 'es' ? 'Enviar Invitación' : 'Send Invitation'}</h3>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                        </div>
+                        <div class="modal-body" style="padding:1.5rem">
+                            <p style="margin-bottom:1rem;color:var(--gray-600)">${currentLang === 'es' ? 'Selecciona el idioma del correo:' : 'Select email language:'}</p>
+                            <div style="display:flex;gap:1rem">
+                                <button class="btn btn-primary" style="flex:1" id="langEs">🇪🇸 Español</button>
+                                <button class="btn btn-primary" style="flex:1" id="langEn">🇺🇸 English</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                
+                overlay.querySelector('#langEs').onclick = () => { overlay.remove(); resolve('es'); };
+                overlay.querySelector('#langEn').onclick = () => { overlay.remove(); resolve('en'); };
+                overlay.querySelector('.modal-close').onclick = () => { overlay.remove(); resolve(null); };
+            });
         }
 
         async function loadUnitOptions() {
