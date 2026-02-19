@@ -1280,7 +1280,7 @@
                             <circle cx="11" cy="11" r="8"/>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>
-                        <input type="text" id="globalSearchInput" placeholder="Search..." data-translate-placeholder="search" onkeyup="globalSearch(this.value)">
+                        <input type="text" id="globalSearchInput" placeholder="Search..." data-translate-placeholder="search">
                     </div>
                     <div class="lang-toggle">
                         <button class="lang-btn" onclick="setLanguage('es')">ES</button>
@@ -6445,6 +6445,30 @@
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
                 login(email, password);
+            });
+            
+            // Global search
+            document.getElementById('globalSearchInput').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                
+                // Determine which table to search based on current page
+                let tableId = 'requestsTable';
+                if (currentPage === 'properties') tableId = 'propertiesTable';
+                else if (currentPage === 'units') tableId = 'unitsTable';
+                else if (currentPage === 'residents') tableId = 'residentsTable';
+                
+                const tbody = document.getElementById(tableId);
+                if (!tbody) return;
+                
+                const rows = tbody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    if (!query) {
+                        row.style.display = '';
+                    } else {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(query) ? '' : 'none';
+                    }
+                });
             });
             
             // Navigation
