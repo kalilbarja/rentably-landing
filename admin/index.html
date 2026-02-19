@@ -2648,11 +2648,11 @@
                     throw new Error('No admin account found for this user');
                 }
                 
-                // Get organization (using the first one for now)
+                // Get the user's organization
                 const { data: org } = await db
                     .from('organizations')
                     .select('*')
-                    .limit(1)
+                    .eq('id', adminUser.organization_id)
                     .single();
                 
                 currentUser = adminUser;
@@ -2690,7 +2690,7 @@
                     const { data: org } = await db
                         .from('organizations')
                         .select('*')
-                        .limit(1)
+                        .eq('id', adminUser.organization_id)
                         .single();
                     
                     currentUser = adminUser;
@@ -3443,7 +3443,7 @@
         async function loadResidents() {
             const { data: residents } = await db
                 .from('residents')
-                .select('*, units(identifier)')
+                .select('*, units(identifier), invite_token, invite_sent_at, invite_accepted_at')
                 .eq('organization_id', currentOrg.id)
                 .order('name');
             
@@ -3465,6 +3465,7 @@
                             </span>
                         </td>
                         <td>
+                            ${!r.invite_accepted_at ? `<button class="btn btn-primary btn-sm" onclick="sendResidentInvite('${r.id}')" style="margin-right:0.5rem" title="${currentLang === 'es' ? 'Enviar invitación' : 'Send invite'}">📧</button>` : `<span style="color:var(--success);font-size:0.8rem" title="${currentLang === 'es' ? 'Cuenta activa' : 'Account active'}">✓</span>`}
                             <button class="btn btn-secondary btn-sm" onclick="editResident('${r.id}')">${editText}</button>
                         </td>
                     </tr>
@@ -4025,6 +4026,40 @@
 
         function closeResidentModal() {
             document.getElementById('residentModal').classList.remove('active');
+        }
+
+        async function sendResidentInvite(residentId) {
+            const confirmMsg = currentLang === 'es' 
+                ? '¿Enviar invitación por correo a este residente?' 
+                : 'Send email invitation to this resident?';
+            
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                const response = await fetch('https://udmqecapkpkaluzuqjjk.supabase.co/functions/v1/resident-invite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'send_invite', resident_id: residentId })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                const successMsg = currentLang === 'es' 
+                    ? '✅ Invitación enviada correctamente' 
+                    : '✅ Invitation sent successfully';
+                showToast(successMsg);
+                loadResidents(); // Refresh list
+
+            } catch (error) {
+                const errorMsg = currentLang === 'es' 
+                    ? 'Error al enviar invitación: ' 
+                    : 'Error sending invitation: ';
+                showToast(errorMsg + error.message, 'error');
+            }
         }
 
         async function loadUnitOptions() {
