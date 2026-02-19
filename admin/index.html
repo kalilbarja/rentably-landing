@@ -739,6 +739,27 @@
             border-color: var(--primary);
         }
 
+        .export-format-btn {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            border: 1px solid var(--gray-200);
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-format-btn:hover {
+            background: var(--gray-200);
+        }
+
+        .export-format-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         /* Client Accordion */
         .client-accordion-item {
             border-bottom: 1px solid var(--gray-200);
@@ -1259,7 +1280,7 @@
                             <circle cx="11" cy="11" r="8"/>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>
-                        <input type="text" placeholder="Search..." data-translate-placeholder="search">
+                        <input type="text" id="globalSearchInput" placeholder="Search..." data-translate-placeholder="search" onkeyup="globalSearch(this.value)">
                     </div>
                     <div class="lang-toggle">
                         <button class="lang-btn" onclick="setLanguage('es')">ES</button>
@@ -1809,6 +1830,18 @@
 
                 <!-- Reports Page -->
                 <div class="page pro-only" id="page-reports" style="display:none">
+                    <!-- Missing Data Warning Banner -->
+                    <div id="missingDataWarning" class="card" style="display:none;margin-bottom:1rem;background:linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);border:1px solid #F59E0B">
+                        <div class="card-body" style="padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem">
+                            <span style="font-size:1.25rem">⚠️</span>
+                            <div style="flex:1">
+                                <strong style="color:#92400E" data-translate="incomplete_data">Incomplete Data</strong>
+                                <span style="color:#92400E;font-size:0.9rem" id="missingDataText"></span>
+                            </div>
+                            <button class="btn btn-sm" style="background:#92400E;color:white" onclick="showPage('residents')" data-translate="fix_now">Fix Now</button>
+                        </div>
+                    </div>
+
                     <!-- Quick Date Range Buttons -->
                     <div class="card" style="margin-bottom:1.5rem">
                         <div class="card-body" style="padding:1rem 1.5rem">
@@ -1828,7 +1861,7 @@
                                             <option value="all" data-translate="all_clients">All Clients</option>
                                         </select>
                                     </div>
-                                    <button class="btn btn-secondary btn-sm" onclick="exportIncomeReport()">
+                                    <button class="btn btn-secondary btn-sm" onclick="showExportModal()">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                             <polyline points="7 10 12 15 17 10"/>
@@ -2331,6 +2364,76 @@
         </div>
     </div>
 
+    <!-- Export Reports Modal -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal" style="max-width:500px">
+            <div class="modal-header">
+                <h3 class="modal-title" data-translate="export_reports">Export Reports</h3>
+                <button class="modal-close" onclick="closeExportModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--gray-600);margin-bottom:1rem;font-size:0.9rem" data-translate="select_reports_to_export">Select which reports to include in your export:</p>
+                
+                <div style="display:flex;flex-direction:column;gap:0.75rem">
+                    <label style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--gray-50);border-radius:8px;cursor:pointer">
+                        <input type="checkbox" id="exportFinancialSummary" checked style="width:18px;height:18px;accent-color:var(--primary)">
+                        <div>
+                            <div style="font-weight:500" data-translate="financial_summary">Financial Summary</div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="financial_summary_desc">Revenue, HOA, Maintenance, Repairs, Net Income</div>
+                        </div>
+                    </label>
+                    
+                    <label style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--gray-50);border-radius:8px;cursor:pointer">
+                        <input type="checkbox" id="exportTenantBreakdown" checked style="width:18px;height:18px;accent-color:var(--primary)">
+                        <div>
+                            <div style="font-weight:500" data-translate="tenant_breakdown">Tenant Income Breakdown</div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="tenant_breakdown_desc">Per-tenant rent, fees, and net income</div>
+                        </div>
+                    </label>
+                    
+                    <label style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--gray-50);border-radius:8px;cursor:pointer">
+                        <input type="checkbox" id="exportMaintenanceRequests" checked style="width:18px;height:18px;accent-color:var(--primary)">
+                        <div>
+                            <div style="font-weight:500" data-translate="maintenance_requests">Maintenance Requests</div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="maintenance_requests_desc">All requests with status, category, and costs</div>
+                        </div>
+                    </label>
+                    
+                    <label style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--gray-50);border-radius:8px;cursor:pointer">
+                        <input type="checkbox" id="exportPropertyBreakdown" style="width:18px;height:18px;accent-color:var(--primary)">
+                        <div>
+                            <div style="font-weight:500" data-translate="property_breakdown">Property Breakdown</div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="property_breakdown_desc">Income and expenses per property</div>
+                        </div>
+                    </label>
+                    
+                    <label style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--gray-50);border-radius:8px;cursor:pointer">
+                        <input type="checkbox" id="exportOccupancy" style="width:18px;height:18px;accent-color:var(--primary)">
+                        <div>
+                            <div style="font-weight:500" data-translate="occupancy_report">Occupancy Report</div>
+                            <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="occupancy_report_desc">Unit occupancy status and rates</div>
+                        </div>
+                    </label>
+                </div>
+                
+                <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--gray-200)">
+                    <label class="form-label" data-translate="export_format">Export Format</label>
+                    <div style="display:flex;gap:0.5rem">
+                        <button type="button" class="btn export-format-btn active" data-format="csv" onclick="setExportFormat('csv')">CSV</button>
+                        <button type="button" class="btn export-format-btn" data-format="combined" onclick="setExportFormat('combined')">
+                            <span data-translate="combined_csv">Combined CSV</span>
+                        </button>
+                    </div>
+                    <small style="color:var(--gray-500);font-size:0.8rem;display:block;margin-top:0.5rem" data-translate="export_format_desc">CSV exports each report separately. Combined merges all selected into one file.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeExportModal()" data-translate="cancel">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="executeExport()" data-translate="export">Export</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Resident Modal -->
     <div class="modal-overlay" id="residentModal">
         <div class="modal">
@@ -2682,6 +2785,26 @@
                 reset_warning: 'This will permanently delete <strong>ALL</strong> maintenance requests for your organization. This action <strong>cannot be undone</strong>.',
                 type_confirm: 'Type "DELETE" to confirm:',
                 delete_all: 'Delete All Requests',
+                // Export
+                export_reports: 'Export Reports',
+                select_reports_to_export: 'Select which reports to include in your export:',
+                financial_summary: 'Financial Summary',
+                financial_summary_desc: 'Revenue, HOA, Maintenance, Repairs, Net Income',
+                tenant_breakdown: 'Tenant Income Breakdown',
+                tenant_breakdown_desc: 'Per-tenant rent, fees, and net income',
+                maintenance_requests: 'Maintenance Requests',
+                maintenance_requests_desc: 'All requests with status, category, and costs',
+                property_breakdown: 'Property Breakdown',
+                property_breakdown_desc: 'Income and expenses per property',
+                occupancy_report: 'Occupancy Report',
+                occupancy_report_desc: 'Unit occupancy status and rates',
+                export_format: 'Export Format',
+                combined_csv: 'Combined CSV',
+                export_format_desc: 'CSV exports each report separately. Combined merges all selected into one file.',
+                // Missing Data Warning
+                incomplete_data: 'Incomplete Data',
+                missing_lease_dates: 'Some residents are missing lease start/end dates. Revenue calculations may be inaccurate.',
+                fix_now: 'Fix Now',
                 // Search
                 search: 'Search...',
                 // Modals
@@ -2913,6 +3036,26 @@
                 reset_warning: 'Esto eliminará permanentemente <strong>TODAS</strong> las solicitudes de mantenimiento de tu organización. Esta acción <strong>no se puede deshacer</strong>.',
                 type_confirm: 'Escribe "DELETE" para confirmar:',
                 delete_all: 'Eliminar Todas las Solicitudes',
+                // Export
+                export_reports: 'Exportar Reportes',
+                select_reports_to_export: 'Selecciona qué reportes incluir en tu exportación:',
+                financial_summary: 'Resumen Financiero',
+                financial_summary_desc: 'Ingresos, HOA, Mantenimiento, Reparaciones, Ingreso Neto',
+                tenant_breakdown: 'Desglose por Inquilino',
+                tenant_breakdown_desc: 'Renta, cuotas e ingreso neto por inquilino',
+                maintenance_requests: 'Solicitudes de Mantenimiento',
+                maintenance_requests_desc: 'Todas las solicitudes con estado, categoría y costos',
+                property_breakdown: 'Desglose por Propiedad',
+                property_breakdown_desc: 'Ingresos y gastos por propiedad',
+                occupancy_report: 'Reporte de Ocupación',
+                occupancy_report_desc: 'Estado de ocupación y tasas por unidad',
+                export_format: 'Formato de Exportación',
+                combined_csv: 'CSV Combinado',
+                export_format_desc: 'CSV exporta cada reporte por separado. Combinado une todos los seleccionados en un archivo.',
+                // Missing Data Warning
+                incomplete_data: 'Datos Incompletos',
+                missing_lease_dates: 'Algunos residentes no tienen fechas de inicio/fin de contrato. Los cálculos de ingresos pueden ser inexactos.',
+                fix_now: 'Corregir Ahora',
                 // Search
                 search: 'Buscar...',
                 // Modals
@@ -2972,6 +3115,7 @@
         // ==============================================
         let currentUser = null;
         let currentOrg = null;
+        let currentPage = 'dashboard';
         
         // ==============================================
         // AUTHENTICATION
@@ -3233,6 +3377,13 @@
             window.open('https://www.youtube.com/watch?v=YOUR_VIDEO_ID', '_blank');
         }
         function showPage(pageId) {
+            // Clear search
+            const searchInput = document.getElementById('globalSearchInput');
+            if (searchInput) searchInput.value = '';
+            
+            // Track current page for search
+            currentPage = pageId;
+            
             // Update nav
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
@@ -5375,13 +5526,21 @@
             
             // Pro+ plans: Financial stats and charts
             if (isPro) {
-                // Calculate financial totals from residents (includes HOA)
+                // Calculate date range for period
+                const endDate = period === 'last_month' 
+                    ? new Date(now.getFullYear(), now.getMonth(), 0) // Last day of previous month
+                    : now;
+                
+                // Calculate financial totals from residents based on lease dates
                 let totalRevenue = 0;
                 let totalHoa = 0;
+                let totalMaint = 0;
                 let totalExpenses = 0;
                 let totalUnits = 0;
                 let occupiedUnits = 0;
+                let missingLeaseData = [];
                 
+                // Calculate unit expenses
                 (properties || []).forEach(prop => {
                     (prop.units || []).forEach(unit => {
                         totalUnits++;
@@ -5392,19 +5551,57 @@
                     });
                 });
                 
-                // Calculate revenue, HOA and Maintenance from residents
-                let totalMaint = 0;
+                // Calculate revenue based on lease overlap with selected period
                 (residents || []).forEach(r => {
-                    if (r.is_primary !== false) { // Only count primary tenants to avoid double-counting
-                        totalRevenue += parseFloat(r.monthly_payment) || 0;
-                        if (r.hoa_included && r.hoa_paid_by === 'owner') {
-                            totalHoa += parseFloat(r.hoa_amount) || 0;
+                    if (r.is_primary !== false) { // Only count primary tenants
+                        const monthlyPayment = parseFloat(r.monthly_payment) || 0;
+                        const hoaAmount = (r.hoa_included && r.hoa_paid_by === 'owner') ? (parseFloat(r.hoa_amount) || 0) : 0;
+                        const maintAmount = (r.maintenance_included && r.maintenance_paid_by === 'owner') ? (parseFloat(r.maintenance_amount) || 0) : 0;
+                        
+                        // Check for missing lease dates
+                        if (!r.lease_start || !r.lease_end) {
+                            missingLeaseData.push(r.name);
                         }
-                        if (r.maintenance_included && r.maintenance_paid_by === 'owner') {
-                            totalMaint += parseFloat(r.maintenance_amount) || 0;
+                        
+                        // Calculate months overlap between lease and selected period
+                        const leaseStart = r.lease_start ? new Date(r.lease_start) : new Date(2020, 0, 1);
+                        const leaseEnd = r.lease_end ? new Date(r.lease_end) : new Date(2030, 11, 31);
+                        
+                        // Get overlap period
+                        const overlapStart = new Date(Math.max(startDate.getTime(), leaseStart.getTime()));
+                        const overlapEnd = new Date(Math.min(endDate.getTime(), leaseEnd.getTime()));
+                        
+                        if (overlapStart <= overlapEnd) {
+                            // Calculate number of months (prorated)
+                            const msPerDay = 24 * 60 * 60 * 1000;
+                            const daysInPeriod = Math.ceil((overlapEnd - overlapStart) / msPerDay) + 1;
+                            const monthsInPeriod = daysInPeriod / 30.44; // Average days per month
+                            
+                            totalRevenue += monthlyPayment * monthsInPeriod;
+                            totalHoa += hoaAmount * monthsInPeriod;
+                            totalMaint += maintAmount * monthsInPeriod;
                         }
                     }
                 });
+                
+                // Round to 2 decimal places
+                totalRevenue = Math.round(totalRevenue * 100) / 100;
+                totalHoa = Math.round(totalHoa * 100) / 100;
+                totalMaint = Math.round(totalMaint * 100) / 100;
+                
+                // Show/hide missing data warning
+                const warningBanner = document.getElementById('missingDataWarning');
+                const warningText = document.getElementById('missingDataText');
+                if (missingLeaseData.length > 0) {
+                    const missingCount = missingLeaseData.length;
+                    const warningMsg = currentLang === 'es' 
+                        ? ` — ${missingCount} residente(s) sin fechas de contrato. Los cálculos pueden ser inexactos.`
+                        : ` — ${missingCount} resident(s) missing lease dates. Calculations may be inaccurate.`;
+                    warningText.textContent = warningMsg;
+                    warningBanner.style.display = '';
+                } else {
+                    warningBanner.style.display = 'none';
+                }
                 
                 const totalFees = totalHoa + totalMaint;
                 const netIncome = totalRevenue - totalFees - totalExpenses;
@@ -5439,6 +5636,25 @@
                 // Show occupancy stats grid
                 document.getElementById('occupancyStatsGrid').style.display = '';
                 
+                // Store report data for export
+                window.reportData = {
+                    period,
+                    startDate,
+                    endDate,
+                    currencySymbol,
+                    totalRevenue,
+                    totalHoa,
+                    totalMaint,
+                    totalExpenses,
+                    netIncome,
+                    totalUnits,
+                    occupiedUnits,
+                    occupancyRate,
+                    residents: residents || [],
+                    requests: requests || [],
+                    properties: properties || []
+                };
+                
                 // Tenant Income Breakdown Table
                 const tenantTable = document.getElementById('tenantIncomeTable');
                 const tenantTotals = document.getElementById('tenantIncomeTotals');
@@ -5453,17 +5669,33 @@
                 
                 if (residents && residents.length > 0) {
                     tenantTable.innerHTML = residents.map(r => {
-                        const rent = parseFloat(r.monthly_payment) || 0;
+                        const monthlyPayment = parseFloat(r.monthly_payment) || 0;
                         const hoaFee = (r.hoa_included && r.hoa_paid_by === 'owner') ? (parseFloat(r.hoa_amount) || 0) : 0;
                         const maintFee = (r.maintenance_included && r.maintenance_paid_by === 'owner') ? (parseFloat(r.maintenance_amount) || 0) : 0;
-                        const totalFeesUnit = hoaFee + maintFee;
-                        const net = rent - totalFeesUnit;
+                        
+                        // Calculate for selected period
+                        const leaseStart = r.lease_start ? new Date(r.lease_start) : new Date(2020, 0, 1);
+                        const leaseEnd = r.lease_end ? new Date(r.lease_end) : new Date(2030, 11, 31);
+                        const overlapStart = new Date(Math.max(startDate.getTime(), leaseStart.getTime()));
+                        const overlapEnd = new Date(Math.min(endDate.getTime(), leaseEnd.getTime()));
+                        
+                        let periodRent = 0, periodHoa = 0, periodMaint = 0;
+                        if (overlapStart <= overlapEnd) {
+                            const daysInPeriod = Math.ceil((overlapEnd - overlapStart) / (24*60*60*1000)) + 1;
+                            const monthsInPeriod = daysInPeriod / 30.44;
+                            periodRent = Math.round(monthlyPayment * monthsInPeriod * 100) / 100;
+                            periodHoa = Math.round(hoaFee * monthsInPeriod * 100) / 100;
+                            periodMaint = Math.round(maintFee * monthsInPeriod * 100) / 100;
+                        }
+                        
+                        const totalFeesUnit = periodHoa + periodMaint;
+                        const net = periodRent - totalFeesUnit;
                         
                         // Only sum for primary tenants
                         if (r.is_primary !== false) {
-                            sumRent += rent;
-                            sumHoa += hoaFee;
-                            sumMaint += maintFee;
+                            sumRent += periodRent;
+                            sumHoa += periodHoa;
+                            sumMaint += periodMaint;
                             sumNet += net;
                         }
                         
@@ -5471,14 +5703,18 @@
                             ? '' 
                             : `<span style="display:inline-block;background:var(--gray-200);color:var(--gray-600);font-size:0.65rem;padding:1px 4px;border-radius:3px;margin-left:0.25rem">${currentLang === 'es' ? 'Co' : 'Co'}</span>`;
                         
+                        const missingDates = (!r.lease_start || !r.lease_end) 
+                            ? `<span style="color:var(--warning);font-size:0.7rem;margin-left:0.25rem" title="${currentLang === 'es' ? 'Fechas de contrato incompletas' : 'Missing lease dates'}">⚠️</span>` 
+                            : '';
+                        
                         return `
                             <tr>
-                                <td style="font-weight:500">${r.name}${primaryBadge}</td>
+                                <td style="font-weight:500">${r.name}${primaryBadge}${missingDates}</td>
                                 <td>${r.units?.properties?.name || ''} - ${r.units?.identifier || '-'}</td>
-                                <td style="color:var(--success)">${currencySymbol}${rent.toLocaleString()}</td>
-                                <td class="hoa-col" style="display:${hoaEnabled ? '' : 'none'};color:${hoaFee > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${hoaFee > 0 ? '-' + currencySymbol + hoaFee.toLocaleString() : '-'}</td>
-                                <td class="maint-col" style="display:${maintEnabled ? '' : 'none'};color:${maintFee > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${maintFee > 0 ? '-' + currencySymbol + maintFee.toLocaleString() : '-'}</td>
-                                <td style="font-weight:600;color:${net >= rent ? 'var(--success)' : 'var(--warning)'}">${currencySymbol}${net.toLocaleString()}</td>
+                                <td style="color:var(--success)">${currencySymbol}${periodRent.toLocaleString()}</td>
+                                <td class="hoa-col" style="display:${hoaEnabled ? '' : 'none'};color:${periodHoa > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${periodHoa > 0 ? '-' + currencySymbol + periodHoa.toLocaleString() : '-'}</td>
+                                <td class="maint-col" style="display:${maintEnabled ? '' : 'none'};color:${periodMaint > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${periodMaint > 0 ? '-' + currencySymbol + periodMaint.toLocaleString() : '-'}</td>
+                                <td style="font-weight:600;color:${net >= periodRent ? 'var(--success)' : 'var(--warning)'}">${currencySymbol}${net.toLocaleString()}</td>
                             </tr>
                         `;
                     }).join('');
@@ -5966,130 +6202,252 @@
             `;
         }
         
-        async function exportIncomeReport() {
-            const period = document.getElementById('reportPeriod')?.value || 'month';
-            const now = new Date();
-            let startDate;
+        // ==============================================
+        // GLOBAL SEARCH
+        // ==============================================
+        function globalSearch(query) {
+            query = query.toLowerCase().trim();
             
-            switch(period) {
-                case 'month':
-                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-                    break;
-                case 'last_month':
-                    startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-                    break;
-                case 'quarter':
-                    const quarter = Math.floor(now.getMonth() / 3);
-                    startDate = new Date(now.getFullYear(), quarter * 3, 1);
-                    break;
-                case 'year':
-                    startDate = new Date(now.getFullYear(), 0, 1);
-                    break;
-                default:
-                    startDate = new Date(2020, 0, 1);
+            if (!query) {
+                // Reset all views to show all items
+                if (currentPage === 'requests') loadRequests();
+                if (currentPage === 'properties') loadProperties();
+                if (currentPage === 'units') filterUnits();
+                if (currentPage === 'residents') loadResidents();
+                return;
             }
             
-            const { data: clients } = await db
-                .from('clients')
-                .select('id, name, company_name, properties(id, name, units(id, identifier, rent_amount, is_occupied))')
-                .eq('organization_id', currentOrg.id)
-                .eq('is_active', true)
-                .order('name');
+            // Search based on current page
+            switch(currentPage) {
+                case 'requests':
+                    searchRequests(query);
+                    break;
+                case 'properties':
+                    searchProperties(query);
+                    break;
+                case 'units':
+                    searchUnits(query);
+                    break;
+                case 'residents':
+                    searchResidents(query);
+                    break;
+            }
+        }
+        
+        function searchRequests(query) {
+            const rows = document.querySelectorAll('#requestsTable tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+        
+        function searchProperties(query) {
+            const rows = document.querySelectorAll('#propertiesTable tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+        
+        function searchUnits(query) {
+            const rows = document.querySelectorAll('#unitsTable tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+        
+        function searchResidents(query) {
+            const rows = document.querySelectorAll('#residentsTable tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        // ==============================================
+        // EXPORT MODAL
+        // ==============================================
+        let exportFormat = 'csv';
+        
+        function showExportModal() {
+            document.getElementById('exportModal').classList.add('active');
+        }
+        
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+        
+        function setExportFormat(format) {
+            exportFormat = format;
+            document.querySelectorAll('.export-format-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.format === format);
+            });
+        }
+        
+        function executeExport() {
+            const data = window.reportData;
+            if (!data) {
+                showToast(currentLang === 'es' ? 'No hay datos para exportar' : 'No data to export');
+                return;
+            }
             
-            const { data: requests } = await db
-                .from('maintenance_requests')
-                .select('unit_id, total_cost')
-                .eq('organization_id', currentOrg.id)
-                .gte('created_at', startDate.toISOString());
+            const selected = {
+                financial: document.getElementById('exportFinancialSummary').checked,
+                tenants: document.getElementById('exportTenantBreakdown').checked,
+                requests: document.getElementById('exportMaintenanceRequests').checked,
+                properties: document.getElementById('exportPropertyBreakdown').checked,
+                occupancy: document.getElementById('exportOccupancy').checked
+            };
             
-            const expensesByUnit = {};
-            (requests || []).forEach(r => {
-                if (r.unit_id && r.total_cost) {
-                    expensesByUnit[r.unit_id] = (expensesByUnit[r.unit_id] || 0) + parseFloat(r.total_cost);
+            if (!Object.values(selected).some(v => v)) {
+                showToast(currentLang === 'es' ? 'Selecciona al menos un reporte' : 'Select at least one report');
+                return;
+            }
+            
+            const dateStr = new Date().toISOString().split('T')[0];
+            const periodLabel = currentReportPeriod || 'all';
+            
+            if (exportFormat === 'combined') {
+                // Combined CSV
+                let csv = '';
+                
+                if (selected.financial) {
+                    csv += 'FINANCIAL SUMMARY\n';
+                    csv += 'Metric,Value\n';
+                    csv += `Total Revenue,${data.currencySymbol}${data.totalRevenue.toLocaleString()}\n`;
+                    csv += `HOA Fees,${data.currencySymbol}${data.totalHoa.toLocaleString()}\n`;
+                    csv += `Maintenance Fees,${data.currencySymbol}${data.totalMaint.toLocaleString()}\n`;
+                    csv += `Repair Costs,${data.currencySymbol}${data.totalExpenses.toLocaleString()}\n`;
+                    csv += `Net Income,${data.currencySymbol}${data.netIncome.toLocaleString()}\n`;
+                    csv += '\n';
                 }
-            });
-            
-            if (!clients || clients.length === 0) return;
-            
-            let csv = 'Client,Company,Property,Unit,Monthly Rent,Expenses,Net Income,Status\n';
-            
-            clients.forEach(client => {
-                (client.properties || []).forEach(prop => {
-                    (prop.units || []).forEach(unit => {
-                        const rent = unit.is_occupied ? (parseFloat(unit.rent_amount) || 0) : 0;
-                        const expenses = expensesByUnit[unit.id] || 0;
-                        const net = rent - expenses;
-                        const status = unit.is_occupied ? 'Occupied' : 'Vacant';
-                        
-                        csv += `"${client.name}","${client.company_name || ''}","${prop.name}","${unit.identifier}","${rent}","${expenses}","${net}","${status}"\n`;
+                
+                if (selected.occupancy) {
+                    csv += 'OCCUPANCY REPORT\n';
+                    csv += 'Metric,Value\n';
+                    csv += `Total Units,${data.totalUnits}\n`;
+                    csv += `Occupied Units,${data.occupiedUnits}\n`;
+                    csv += `Vacant Units,${data.totalUnits - data.occupiedUnits}\n`;
+                    csv += `Occupancy Rate,${data.occupancyRate}%\n`;
+                    csv += '\n';
+                }
+                
+                if (selected.tenants) {
+                    csv += 'TENANT INCOME BREAKDOWN\n';
+                    csv += 'Tenant,Unit,Monthly Rent,HOA,Maintenance,Net Income,Lease Start,Lease End\n';
+                    data.residents.filter(r => r.is_primary !== false).forEach(r => {
+                        const rent = parseFloat(r.monthly_payment) || 0;
+                        const hoa = (r.hoa_included && r.hoa_paid_by === 'owner') ? (parseFloat(r.hoa_amount) || 0) : 0;
+                        const maint = (r.maintenance_included && r.maintenance_paid_by === 'owner') ? (parseFloat(r.maintenance_amount) || 0) : 0;
+                        csv += `"${r.name}","${r.units?.properties?.name || ''} - ${r.units?.identifier || ''}",${rent},${hoa},${maint},${rent - hoa - maint},${r.lease_start || 'N/A'},${r.lease_end || 'N/A'}\n`;
                     });
-                });
-            });
+                    csv += '\n';
+                }
+                
+                if (selected.requests) {
+                    csv += 'MAINTENANCE REQUESTS\n';
+                    csv += 'Date,Property,Unit,Category,Status,Cost,Description\n';
+                    data.requests.forEach(r => {
+                        csv += `${new Date(r.created_at).toLocaleDateString()},"${r.properties?.name || ''}","${r.units?.identifier || ''}","${r.category || ''}","${r.status || ''}",${r.total_cost || 0},"${(r.description || '').replace(/"/g, '""').replace(/\n/g, ' ')}"\n`;
+                    });
+                    csv += '\n';
+                }
+                
+                if (selected.properties) {
+                    csv += 'PROPERTY BREAKDOWN\n';
+                    csv += 'Property,Units,Revenue,Expenses,Net Income\n';
+                    data.properties.forEach(p => {
+                        const units = p.units?.length || 0;
+                        let propRevenue = 0, propExpenses = 0;
+                        (p.units || []).forEach(u => {
+                            propRevenue += parseFloat(u.rent_amount) || 0;
+                        });
+                        csv += `"${p.name}",${units},${propRevenue},${propExpenses},${propRevenue - propExpenses}\n`;
+                    });
+                }
+                
+                downloadCSV(csv, `rentably-report-combined-${periodLabel}-${dateStr}.csv`);
+            } else {
+                // Separate CSVs
+                if (selected.financial) {
+                    let csv = 'Metric,Value\n';
+                    csv += `Total Revenue,${data.totalRevenue}\n`;
+                    csv += `HOA Fees,${data.totalHoa}\n`;
+                    csv += `Maintenance Fees,${data.totalMaint}\n`;
+                    csv += `Repair Costs,${data.totalExpenses}\n`;
+                    csv += `Net Income,${data.netIncome}\n`;
+                    downloadCSV(csv, `financial-summary-${periodLabel}-${dateStr}.csv`);
+                }
+                
+                if (selected.tenants) {
+                    let csv = 'Tenant,Unit,Monthly Rent,HOA,Maintenance,Net Income,Lease Start,Lease End\n';
+                    data.residents.filter(r => r.is_primary !== false).forEach(r => {
+                        const rent = parseFloat(r.monthly_payment) || 0;
+                        const hoa = (r.hoa_included && r.hoa_paid_by === 'owner') ? (parseFloat(r.hoa_amount) || 0) : 0;
+                        const maint = (r.maintenance_included && r.maintenance_paid_by === 'owner') ? (parseFloat(r.maintenance_amount) || 0) : 0;
+                        csv += `"${r.name}","${r.units?.properties?.name || ''} - ${r.units?.identifier || ''}",${rent},${hoa},${maint},${rent - hoa - maint},${r.lease_start || 'N/A'},${r.lease_end || 'N/A'}\n`;
+                    });
+                    downloadCSV(csv, `tenant-breakdown-${periodLabel}-${dateStr}.csv`);
+                }
+                
+                if (selected.requests) {
+                    let csv = 'Date,Property,Unit,Category,Status,Cost,Description\n';
+                    data.requests.forEach(r => {
+                        csv += `${new Date(r.created_at).toLocaleDateString()},"${r.properties?.name || ''}","${r.units?.identifier || ''}","${r.category || ''}","${r.status || ''}",${r.total_cost || 0},"${(r.description || '').replace(/"/g, '""').replace(/\n/g, ' ')}"\n`;
+                    });
+                    downloadCSV(csv, `maintenance-requests-${periodLabel}-${dateStr}.csv`);
+                }
+                
+                if (selected.properties) {
+                    let csv = 'Property,Units,Revenue,Expenses,Net Income\n';
+                    data.properties.forEach(p => {
+                        const units = p.units?.length || 0;
+                        let propRevenue = 0;
+                        (p.units || []).forEach(u => {
+                            propRevenue += parseFloat(u.rent_amount) || 0;
+                        });
+                        csv += `"${p.name}",${units},${propRevenue},0,${propRevenue}\n`;
+                    });
+                    downloadCSV(csv, `property-breakdown-${periodLabel}-${dateStr}.csv`);
+                }
+                
+                if (selected.occupancy) {
+                    let csv = 'Metric,Value\n';
+                    csv += `Total Units,${data.totalUnits}\n`;
+                    csv += `Occupied Units,${data.occupiedUnits}\n`;
+                    csv += `Vacant Units,${data.totalUnits - data.occupiedUnits}\n`;
+                    csv += `Occupancy Rate,${data.occupancyRate}%\n`;
+                    downloadCSV(csv, `occupancy-report-${periodLabel}-${dateStr}.csv`);
+                }
+            }
             
-            const blob = new Blob([csv], { type: 'text/csv' });
+            closeExportModal();
+            showToast(currentLang === 'es' ? 'Reporte(s) exportado(s)' : 'Report(s) exported');
+        }
+        
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `income-report-${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = filename;
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
+        async function exportIncomeReport() {
+            // Legacy function - now opens modal
+            showExportModal();
+        }
+
         function exportReport() {
-            const period = document.getElementById('reportPeriod').value;
-            const propertyId = document.getElementById('reportProperty').value;
-            
-            // Build query for export
-            const now = new Date();
-            let startDate;
-            
-            switch(period) {
-                case 'month':
-                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-                    break;
-                case 'last_month':
-                    startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-                    break;
-                case 'quarter':
-                    const quarter = Math.floor(now.getMonth() / 3);
-                    startDate = new Date(now.getFullYear(), quarter * 3, 1);
-                    break;
-                case 'year':
-                    startDate = new Date(now.getFullYear(), 0, 1);
-                    break;
-                default:
-                    startDate = new Date(2020, 0, 1);
-            }
-
-            // Fetch and export
-            let query = db
-                .from('maintenance_requests')
-                .select('*, properties(name), units(identifier), residents(name)')
-                .eq('organization_id', currentOrg.id)
-                .gte('created_at', startDate.toISOString());
-
-            if (propertyId !== 'all') {
-                query = query.eq('property_id', propertyId);
-            }
-
-            query.then(({ data: requests }) => {
-                if (!requests || requests.length === 0) {
-                    showToast(currentLang === 'es' ? 'No hay datos para exportar' : 'No data to export');
-                    return;
-                }
-
-                // Build CSV
-                const headers = ['Date', 'Property', 'Unit', 'Resident', 'Category', 'Status', 'Cost', 'Description'];
-                const rows = requests.map(r => [
-                    new Date(r.created_at).toLocaleDateString(),
-                    r.properties?.name || '',
-                    r.units?.identifier || '',
-                    r.residents?.name || '',
-                    r.category || '',
-                    r.status || '',
-                    r.total_cost || '0',
-                    (r.description || '').replace(/,/g, ';').replace(/\n/g, ' ')
-                ]);
+            // Legacy function - now opens modal
+            showExportModal();
+        }
 
                 const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
                 
