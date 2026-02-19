@@ -1087,7 +1087,7 @@
         }
 
         /* Date Format & Currency Buttons */
-        .date-format-btn, .currency-btn {
+        .date-format-btn, .currency-btn, .hoa-btn {
             background: var(--gray-100);
             border: 2px solid var(--gray-200);
             color: var(--gray-700);
@@ -1095,18 +1095,18 @@
             transition: all 0.15s ease;
         }
 
-        .date-format-btn:hover, .currency-btn:hover {
+        .date-format-btn:hover, .currency-btn:hover, .hoa-btn:hover {
             background: var(--gray-50);
             border-color: var(--gray-300);
         }
 
-        .date-format-btn.active, .currency-btn.active {
+        .date-format-btn.active, .currency-btn.active, .hoa-btn.active {
             background: var(--primary);
             border-color: var(--primary);
             color: white;
         }
 
-        .date-format-btn.active span, .currency-btn.active span {
+        .date-format-btn.active span, .currency-btn.active span, .hoa-btn.active span {
             color: white !important;
         }
     </style>
@@ -1563,8 +1563,9 @@
                                     <tr>
                                         <th data-translate="name">Name</th>
                                         <th data-translate="email">Email</th>
-                                        <th data-translate="phone">Phone</th>
                                         <th data-translate="unit">Unit</th>
+                                        <th data-translate="monthly_payment">Rent</th>
+                                        <th data-translate="net_income">Net Income</th>
                                         <th data-translate="lease_end">Lease End</th>
                                         <th data-translate="status">Status</th>
                                         <th data-translate="actions">Actions</th>
@@ -2231,7 +2232,17 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-translate="unit">Unit *</label>
-                        <select class="form-select" id="residentUnit" required></select>
+                        <select class="form-select" id="residentUnit" required onchange="checkExistingTenants()"></select>
+                        <div id="existingTenantsInfo" style="display:none;margin-top:0.5rem;padding:0.75rem;background:var(--gray-50);border-radius:6px;font-size:0.85rem">
+                            <span style="color:var(--gray-600)" id="existingTenantsText"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+                            <input type="checkbox" id="residentIsPrimary" checked style="width:18px;height:18px;accent-color:var(--primary)">
+                            <span data-translate="primary_tenant">Primary Tenant</span>
+                        </label>
+                        <small style="color:var(--gray-500);font-size:0.8rem;display:block;margin-top:0.25rem" data-translate="primary_tenant_desc">Primary tenants are listed first and receive main notifications</small>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -2246,6 +2257,25 @@
                     <div class="form-group">
                         <label class="form-label" data-translate="monthly_payment">Monthly Payment</label>
                         <input type="number" class="form-input" id="residentPayment" min="0">
+                    </div>
+                    
+                    <!-- HOA/Maintenance Section -->
+                    <div style="border-top:1px solid var(--gray-200);margin-top:1rem;padding-top:1rem">
+                        <label class="form-label" data-translate="hoa_maintenance">HOA / Maintenance Fee</label>
+                        <div style="display:flex;gap:0.5rem;margin-bottom:1rem">
+                            <button type="button" class="btn hoa-btn" data-value="tenant" onclick="setHoaPaidBy('tenant')" style="flex:1">
+                                <span style="display:block;font-weight:600" data-translate="tenant_pays">Tenant Pays</span>
+                            </button>
+                            <button type="button" class="btn hoa-btn" data-value="owner" onclick="setHoaPaidBy('owner')" style="flex:1">
+                                <span style="display:block;font-weight:600" data-translate="owner_pays">Owner Pays</span>
+                            </button>
+                        </div>
+                        <input type="hidden" id="residentHoaPaidBy" value="tenant">
+                        <div class="form-group" id="hoaAmountGroup" style="display:none">
+                            <label class="form-label" data-translate="hoa_amount">HOA/Maintenance Amount</label>
+                            <input type="number" class="form-input" id="residentHoaAmount" min="0" placeholder="0.00">
+                            <small style="color:var(--gray-500);font-size:0.8rem;display:block;margin-top:0.25rem" data-translate="hoa_amount_desc">This amount will be deducted when calculating net income</small>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -2434,6 +2464,17 @@
                 active: 'Active',
                 inactive: 'Inactive',
                 no_residents_yet: 'No residents yet. Add your first resident!',
+                primary_tenant: 'Primary Tenant',
+                primary_tenant_desc: 'Primary tenants are listed first and receive main notifications',
+                co_tenant: 'Co-tenant',
+                existing_tenants: 'This unit already has tenants:',
+                add_co_tenant: 'Add Co-tenant',
+                hoa_maintenance: 'HOA / Maintenance Fee',
+                tenant_pays: 'Tenant Pays',
+                owner_pays: 'Owner Pays',
+                hoa_amount: 'HOA/Maintenance Amount',
+                hoa_amount_desc: 'This amount will be deducted when calculating net income',
+                net_income: 'Net Income',
                 // Settings
                 org_settings: 'Organization Settings',
                 org_name: 'Organization Name',
@@ -2621,6 +2662,17 @@
                 active: 'Activo',
                 inactive: 'Inactivo',
                 no_residents_yet: 'No hay residentes. ¡Agrega tu primer residente!',
+                primary_tenant: 'Inquilino Principal',
+                primary_tenant_desc: 'Los inquilinos principales aparecen primero y reciben las notificaciones principales',
+                co_tenant: 'Co-inquilino',
+                existing_tenants: 'Esta unidad ya tiene inquilinos:',
+                add_co_tenant: 'Agregar Co-inquilino',
+                hoa_maintenance: 'Cuota HOA / Mantenimiento',
+                tenant_pays: 'Paga el Inquilino',
+                owner_pays: 'Paga el Propietario',
+                hoa_amount: 'Monto HOA/Mantenimiento',
+                hoa_amount_desc: 'Este monto se deducirá al calcular el ingreso neto',
+                net_income: 'Ingreso Neto',
                 // Settings
                 org_settings: 'Configuración de Organización',
                 org_name: 'Nombre de Organización',
@@ -3525,19 +3577,45 @@
                 .from('residents')
                 .select('*, units(identifier), invite_token, invite_sent_at, invite_accepted_at')
                 .eq('organization_id', currentOrg.id)
+                .order('unit_id')
+                .order('is_primary', { ascending: false })
                 .order('name');
             
             const tbody = document.getElementById('residentsTable');
+            const currency = currentOrg.settings?.currency || 'USD';
+            const currencySymbol = currency === 'DOP' ? 'RD$' : currency === 'EUR' ? '€' : '$';
+            
             if (residents && residents.length > 0) {
                 const activeText = currentLang === 'es' ? 'Activo' : 'Active';
                 const inactiveText = currentLang === 'es' ? 'Inactivo' : 'Inactive';
                 const editText = currentLang === 'es' ? 'Editar' : 'Edit';
-                tbody.innerHTML = residents.map(r => `
+                const primaryText = currentLang === 'es' ? 'Principal' : 'Primary';
+                const coTenantText = currentLang === 'es' ? 'Co-inquilino' : 'Co-tenant';
+                
+                tbody.innerHTML = residents.map(r => {
+                    const isPrimary = r.is_primary !== false;
+                    const badge = isPrimary 
+                        ? `<span style="display:inline-block;background:var(--primary);color:white;font-size:0.7rem;padding:2px 6px;border-radius:4px;margin-left:0.5rem">${primaryText}</span>`
+                        : `<span style="display:inline-block;background:var(--gray-200);color:var(--gray-600);font-size:0.7rem;padding:2px 6px;border-radius:4px;margin-left:0.5rem">${coTenantText}</span>`;
+                    
+                    const rent = r.monthly_payment || 0;
+                    const hoaAmount = r.hoa_paid_by === 'owner' ? (r.hoa_amount || 0) : 0;
+                    const netIncome = rent - hoaAmount;
+                    
+                    const rentDisplay = rent ? `${currencySymbol}${Number(rent).toLocaleString()}` : '-';
+                    const netDisplay = rent ? `${currencySymbol}${Number(netIncome).toLocaleString()}` : '-';
+                    const hoaNote = hoaAmount > 0 ? `<br><small style="color:var(--gray-500);font-size:0.75rem">HOA: -${currencySymbol}${Number(hoaAmount).toLocaleString()}</small>` : '';
+                    
+                    return `
                     <tr>
-                        <td style="font-weight:500">${r.name}</td>
+                        <td style="font-weight:500">${r.name}${badge}</td>
                         <td>${r.email}</td>
-                        <td>${r.phone || '-'}</td>
-                        <td>${r.units?.identifier || '-'}</td>
+                        <td>
+                            ${r.units?.identifier || '-'}
+                            ${r.unit_id ? `<button class="btn btn-sm" onclick="addCoTenant('${r.unit_id}')" style="margin-left:0.5rem;padding:2px 6px;font-size:0.7rem;background:var(--gray-100);color:var(--gray-600)" title="${currentLang === 'es' ? 'Agregar co-inquilino' : 'Add co-tenant'}">+</button>` : ''}
+                        </td>
+                        <td>${rentDisplay}</td>
+                        <td style="color:${hoaAmount > 0 ? 'var(--warning)' : 'var(--success)'}">${netDisplay}${hoaNote}</td>
                         <td>${r.lease_end ? formatDate(r.lease_end) : '-'}</td>
                         <td>
                             <span class="status ${r.is_active ? 'completed' : 'pending'}">
@@ -3549,12 +3627,12 @@
                             <button class="btn btn-secondary btn-sm" onclick="editResident('${r.id}')">${editText}</button>
                         </td>
                     </tr>
-                `).join('');
+                `}).join('');
             } else {
                 const noResidentsText = currentLang === 'es' ? 'No hay residentes. ¡Agrega tu primer residente!' : 'No residents yet. Add your first resident!';
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align:center;padding:3rem;color:var(--gray-500)">
+                        <td colspan="8" style="text-align:center;padding:3rem;color:var(--gray-500)">
                             ${noResidentsText}
                         </td>
                     </tr>
@@ -4079,11 +4157,37 @@
         // ==============================================
         // MODALS - Resident
         // ==============================================
+        let allResidentsCache = [];
+
         async function showAddResidentModal() {
             document.getElementById('residentId').value = '';
             document.getElementById('residentForm').reset();
+            document.getElementById('residentIsPrimary').checked = true;
+            document.getElementById('existingTenantsInfo').style.display = 'none';
+            setHoaPaidBy('tenant');
+            document.getElementById('residentHoaAmount').value = '';
             document.getElementById('residentModalTitle').textContent = translations[currentLang].add_resident;
             await loadUnitOptions();
+            // Cache residents for checking existing tenants
+            const { data } = await db.from('residents').select('id, name, unit_id, is_primary, is_active').eq('organization_id', currentOrg.id);
+            allResidentsCache = data || [];
+            document.getElementById('residentModal').classList.add('active');
+        }
+
+        async function addCoTenant(unitId) {
+            document.getElementById('residentId').value = '';
+            document.getElementById('residentForm').reset();
+            document.getElementById('residentIsPrimary').checked = false;
+            document.getElementById('existingTenantsInfo').style.display = 'none';
+            setHoaPaidBy('tenant');
+            document.getElementById('residentHoaAmount').value = '';
+            document.getElementById('residentModalTitle').textContent = translations[currentLang].add_co_tenant || 'Add Co-tenant';
+            await loadUnitOptions();
+            document.getElementById('residentUnit').value = unitId;
+            // Cache residents for checking existing tenants
+            const { data } = await db.from('residents').select('id, name, unit_id, is_primary, is_active').eq('organization_id', currentOrg.id);
+            allResidentsCache = data || [];
+            checkExistingTenants();
             document.getElementById('residentModal').classList.add('active');
         }
 
@@ -4091,6 +4195,10 @@
             const { data: resident } = await db.from('residents').select('*').eq('id', id).single();
             if (resident) {
                 await loadUnitOptions();
+                // Cache residents for checking existing tenants
+                const { data } = await db.from('residents').select('id, name, unit_id, is_primary, is_active').eq('organization_id', currentOrg.id);
+                allResidentsCache = data || [];
+                
                 document.getElementById('residentId').value = resident.id;
                 document.getElementById('residentName').value = resident.name || '';
                 document.getElementById('residentEmail').value = resident.email || '';
@@ -4099,8 +4207,69 @@
                 document.getElementById('residentLeaseStart').value = resident.lease_start || '';
                 document.getElementById('residentLeaseEnd').value = resident.lease_end || '';
                 document.getElementById('residentPayment').value = resident.monthly_payment || '';
+                document.getElementById('residentIsPrimary').checked = resident.is_primary !== false;
+                
+                // HOA fields
+                setHoaPaidBy(resident.hoa_paid_by || 'tenant');
+                document.getElementById('residentHoaAmount').value = resident.hoa_amount || '';
+                
                 document.getElementById('residentModalTitle').textContent = translations[currentLang].edit_resident;
+                checkExistingTenants();
                 document.getElementById('residentModal').classList.add('active');
+            }
+        }
+
+        function setHoaPaidBy(value) {
+            document.getElementById('residentHoaPaidBy').value = value;
+            document.querySelectorAll('.hoa-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.value === value) {
+                    btn.classList.add('active');
+                }
+            });
+            // Show/hide amount field based on selection
+            const amountGroup = document.getElementById('hoaAmountGroup');
+            if (value === 'owner') {
+                amountGroup.style.display = 'block';
+            } else {
+                amountGroup.style.display = 'none';
+            }
+        }
+
+        function checkExistingTenants() {
+            const unitId = document.getElementById('residentUnit').value;
+            const currentResidentId = document.getElementById('residentId').value;
+            const infoDiv = document.getElementById('existingTenantsInfo');
+            const textSpan = document.getElementById('existingTenantsText');
+            
+            if (!unitId) {
+                infoDiv.style.display = 'none';
+                return;
+            }
+            
+            // Find other tenants in this unit
+            const otherTenants = allResidentsCache.filter(r => 
+                r.unit_id === unitId && 
+                r.id !== currentResidentId && 
+                r.is_active
+            );
+            
+            if (otherTenants.length > 0) {
+                const tenantNames = otherTenants.map(t => {
+                    const badge = t.is_primary ? ' ★' : '';
+                    return t.name + badge;
+                }).join(', ');
+                
+                textSpan.innerHTML = `<strong>${translations[currentLang].existing_tenants || 'This unit already has tenants:'}</strong> ${tenantNames}`;
+                infoDiv.style.display = 'block';
+                
+                // If there's already a primary, suggest co-tenant
+                const hasPrimary = otherTenants.some(t => t.is_primary);
+                if (hasPrimary && !currentResidentId) {
+                    document.getElementById('residentIsPrimary').checked = false;
+                }
+            } else {
+                infoDiv.style.display = 'none';
             }
         }
 
@@ -4186,6 +4355,10 @@
             e.preventDefault();
             const id = document.getElementById('residentId').value;
             const unitId = document.getElementById('residentUnit').value;
+            const isPrimary = document.getElementById('residentIsPrimary').checked;
+            const hoaPaidBy = document.getElementById('residentHoaPaidBy').value;
+            const hoaAmount = document.getElementById('residentHoaAmount').value;
+            
             const data = {
                 organization_id: currentOrg.id,
                 unit_id: unitId,
@@ -4194,8 +4367,20 @@
                 phone: document.getElementById('residentPhone').value || null,
                 lease_start: document.getElementById('residentLeaseStart').value || null,
                 lease_end: document.getElementById('residentLeaseEnd').value || null,
-                monthly_payment: document.getElementById('residentPayment').value || null
+                monthly_payment: document.getElementById('residentPayment').value || null,
+                is_primary: isPrimary,
+                hoa_paid_by: hoaPaidBy,
+                hoa_amount: hoaPaidBy === 'owner' ? (hoaAmount || 0) : 0
             };
+
+            // If setting as primary, unset other primaries in the same unit
+            if (isPrimary && unitId) {
+                await db.from('residents')
+                    .update({ is_primary: false })
+                    .eq('unit_id', unitId)
+                    .eq('organization_id', currentOrg.id)
+                    .neq('id', id || '00000000-0000-0000-0000-000000000000');
+            }
 
             if (id) {
                 await db.from('residents').update(data).eq('id', id);
