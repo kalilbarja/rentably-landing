@@ -1820,16 +1820,63 @@
                             <div class="stat-label" data-translate="total_revenue">Total Revenue</div>
                         </div>
                         <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportTotalHoa">$0</div>
+                            <div class="stat-label" data-translate="total_hoa">HOA/Maintenance</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
                             <div class="stat-value" style="color:var(--danger);font-size:1.75rem" id="reportTotalExpenses">$0</div>
-                            <div class="stat-label" data-translate="total_expenses">Total Expenses</div>
+                            <div class="stat-label" data-translate="maintenance_costs">Maintenance Costs</div>
                         </div>
                         <div class="stat-card" style="text-align:center">
                             <div class="stat-value" style="font-size:1.75rem" id="reportNetIncome">$0</div>
                             <div class="stat-label" data-translate="net_income">Net Income</div>
                         </div>
+                    </div>
+
+                    <!-- Occupancy Stats (Pro+ Only) -->
+                    <div class="stats-grid pro-only" style="margin-bottom:1.5rem;grid-template-columns:repeat(4, 1fr);display:none" id="occupancyStatsGrid">
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--primary);font-size:1.75rem" id="reportTotalUnits">0</div>
+                            <div class="stat-label" data-translate="total_units">Total Units</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--success);font-size:1.75rem" id="reportOccupiedUnits">0</div>
+                            <div class="stat-label" data-translate="occupied_units">Occupied</div>
+                        </div>
+                        <div class="stat-card" style="text-align:center">
+                            <div class="stat-value" style="color:var(--gray-500);font-size:1.75rem" id="reportVacantUnits">0</div>
+                            <div class="stat-label" data-translate="vacant_units">Vacant</div>
+                        </div>
                         <div class="stat-card" style="text-align:center">
                             <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportOccupancyRate">0%</div>
                             <div class="stat-label" data-translate="occupancy_rate">Occupancy Rate</div>
+                        </div>
+                    </div>
+
+                    <!-- Tenant Income Breakdown (Pro+ Only) -->
+                    <div class="card pro-only" id="tenantIncomeSection" style="display:none;margin-bottom:1.5rem">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="tenant_income_breakdown">Tenant Income Breakdown</h3>
+                        </div>
+                        <div class="card-body" style="padding:0">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th data-translate="tenant">Tenant</th>
+                                            <th data-translate="unit">Unit</th>
+                                            <th data-translate="monthly_rent">Monthly Rent</th>
+                                            <th data-translate="hoa_maintenance">HOA/Maint.</th>
+                                            <th data-translate="net_income">Net Income</th>
+                                            <th data-translate="hoa_paid_by">Paid By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tenantIncomeTable">
+                                    </tbody>
+                                    <tfoot id="tenantIncomeTotals" style="background:var(--gray-50);font-weight:600">
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
@@ -2395,6 +2442,8 @@
                 quick_select: 'Quick Select',
                 total_revenue: 'Total Revenue',
                 total_expenses: 'Total Expenses',
+                total_hoa: 'HOA/Maintenance',
+                maintenance_costs: 'Maintenance Costs',
                 maintenance_requests: 'Maintenance Requests',
                 occupancy_rate: 'Occupancy Rate',
                 revenue_vs_expenses: 'Revenue vs Expenses',
@@ -2405,6 +2454,13 @@
                 avg_days: 'Avg. Days to Complete',
                 requests_by_category: 'Requests by Category',
                 requests_by_status: 'Requests by Status',
+                tenant_income_breakdown: 'Tenant Income Breakdown',
+                tenant: 'Tenant',
+                hoa_paid_by: 'Paid By',
+                total_units: 'Total Units',
+                occupied_units: 'Occupied',
+                vacant_units: 'Vacant',
+                totals: 'Totals',
                 unlock_financial_reports: 'Unlock Financial Reports',
                 upgrade_pro_desc: 'Upgrade to Pro to access income tracking, expense reports, and detailed financial analytics for all your properties.',
                 upgrade_now: 'Upgrade Now',
@@ -2593,6 +2649,8 @@
                 quick_select: 'Selección Rápida',
                 total_revenue: 'Ingresos Totales',
                 total_expenses: 'Gastos Totales',
+                total_hoa: 'HOA/Mantenimiento',
+                maintenance_costs: 'Costos de Mantenimiento',
                 maintenance_requests: 'Solicitudes de Mantenimiento',
                 occupancy_rate: 'Tasa de Ocupación',
                 revenue_vs_expenses: 'Ingresos vs Gastos',
@@ -2603,6 +2661,13 @@
                 avg_days: 'Días Promedio para Completar',
                 requests_by_category: 'Solicitudes por Categoría',
                 requests_by_status: 'Solicitudes por Estado',
+                tenant_income_breakdown: 'Desglose de Ingresos por Inquilino',
+                tenant: 'Inquilino',
+                hoa_paid_by: 'Pagado Por',
+                total_units: 'Unidades Totales',
+                occupied_units: 'Ocupadas',
+                vacant_units: 'Vacantes',
+                totals: 'Totales',
                 unlock_financial_reports: 'Desbloquea Reportes Financieros',
                 upgrade_pro_desc: 'Actualiza a Pro para acceder al seguimiento de ingresos, reportes de gastos y análisis financieros detallados de todas tus propiedades.',
                 upgrade_now: 'Actualizar Ahora',
@@ -4830,6 +4895,17 @@
                 .select('*, units(id, identifier, rent_amount, is_occupied)')
                 .eq('organization_id', currentOrg.id);
             
+            // Fetch residents with HOA data
+            const { data: residents } = await db
+                .from('residents')
+                .select('*, units(identifier, properties(name))')
+                .eq('organization_id', currentOrg.id)
+                .eq('is_active', true);
+            
+            // Get currency settings
+            const currency = currentOrg.settings?.currency || 'USD';
+            const currencySymbol = currency === 'DOP' ? 'RD$' : currency === 'EUR' ? '€' : '$';
+            
             // Calculate basic stats (all plans)
             const totalRequests = (requests || []).length;
             const pendingRequests = (requests || []).filter(r => r.status === 'pending').length;
@@ -4952,8 +5028,9 @@
             
             // Pro+ plans: Financial stats and charts
             if (isPro) {
-                // Calculate financial totals
+                // Calculate financial totals from residents (includes HOA)
                 let totalRevenue = 0;
+                let totalHoa = 0;
                 let totalExpenses = 0;
                 let totalUnits = 0;
                 let occupiedUnits = 0;
@@ -4963,50 +5040,138 @@
                         totalUnits++;
                         if (unit.is_occupied) {
                             occupiedUnits++;
-                            totalRevenue += parseFloat(unit.rent_amount) || 0;
                         }
                         totalExpenses += expensesByUnit[unit.id] || 0;
                     });
                 });
                 
-                const netIncome = totalRevenue - totalExpenses;
+                // Calculate revenue and HOA from residents
+                (residents || []).forEach(r => {
+                    if (r.is_primary !== false) { // Only count primary tenants to avoid double-counting
+                        totalRevenue += parseFloat(r.monthly_payment) || 0;
+                        if (r.hoa_paid_by === 'owner') {
+                            totalHoa += parseFloat(r.hoa_amount) || 0;
+                        }
+                    }
+                });
+                
+                const netIncome = totalRevenue - totalHoa - totalExpenses;
                 const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
                 
                 // Update financial stats cards
-                document.getElementById('reportTotalRevenue').textContent = '$' + totalRevenue.toLocaleString();
-                document.getElementById('reportTotalExpenses').textContent = '-$' + totalExpenses.toLocaleString();
-                document.getElementById('reportNetIncome').textContent = (netIncome >= 0 ? '$' : '-$') + Math.abs(netIncome).toLocaleString();
+                document.getElementById('reportTotalRevenue').textContent = currencySymbol + totalRevenue.toLocaleString();
+                document.getElementById('reportTotalHoa').textContent = '-' + currencySymbol + totalHoa.toLocaleString();
+                document.getElementById('reportTotalExpenses').textContent = '-' + currencySymbol + totalExpenses.toLocaleString();
+                document.getElementById('reportNetIncome').textContent = (netIncome >= 0 ? currencySymbol : '-' + currencySymbol) + Math.abs(netIncome).toLocaleString();
                 document.getElementById('reportNetIncome').style.color = netIncome >= 0 ? 'var(--success)' : 'var(--danger)';
+                
+                // Update occupancy stats
+                document.getElementById('reportTotalUnits').textContent = totalUnits;
+                document.getElementById('reportOccupiedUnits').textContent = occupiedUnits;
+                document.getElementById('reportVacantUnits').textContent = totalUnits - occupiedUnits;
                 document.getElementById('reportOccupancyRate').textContent = occupancyRate + '%';
                 
-                // Revenue vs Expenses Chart
+                // Show occupancy stats grid
+                document.getElementById('occupancyStatsGrid').style.display = '';
+                
+                // Tenant Income Breakdown Table
+                const tenantTable = document.getElementById('tenantIncomeTable');
+                const tenantTotals = document.getElementById('tenantIncomeTotals');
+                const tenantSection = document.getElementById('tenantIncomeSection');
+                tenantSection.style.display = '';
+                
+                const tenantPaysText = currentLang === 'es' ? 'Inquilino' : 'Tenant';
+                const ownerPaysText = currentLang === 'es' ? 'Propietario' : 'Owner';
+                
+                let sumRent = 0, sumHoa = 0, sumNet = 0;
+                
+                if (residents && residents.length > 0) {
+                    tenantTable.innerHTML = residents.map(r => {
+                        const rent = parseFloat(r.monthly_payment) || 0;
+                        const hoa = r.hoa_paid_by === 'owner' ? (parseFloat(r.hoa_amount) || 0) : 0;
+                        const net = rent - hoa;
+                        const paidBy = r.hoa_paid_by === 'owner' ? ownerPaysText : tenantPaysText;
+                        const paidByColor = r.hoa_paid_by === 'owner' ? 'var(--warning)' : 'var(--success)';
+                        
+                        // Only sum for primary tenants
+                        if (r.is_primary !== false) {
+                            sumRent += rent;
+                            sumHoa += hoa;
+                            sumNet += net;
+                        }
+                        
+                        const primaryBadge = r.is_primary !== false 
+                            ? '' 
+                            : `<span style="display:inline-block;background:var(--gray-200);color:var(--gray-600);font-size:0.65rem;padding:1px 4px;border-radius:3px;margin-left:0.25rem">${currentLang === 'es' ? 'Co' : 'Co'}</span>`;
+                        
+                        return `
+                            <tr>
+                                <td style="font-weight:500">${r.name}${primaryBadge}</td>
+                                <td>${r.units?.properties?.name || ''} - ${r.units?.identifier || '-'}</td>
+                                <td style="color:var(--success)">${currencySymbol}${rent.toLocaleString()}</td>
+                                <td style="color:${hoa > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${hoa > 0 ? '-' + currencySymbol + hoa.toLocaleString() : '-'}</td>
+                                <td style="font-weight:600;color:${net >= rent ? 'var(--success)' : 'var(--warning)'}">${currencySymbol}${net.toLocaleString()}</td>
+                                <td><span style="color:${paidByColor};font-size:0.85rem">${paidBy}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                    
+                    // Totals row
+                    const totalsText = currentLang === 'es' ? 'Totales' : 'Totals';
+                    tenantTotals.innerHTML = `
+                        <tr>
+                            <td colspan="2" style="text-align:right">${totalsText}</td>
+                            <td style="color:var(--success)">${currencySymbol}${sumRent.toLocaleString()}</td>
+                            <td style="color:var(--warning)">${sumHoa > 0 ? '-' + currencySymbol + sumHoa.toLocaleString() : '-'}</td>
+                            <td style="color:${sumNet >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                                ${currencySymbol}${sumNet.toLocaleString()}
+                            </td>
+                            <td></td>
+                        </tr>
+                    `;
+                } else {
+                    const noTenantsText = currentLang === 'es' ? 'No hay inquilinos activos' : 'No active tenants';
+                    tenantTable.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400)">${noTenantsText}</td></tr>`;
+                    tenantTotals.innerHTML = '';
+                }
+                
+                // Revenue vs Expenses Chart (updated to include HOA)
                 const chartContainer = document.getElementById('revenueExpenseChart');
-                const maxValue = Math.max(totalRevenue, totalExpenses, 1);
+                const maxValue = Math.max(totalRevenue, totalHoa + totalExpenses, 1);
                 const revenueLabel = currentLang === 'es' ? 'Ingresos' : 'Revenue';
-                const expensesLabel = currentLang === 'es' ? 'Gastos' : 'Expenses';
+                const hoaLabel = 'HOA';
+                const expensesLabel = currentLang === 'es' ? 'Mantenimiento' : 'Maintenance';
                 const netLabel = currentLang === 'es' ? 'Neto' : 'Net';
                 
                 chartContainer.innerHTML = `
-                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-                        <div style="width:80px;font-size:0.85rem;color:var(--gray-600)">${revenueLabel}</div>
-                        <div style="flex:1;height:32px;background:var(--gray-100);border-radius:6px;overflow:hidden">
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${revenueLabel}</div>
+                        <div style="flex:1;height:28px;background:var(--gray-100);border-radius:6px;overflow:hidden">
                             <div style="width:${(totalRevenue/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #10B981, #34D399);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
-                                <span style="color:white;font-weight:600;font-size:0.85rem">$${totalRevenue.toLocaleString()}</span>
+                                <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalRevenue.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
-                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-                        <div style="width:80px;font-size:0.85rem;color:var(--gray-600)">${expensesLabel}</div>
-                        <div style="flex:1;height:32px;background:var(--gray-100);border-radius:6px;overflow:hidden">
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${hoaLabel}</div>
+                        <div style="flex:1;height:28px;background:var(--gray-100);border-radius:6px;overflow:hidden">
+                            <div style="width:${(totalHoa/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #F59E0B, #FBBF24);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
+                                <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalHoa.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${expensesLabel}</div>
+                        <div style="flex:1;height:28px;background:var(--gray-100);border-radius:6px;overflow:hidden">
                             <div style="width:${(totalExpenses/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #EF4444, #F87171);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
-                                <span style="color:white;font-weight:600;font-size:0.85rem">$${totalExpenses.toLocaleString()}</span>
+                                <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalExpenses.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
                     <div style="display:flex;align-items:center;gap:1rem;padding-top:0.5rem;border-top:2px solid var(--gray-200)">
-                        <div style="width:80px;font-size:0.85rem;font-weight:600;color:var(--gray-700)">${netLabel}</div>
+                        <div style="width:100px;font-size:0.85rem;font-weight:600;color:var(--gray-700)">${netLabel}</div>
                         <div style="flex:1;font-size:1.25rem;font-weight:700;color:${netIncome >= 0 ? 'var(--success)' : 'var(--danger)'}">
-                            ${netIncome >= 0 ? '+' : '-'}$${Math.abs(netIncome).toLocaleString()}
+                            ${netIncome >= 0 ? '+' : '-'}${currencySymbol}${Math.abs(netIncome).toLocaleString()}
                         </div>
                     </div>
                 `;
@@ -5033,21 +5198,33 @@
                 
                 // Property breakdown table (Pro, non-business)
                 if (currentOrg.plan !== 'business' || !isClientsEnabled()) {
+                    // Get HOA by property from residents
+                    const hoaByProperty = {};
+                    (residents || []).forEach(r => {
+                        if (r.hoa_paid_by === 'owner' && r.units?.properties?.name) {
+                            const propName = r.units.properties.name;
+                            hoaByProperty[propName] = (hoaByProperty[propName] || 0) + (parseFloat(r.hoa_amount) || 0);
+                        }
+                    });
+                    
                     const propertyTable = document.getElementById('propertyBreakdownTable');
                     propertyTable.innerHTML = (properties || []).map(prop => {
                         const unitCount = prop.units?.length || 0;
-                        const propRent = prop.units?.reduce((sum, u) => sum + (u.is_occupied ? (parseFloat(u.rent_amount) || 0) : 0), 0) || 0;
+                        // Get rent from residents for this property
+                        const propResidents = (residents || []).filter(r => r.units?.properties?.name === prop.name);
+                        const propRent = propResidents.reduce((sum, r) => sum + (r.is_primary !== false ? (parseFloat(r.monthly_payment) || 0) : 0), 0);
+                        const propHoa = hoaByProperty[prop.name] || 0;
                         const propExpenses = prop.units?.reduce((sum, u) => sum + (expensesByUnit[u.id] || 0), 0) || 0;
-                        const propNet = propRent - propExpenses;
+                        const propNet = propRent - propHoa - propExpenses;
                         const propRequests = (requests || []).filter(r => r.property_id === prop.id).length;
                         
                         return `
                             <tr>
                                 <td><strong>${prop.name}</strong></td>
                                 <td>${unitCount}</td>
-                                <td style="color:var(--success)">$${propRent.toLocaleString()}</td>
-                                <td style="color:var(--danger)">${propExpenses > 0 ? '-$' + propExpenses.toLocaleString() : '$0'}</td>
-                                <td style="color:${propNet >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600">${propNet >= 0 ? '$' : '-$'}${Math.abs(propNet).toLocaleString()}</td>
+                                <td style="color:var(--success)">${currencySymbol}${propRent.toLocaleString()}</td>
+                                <td style="color:var(--danger)">${(propHoa + propExpenses) > 0 ? '-' + currencySymbol + (propHoa + propExpenses).toLocaleString() : currencySymbol + '0'}</td>
+                                <td style="color:${propNet >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600">${propNet >= 0 ? currencySymbol : '-' + currencySymbol}${Math.abs(propNet).toLocaleString()}</td>
                                 <td>${propRequests}</td>
                             </tr>
                         `;
@@ -5064,7 +5241,7 @@
                         .order('name');
                     
                     if (clients && clients.length > 0) {
-                        renderClientAccordion(clients, expensesByUnit, requests);
+                        renderClientAccordion(clients, expensesByUnit, requests, residents, currencySymbol);
                     }
                 }
             }
@@ -5084,7 +5261,7 @@
             loadReports();
         }
         
-        function renderClientAccordion(clients, expensesByUnit, requests) {
+        function renderClientAccordion(clients, expensesByUnit, requests, residents, currencySymbol) {
             const container = document.getElementById('clientIncomeAccordion');
             const occupiedText = currentLang === 'es' ? 'Ocupado' : 'Occupied';
             const vacantText = currentLang === 'es' ? 'Vacante' : 'Vacant';
@@ -5092,38 +5269,53 @@
             const revenueText = currentLang === 'es' ? 'Ingreso' : 'Revenue';
             const expensesText = currentLang === 'es' ? 'Gastos' : 'Expenses';
             const netText = currentLang === 'es' ? 'Neto' : 'Net';
+            const cs = currencySymbol || '$';
             
             container.innerHTML = clients.map((client, idx) => {
                 let clientRevenue = 0;
+                let clientHoa = 0;
                 let clientExpenses = 0;
                 let clientUnits = 0;
                 
                 (client.properties || []).forEach(prop => {
                     (prop.units || []).forEach(unit => {
                         clientUnits++;
-                        if (unit.is_occupied) {
-                            clientRevenue += parseFloat(unit.rent_amount) || 0;
-                        }
+                        // Get rent from residents
+                        const unitResidents = (residents || []).filter(r => r.unit_id === unit.id);
+                        unitResidents.forEach(r => {
+                            if (r.is_primary !== false) {
+                                clientRevenue += parseFloat(r.monthly_payment) || 0;
+                            }
+                            if (r.hoa_paid_by === 'owner') {
+                                clientHoa += parseFloat(r.hoa_amount) || 0;
+                            }
+                        });
                         clientExpenses += expensesByUnit[unit.id] || 0;
                     });
                 });
                 
-                const clientNet = clientRevenue - clientExpenses;
+                const clientNet = clientRevenue - clientHoa - clientExpenses;
                 const clientName = client.company_name ? `${client.name} (${client.company_name})` : client.name;
                 
                 const propertiesHtml = (client.properties || []).map(prop => {
                     const propUnitsHtml = (prop.units || []).map(unit => {
-                        const rent = parseFloat(unit.rent_amount) || 0;
+                        const unitResidents = (residents || []).filter(r => r.unit_id === unit.id);
+                        let rent = 0, hoa = 0;
+                        unitResidents.forEach(r => {
+                            if (r.is_primary !== false) rent += parseFloat(r.monthly_payment) || 0;
+                            if (r.hoa_paid_by === 'owner') hoa += parseFloat(r.hoa_amount) || 0;
+                        });
                         const expenses = expensesByUnit[unit.id] || 0;
-                        const net = (unit.is_occupied ? rent : 0) - expenses;
+                        const net = rent - hoa - expenses;
+                        const isOccupied = unitResidents.length > 0;
                         
                         return `
                             <div class="unit-row">
                                 <span style="font-weight:500">${unit.identifier}</span>
-                                <span style="color:${unit.is_occupied ? 'var(--success)' : 'var(--gray-400)'}">${unit.is_occupied ? occupiedText : vacantText}</span>
-                                <span>$${rent.toLocaleString()}/mo</span>
-                                <span style="color:var(--danger)">${expenses > 0 ? '-$' + expenses.toLocaleString() : '$0'}</span>
-                                <span style="color:${net >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600">${net >= 0 ? '$' : '-$'}${Math.abs(net).toLocaleString()}</span>
+                                <span style="color:${isOccupied ? 'var(--success)' : 'var(--gray-400)'}">${isOccupied ? occupiedText : vacantText}</span>
+                                <span>${cs}${rent.toLocaleString()}/mo</span>
+                                <span style="color:var(--danger)">${(hoa + expenses) > 0 ? '-' + cs + (hoa + expenses).toLocaleString() : cs + '0'}</span>
+                                <span style="color:${net >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600">${net >= 0 ? cs : '-' + cs}${Math.abs(net).toLocaleString()}</span>
                             </div>
                         `;
                     }).join('');
@@ -5154,15 +5346,15 @@
                                     <div class="client-accordion-stat-label">${unitsText}</div>
                                 </div>
                                 <div class="client-accordion-stat">
-                                    <div class="client-accordion-stat-value" style="color:var(--success)">$${clientRevenue.toLocaleString()}</div>
+                                    <div class="client-accordion-stat-value" style="color:var(--success)">${cs}${clientRevenue.toLocaleString()}</div>
                                     <div class="client-accordion-stat-label">${revenueText}</div>
                                 </div>
                                 <div class="client-accordion-stat">
-                                    <div class="client-accordion-stat-value" style="color:var(--danger)">${clientExpenses > 0 ? '-$' + clientExpenses.toLocaleString() : '$0'}</div>
+                                    <div class="client-accordion-stat-value" style="color:var(--danger)">${(clientHoa + clientExpenses) > 0 ? '-' + cs + (clientHoa + clientExpenses).toLocaleString() : cs + '0'}</div>
                                     <div class="client-accordion-stat-label">${expensesText}</div>
                                 </div>
                                 <div class="client-accordion-stat">
-                                    <div class="client-accordion-stat-value" style="color:${clientNet >= 0 ? 'var(--success)' : 'var(--danger)'}">${clientNet >= 0 ? '$' : '-$'}${Math.abs(clientNet).toLocaleString()}</div>
+                                    <div class="client-accordion-stat-value" style="color:${clientNet >= 0 ? 'var(--success)' : 'var(--danger)'}">${clientNet >= 0 ? cs : '-' + cs}${Math.abs(clientNet).toLocaleString()}</div>
                                     <div class="client-accordion-stat-label">${netText}</div>
                                 </div>
                             </div>
