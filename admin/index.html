@@ -2306,23 +2306,52 @@
                         <input type="number" class="form-input" id="residentPayment" min="0">
                     </div>
                     
-                    <!-- HOA/Maintenance Section -->
+                    <!-- HOA Section -->
                     <div style="border-top:1px solid var(--gray-200);margin-top:1rem;padding-top:1rem">
-                        <label class="form-label" data-translate="hoa_maintenance">HOA / Maintenance Fee</label>
-                        <div style="display:flex;gap:0.5rem;margin-bottom:1rem">
-                            <button type="button" class="btn hoa-btn" data-value="tenant" onclick="setHoaPaidBy('tenant')" style="flex:1">
-                                <span style="display:block;font-weight:600" data-translate="tenant_pays">Tenant Pays</span>
-                            </button>
-                            <button type="button" class="btn hoa-btn" data-value="owner" onclick="setHoaPaidBy('owner')" style="flex:1">
-                                <span style="display:block;font-weight:600" data-translate="owner_pays">Owner Pays</span>
-                            </button>
+                        <div class="form-row" style="align-items:flex-start">
+                            <!-- HOA Fee -->
+                            <div class="form-group" style="flex:1">
+                                <label class="form-label">HOA</label>
+                                <select class="form-select" id="residentHoaIncluded" onchange="toggleHoaFields()">
+                                    <option value="no" data-translate="no">No</option>
+                                    <option value="yes" data-translate="yes">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="hoaPaidByGroup" style="flex:1;display:none">
+                                <label class="form-label" data-translate="paid_by">Paid By</label>
+                                <select class="form-select" id="residentHoaPaidBy" onchange="toggleHoaAmount()">
+                                    <option value="tenant" data-translate="tenant">Tenant</option>
+                                    <option value="owner" data-translate="owner">Owner</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="hoaAmountGroup" style="flex:1;display:none">
+                                <label class="form-label" data-translate="amount">Amount</label>
+                                <input type="number" class="form-input" id="residentHoaAmount" min="0" placeholder="0.00">
+                            </div>
                         </div>
-                        <input type="hidden" id="residentHoaPaidBy" value="tenant">
-                        <div class="form-group" id="hoaAmountGroup" style="display:none">
-                            <label class="form-label" data-translate="hoa_amount">HOA/Maintenance Amount</label>
-                            <input type="number" class="form-input" id="residentHoaAmount" min="0" placeholder="0.00">
-                            <small style="color:var(--gray-500);font-size:0.8rem;display:block;margin-top:0.25rem" data-translate="hoa_amount_desc">This amount will be deducted when calculating net income</small>
+                        
+                        <!-- Maintenance Fee -->
+                        <div class="form-row" style="align-items:flex-start">
+                            <div class="form-group" style="flex:1">
+                                <label class="form-label" data-translate="maintenance">Maintenance</label>
+                                <select class="form-select" id="residentMaintenanceIncluded" onchange="toggleMaintenanceFields()">
+                                    <option value="no" data-translate="no">No</option>
+                                    <option value="yes" data-translate="yes">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="maintenancePaidByGroup" style="flex:1;display:none">
+                                <label class="form-label" data-translate="paid_by">Paid By</label>
+                                <select class="form-select" id="residentMaintenancePaidBy" onchange="toggleMaintenanceAmount()">
+                                    <option value="tenant" data-translate="tenant">Tenant</option>
+                                    <option value="owner" data-translate="owner">Owner</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="maintenanceAmountGroup" style="flex:1;display:none">
+                                <label class="form-label" data-translate="amount">Amount</label>
+                                <input type="number" class="form-input" id="residentMaintenanceAmount" min="0" placeholder="0.00">
+                            </div>
                         </div>
+                        <small style="color:var(--gray-500);font-size:0.8rem;display:block;margin-top:0.25rem" data-translate="fees_desc">Amounts paid by owner will be deducted when calculating net income</small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -2528,9 +2557,17 @@
                 hoa_maintenance: 'HOA / Maintenance Fee',
                 tenant_pays: 'Tenant Pays',
                 owner_pays: 'Owner Pays',
-                hoa_amount: 'HOA/Maintenance Amount',
+                hoa_amount: 'HOA Amount',
                 hoa_amount_desc: 'This amount will be deducted when calculating net income',
                 net_income: 'Net Income',
+                maintenance: 'Maintenance',
+                paid_by: 'Paid By',
+                amount: 'Amount',
+                yes: 'Yes',
+                no: 'No',
+                tenant: 'Tenant',
+                owner: 'Owner',
+                fees_desc: 'Amounts paid by owner will be deducted when calculating net income',
                 // Settings
                 org_settings: 'Organization Settings',
                 org_name: 'Organization Name',
@@ -2735,9 +2772,17 @@
                 hoa_maintenance: 'Cuota HOA / Mantenimiento',
                 tenant_pays: 'Paga el Inquilino',
                 owner_pays: 'Paga el Propietario',
-                hoa_amount: 'Monto HOA/Mantenimiento',
+                hoa_amount: 'Monto HOA',
                 hoa_amount_desc: 'Este monto se deducirá al calcular el ingreso neto',
                 net_income: 'Ingreso Neto',
+                maintenance: 'Mantenimiento',
+                paid_by: 'Pagado Por',
+                amount: 'Monto',
+                yes: 'Sí',
+                no: 'No',
+                tenant: 'Inquilino',
+                owner: 'Propietario',
+                fees_desc: 'Los montos pagados por el propietario se deducirán al calcular el ingreso neto',
                 // Settings
                 org_settings: 'Configuración de Organización',
                 org_name: 'Nombre de Organización',
@@ -3664,12 +3709,18 @@
                         : `<span style="display:inline-block;background:var(--gray-200);color:var(--gray-600);font-size:0.7rem;padding:2px 6px;border-radius:4px;margin-left:0.5rem">${coTenantText}</span>`;
                     
                     const rent = r.monthly_payment || 0;
-                    const hoaAmount = r.hoa_paid_by === 'owner' ? (r.hoa_amount || 0) : 0;
-                    const netIncome = rent - hoaAmount;
+                    const hoaAmount = (r.hoa_included && r.hoa_paid_by === 'owner') ? (r.hoa_amount || 0) : 0;
+                    const maintAmount = (r.maintenance_included && r.maintenance_paid_by === 'owner') ? (r.maintenance_amount || 0) : 0;
+                    const totalDeductions = hoaAmount + maintAmount;
+                    const netIncome = rent - totalDeductions;
                     
                     const rentDisplay = rent ? `${currencySymbol}${Number(rent).toLocaleString()}` : '-';
                     const netDisplay = rent ? `${currencySymbol}${Number(netIncome).toLocaleString()}` : '-';
-                    const hoaNote = hoaAmount > 0 ? `<br><small style="color:var(--gray-500);font-size:0.75rem">HOA: -${currencySymbol}${Number(hoaAmount).toLocaleString()}</small>` : '';
+                    
+                    let deductionNotes = '';
+                    if (hoaAmount > 0) deductionNotes += `HOA: -${currencySymbol}${Number(hoaAmount).toLocaleString()}`;
+                    if (maintAmount > 0) deductionNotes += (deductionNotes ? ', ' : '') + `Maint: -${currencySymbol}${Number(maintAmount).toLocaleString()}`;
+                    const feeNote = deductionNotes ? `<br><small style="color:var(--gray-500);font-size:0.75rem">${deductionNotes}</small>` : '';
                     
                     return `
                     <tr>
@@ -3680,7 +3731,7 @@
                             ${r.unit_id ? `<button class="btn btn-sm" onclick="addCoTenant('${r.unit_id}')" style="margin-left:0.5rem;padding:2px 6px;font-size:0.7rem;background:var(--gray-100);color:var(--gray-600)" title="${currentLang === 'es' ? 'Agregar co-inquilino' : 'Add co-tenant'}">+</button>` : ''}
                         </td>
                         <td>${rentDisplay}</td>
-                        <td style="color:${hoaAmount > 0 ? 'var(--warning)' : 'var(--success)'}">${netDisplay}${hoaNote}</td>
+                        <td style="color:${totalDeductions > 0 ? 'var(--warning)' : 'var(--success)'}">${netDisplay}${feeNote}</td>
                         <td>${r.lease_end ? formatDate(r.lease_end) : '-'}</td>
                         <td>
                             <span class="status ${r.is_active ? 'completed' : 'pending'}">
@@ -4229,8 +4280,7 @@
             document.getElementById('residentForm').reset();
             document.getElementById('residentIsPrimary').checked = true;
             document.getElementById('existingTenantsInfo').style.display = 'none';
-            setHoaPaidBy('tenant');
-            document.getElementById('residentHoaAmount').value = '';
+            resetFeeFields();
             document.getElementById('residentModalTitle').textContent = translations[currentLang].add_resident;
             await loadUnitOptions();
             // Cache residents for checking existing tenants
@@ -4244,8 +4294,7 @@
             document.getElementById('residentForm').reset();
             document.getElementById('residentIsPrimary').checked = false;
             document.getElementById('existingTenantsInfo').style.display = 'none';
-            setHoaPaidBy('tenant');
-            document.getElementById('residentHoaAmount').value = '';
+            resetFeeFields();
             document.getElementById('residentModalTitle').textContent = translations[currentLang].add_co_tenant || 'Add Co-tenant';
             await loadUnitOptions();
             document.getElementById('residentUnit').value = unitId;
@@ -4275,8 +4324,16 @@
                 document.getElementById('residentIsPrimary').checked = resident.is_primary !== false;
                 
                 // HOA fields
-                setHoaPaidBy(resident.hoa_paid_by || 'tenant');
+                document.getElementById('residentHoaIncluded').value = resident.hoa_included ? 'yes' : 'no';
+                document.getElementById('residentHoaPaidBy').value = resident.hoa_paid_by || 'tenant';
                 document.getElementById('residentHoaAmount').value = resident.hoa_amount || '';
+                toggleHoaFields();
+                
+                // Maintenance fields
+                document.getElementById('residentMaintenanceIncluded').value = resident.maintenance_included ? 'yes' : 'no';
+                document.getElementById('residentMaintenancePaidBy').value = resident.maintenance_paid_by || 'tenant';
+                document.getElementById('residentMaintenanceAmount').value = resident.maintenance_amount || '';
+                toggleMaintenanceFields();
                 
                 document.getElementById('residentModalTitle').textContent = translations[currentLang].edit_resident;
                 checkExistingTenants();
@@ -4284,21 +4341,45 @@
             }
         }
 
-        function setHoaPaidBy(value) {
-            document.getElementById('residentHoaPaidBy').value = value;
-            document.querySelectorAll('.hoa-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.value === value) {
-                    btn.classList.add('active');
-                }
-            });
-            // Show/hide amount field based on selection
-            const amountGroup = document.getElementById('hoaAmountGroup');
-            if (value === 'owner') {
-                amountGroup.style.display = 'block';
+        function toggleHoaFields() {
+            const included = document.getElementById('residentHoaIncluded').value === 'yes';
+            document.getElementById('hoaPaidByGroup').style.display = included ? '' : 'none';
+            if (included) {
+                toggleHoaAmount();
             } else {
-                amountGroup.style.display = 'none';
+                document.getElementById('hoaAmountGroup').style.display = 'none';
             }
+        }
+
+        function toggleHoaAmount() {
+            const paidBy = document.getElementById('residentHoaPaidBy').value;
+            document.getElementById('hoaAmountGroup').style.display = paidBy === 'owner' ? '' : 'none';
+        }
+
+        function toggleMaintenanceFields() {
+            const included = document.getElementById('residentMaintenanceIncluded').value === 'yes';
+            document.getElementById('maintenancePaidByGroup').style.display = included ? '' : 'none';
+            if (included) {
+                toggleMaintenanceAmount();
+            } else {
+                document.getElementById('maintenanceAmountGroup').style.display = 'none';
+            }
+        }
+
+        function toggleMaintenanceAmount() {
+            const paidBy = document.getElementById('residentMaintenancePaidBy').value;
+            document.getElementById('maintenanceAmountGroup').style.display = paidBy === 'owner' ? '' : 'none';
+        }
+
+        function resetFeeFields() {
+            document.getElementById('residentHoaIncluded').value = 'no';
+            document.getElementById('residentHoaPaidBy').value = 'tenant';
+            document.getElementById('residentHoaAmount').value = '';
+            document.getElementById('residentMaintenanceIncluded').value = 'no';
+            document.getElementById('residentMaintenancePaidBy').value = 'tenant';
+            document.getElementById('residentMaintenanceAmount').value = '';
+            toggleHoaFields();
+            toggleMaintenanceFields();
         }
 
         function checkExistingTenants() {
@@ -4421,8 +4502,16 @@
             const id = document.getElementById('residentId').value;
             const unitId = document.getElementById('residentUnit').value;
             const isPrimary = document.getElementById('residentIsPrimary').checked;
+            
+            // HOA fields
+            const hoaIncluded = document.getElementById('residentHoaIncluded').value === 'yes';
             const hoaPaidBy = document.getElementById('residentHoaPaidBy').value;
             const hoaAmount = document.getElementById('residentHoaAmount').value;
+            
+            // Maintenance fields
+            const maintenanceIncluded = document.getElementById('residentMaintenanceIncluded').value === 'yes';
+            const maintenancePaidBy = document.getElementById('residentMaintenancePaidBy').value;
+            const maintenanceAmount = document.getElementById('residentMaintenanceAmount').value;
             
             const data = {
                 organization_id: currentOrg.id,
@@ -4434,8 +4523,14 @@
                 lease_end: document.getElementById('residentLeaseEnd').value || null,
                 monthly_payment: document.getElementById('residentPayment').value || null,
                 is_primary: isPrimary,
-                hoa_paid_by: hoaPaidBy,
-                hoa_amount: hoaPaidBy === 'owner' ? (hoaAmount || 0) : 0
+                // HOA
+                hoa_included: hoaIncluded,
+                hoa_paid_by: hoaIncluded ? hoaPaidBy : 'tenant',
+                hoa_amount: (hoaIncluded && hoaPaidBy === 'owner') ? (hoaAmount || 0) : 0,
+                // Maintenance
+                maintenance_included: maintenanceIncluded,
+                maintenance_paid_by: maintenanceIncluded ? maintenancePaidBy : 'tenant',
+                maintenance_amount: (maintenanceIncluded && maintenancePaidBy === 'owner') ? (maintenanceAmount || 0) : 0
             };
 
             // If setting as primary, unset other primaries in the same unit
@@ -5045,22 +5140,27 @@
                     });
                 });
                 
-                // Calculate revenue and HOA from residents
+                // Calculate revenue, HOA and Maintenance from residents
+                let totalMaint = 0;
                 (residents || []).forEach(r => {
                     if (r.is_primary !== false) { // Only count primary tenants to avoid double-counting
                         totalRevenue += parseFloat(r.monthly_payment) || 0;
-                        if (r.hoa_paid_by === 'owner') {
+                        if (r.hoa_included && r.hoa_paid_by === 'owner') {
                             totalHoa += parseFloat(r.hoa_amount) || 0;
+                        }
+                        if (r.maintenance_included && r.maintenance_paid_by === 'owner') {
+                            totalMaint += parseFloat(r.maintenance_amount) || 0;
                         }
                     }
                 });
                 
-                const netIncome = totalRevenue - totalHoa - totalExpenses;
+                const totalFees = totalHoa + totalMaint;
+                const netIncome = totalRevenue - totalFees - totalExpenses;
                 const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
                 
                 // Update financial stats cards
                 document.getElementById('reportTotalRevenue').textContent = currencySymbol + totalRevenue.toLocaleString();
-                document.getElementById('reportTotalHoa').textContent = '-' + currencySymbol + totalHoa.toLocaleString();
+                document.getElementById('reportTotalHoa').textContent = '-' + currencySymbol + totalFees.toLocaleString();
                 document.getElementById('reportTotalExpenses').textContent = '-' + currencySymbol + totalExpenses.toLocaleString();
                 document.getElementById('reportNetIncome').textContent = (netIncome >= 0 ? currencySymbol : '-' + currencySymbol) + Math.abs(netIncome).toLocaleString();
                 document.getElementById('reportNetIncome').style.color = netIncome >= 0 ? 'var(--success)' : 'var(--danger)';
@@ -5083,20 +5183,31 @@
                 const tenantPaysText = currentLang === 'es' ? 'Inquilino' : 'Tenant';
                 const ownerPaysText = currentLang === 'es' ? 'Propietario' : 'Owner';
                 
-                let sumRent = 0, sumHoa = 0, sumNet = 0;
+                let sumRent = 0, sumFees = 0, sumNet = 0;
                 
                 if (residents && residents.length > 0) {
                     tenantTable.innerHTML = residents.map(r => {
                         const rent = parseFloat(r.monthly_payment) || 0;
-                        const hoa = r.hoa_paid_by === 'owner' ? (parseFloat(r.hoa_amount) || 0) : 0;
-                        const net = rent - hoa;
-                        const paidBy = r.hoa_paid_by === 'owner' ? ownerPaysText : tenantPaysText;
-                        const paidByColor = r.hoa_paid_by === 'owner' ? 'var(--warning)' : 'var(--success)';
+                        const hoaFee = (r.hoa_included && r.hoa_paid_by === 'owner') ? (parseFloat(r.hoa_amount) || 0) : 0;
+                        const maintFee = (r.maintenance_included && r.maintenance_paid_by === 'owner') ? (parseFloat(r.maintenance_amount) || 0) : 0;
+                        const totalFeesUnit = hoaFee + maintFee;
+                        const net = rent - totalFeesUnit;
+                        
+                        // Determine paid by status
+                        let paidByText = '-';
+                        let paidByColor = 'var(--gray-400)';
+                        if (hoaFee > 0 || maintFee > 0) {
+                            paidByText = ownerPaysText;
+                            paidByColor = 'var(--warning)';
+                        } else if (r.hoa_included || r.maintenance_included) {
+                            paidByText = tenantPaysText;
+                            paidByColor = 'var(--success)';
+                        }
                         
                         // Only sum for primary tenants
                         if (r.is_primary !== false) {
                             sumRent += rent;
-                            sumHoa += hoa;
+                            sumFees += totalFeesUnit;
                             sumNet += net;
                         }
                         
@@ -5109,9 +5220,9 @@
                                 <td style="font-weight:500">${r.name}${primaryBadge}</td>
                                 <td>${r.units?.properties?.name || ''} - ${r.units?.identifier || '-'}</td>
                                 <td style="color:var(--success)">${currencySymbol}${rent.toLocaleString()}</td>
-                                <td style="color:${hoa > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${hoa > 0 ? '-' + currencySymbol + hoa.toLocaleString() : '-'}</td>
+                                <td style="color:${totalFeesUnit > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${totalFeesUnit > 0 ? '-' + currencySymbol + totalFeesUnit.toLocaleString() : '-'}</td>
                                 <td style="font-weight:600;color:${net >= rent ? 'var(--success)' : 'var(--warning)'}">${currencySymbol}${net.toLocaleString()}</td>
-                                <td><span style="color:${paidByColor};font-size:0.85rem">${paidBy}</span></td>
+                                <td><span style="color:${paidByColor};font-size:0.85rem">${paidByText}</span></td>
                             </tr>
                         `;
                     }).join('');
@@ -5122,7 +5233,7 @@
                         <tr>
                             <td colspan="2" style="text-align:right">${totalsText}</td>
                             <td style="color:var(--success)">${currencySymbol}${sumRent.toLocaleString()}</td>
-                            <td style="color:var(--warning)">${sumHoa > 0 ? '-' + currencySymbol + sumHoa.toLocaleString() : '-'}</td>
+                            <td style="color:var(--warning)">${sumFees > 0 ? '-' + currencySymbol + sumFees.toLocaleString() : '-'}</td>
                             <td style="color:${sumNet >= 0 ? 'var(--success)' : 'var(--danger)'}">
                                 ${currencySymbol}${sumNet.toLocaleString()}
                             </td>
@@ -5135,12 +5246,12 @@
                     tenantTotals.innerHTML = '';
                 }
                 
-                // Revenue vs Expenses Chart (updated to include HOA)
+                // Revenue vs Expenses Chart (updated to include HOA + Maintenance)
                 const chartContainer = document.getElementById('revenueExpenseChart');
-                const maxValue = Math.max(totalRevenue, totalHoa + totalExpenses, 1);
+                const maxValue = Math.max(totalRevenue, totalFees + totalExpenses, 1);
                 const revenueLabel = currentLang === 'es' ? 'Ingresos' : 'Revenue';
-                const hoaLabel = 'HOA';
-                const expensesLabel = currentLang === 'es' ? 'Mantenimiento' : 'Maintenance';
+                const feesLabel = currentLang === 'es' ? 'HOA + Mant.' : 'HOA + Maint.';
+                const expensesLabel = currentLang === 'es' ? 'Reparaciones' : 'Repairs';
                 const netLabel = currentLang === 'es' ? 'Neto' : 'Net';
                 
                 chartContainer.innerHTML = `
@@ -5153,10 +5264,10 @@
                         </div>
                     </div>
                     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
-                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${hoaLabel}</div>
+                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${feesLabel}</div>
                         <div style="flex:1;height:28px;background:var(--gray-100);border-radius:6px;overflow:hidden">
-                            <div style="width:${(totalHoa/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #F59E0B, #FBBF24);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
-                                <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalHoa.toLocaleString()}</span>
+                            <div style="width:${(totalFees/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #F59E0B, #FBBF24);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
+                                <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalFees.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
