@@ -1787,6 +1787,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Danger Zone -->
+                    <div class="card" style="border:1px solid var(--danger)">
+                        <div class="card-header" style="background:rgba(239, 68, 68, 0.05)">
+                            <h3 class="card-title" style="color:var(--danger)" data-translate="danger_zone">⚠️ Danger Zone</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-200)">
+                                <div style="flex:1">
+                                    <div style="font-weight:600;color:var(--gray-900);margin-bottom:0.25rem" data-translate="reset_maintenance_requests">Reset All Maintenance Requests</div>
+                                    <div style="font-size:0.85rem;color:var(--gray-500)" data-translate="reset_maintenance_desc">
+                                        Permanently delete all maintenance requests. This action cannot be undone.
+                                    </div>
+                                </div>
+                                <button class="btn" style="background:var(--danger);color:white;margin-left:1rem" onclick="showResetRequestsConfirm()" data-translate="reset">Reset</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Reports Page -->
@@ -2287,6 +2305,32 @@
         </div>
     </div>
 
+    <!-- Reset Requests Confirmation Modal -->
+    <div class="modal-overlay" id="resetRequestsModal">
+        <div class="modal" style="max-width:450px">
+            <div class="modal-header" style="background:var(--danger);color:white;border-radius:12px 12px 0 0">
+                <h3 class="modal-title" data-translate="confirm_reset">⚠️ Confirm Reset</h3>
+                <button class="modal-close" onclick="closeResetRequestsModal()" style="color:white">×</button>
+            </div>
+            <div class="modal-body" style="text-align:center;padding:2rem">
+                <div style="font-size:3rem;margin-bottom:1rem">🗑️</div>
+                <h4 style="margin-bottom:0.5rem;color:var(--gray-900)" data-translate="are_you_sure">Are you sure?</h4>
+                <p style="color:var(--gray-600);margin-bottom:1.5rem" data-translate="reset_warning">
+                    This will permanently delete <strong>ALL</strong> maintenance requests for your organization. This action <strong>cannot be undone</strong>.
+                </p>
+                <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:1rem;margin-bottom:1.5rem">
+                    <label class="form-label" style="text-align:left" data-translate="type_confirm">Type "DELETE" to confirm:</label>
+                    <input type="text" class="form-input" id="resetConfirmInput" placeholder="DELETE" style="text-align:center;font-weight:600;letter-spacing:2px">
+                </div>
+                <div id="resetRequestsCount" style="font-size:0.9rem;color:var(--gray-500);margin-bottom:1rem"></div>
+            </div>
+            <div class="modal-footer" style="justify-content:center;gap:1rem">
+                <button type="button" class="btn btn-secondary" onclick="closeResetRequestsModal()" data-translate="cancel">Cancel</button>
+                <button type="button" class="btn" id="confirmResetBtn" style="background:var(--danger);color:white" onclick="confirmResetRequests()" disabled data-translate="delete_all">Delete All Requests</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Resident Modal -->
     <div class="modal-overlay" id="residentModal">
         <div class="modal">
@@ -2628,6 +2672,16 @@
                 feature_income_reports_desc: 'Track rental income, expenses, and net profit per property and unit in the Reports section.',
                 feature_sms: 'SMS Notifications',
                 feature_sms_desc: 'Send SMS notifications to tenants for maintenance updates and announcements.',
+                // Danger Zone
+                danger_zone: '⚠️ Danger Zone',
+                reset_maintenance_requests: 'Reset All Maintenance Requests',
+                reset_maintenance_desc: 'Permanently delete all maintenance requests. This action cannot be undone.',
+                reset: 'Reset',
+                confirm_reset: '⚠️ Confirm Reset',
+                are_you_sure: 'Are you sure?',
+                reset_warning: 'This will permanently delete <strong>ALL</strong> maintenance requests for your organization. This action <strong>cannot be undone</strong>.',
+                type_confirm: 'Type "DELETE" to confirm:',
+                delete_all: 'Delete All Requests',
                 // Search
                 search: 'Search...',
                 // Modals
@@ -2849,6 +2903,16 @@
                 feature_income_reports_desc: 'Rastrea ingresos por alquiler, gastos y ganancia neta por propiedad y unidad en la sección de Reportes.',
                 feature_sms: 'Notificaciones SMS',
                 feature_sms_desc: 'Envía notificaciones SMS a inquilinos para actualizaciones de mantenimiento y anuncios.',
+                // Danger Zone
+                danger_zone: '⚠️ Zona de Peligro',
+                reset_maintenance_requests: 'Restablecer Todas las Solicitudes',
+                reset_maintenance_desc: 'Eliminar permanentemente todas las solicitudes de mantenimiento. Esta acción no se puede deshacer.',
+                reset: 'Restablecer',
+                confirm_reset: '⚠️ Confirmar Restablecimiento',
+                are_you_sure: '¿Estás seguro?',
+                reset_warning: 'Esto eliminará permanentemente <strong>TODAS</strong> las solicitudes de mantenimiento de tu organización. Esta acción <strong>no se puede deshacer</strong>.',
+                type_confirm: 'Escribe "DELETE" para confirmar:',
+                delete_all: 'Eliminar Todas las Solicitudes',
                 // Search
                 search: 'Buscar...',
                 // Modals
@@ -5001,6 +5065,62 @@
             document.querySelectorAll('.enterprise-only').forEach(el => {
                 el.style.display = showClients ? '' : 'none';
             });
+        }
+
+        // ==============================================
+        // RESET MAINTENANCE REQUESTS
+        // ==============================================
+        async function showResetRequestsConfirm() {
+            // Get count of requests
+            const { count } = await db
+                .from('maintenance_requests')
+                .select('*', { count: 'exact', head: true })
+                .eq('organization_id', currentOrg.id);
+            
+            const countText = currentLang === 'es' 
+                ? `Actualmente tienes <strong>${count || 0}</strong> solicitudes de mantenimiento.`
+                : `You currently have <strong>${count || 0}</strong> maintenance requests.`;
+            
+            document.getElementById('resetRequestsCount').innerHTML = countText;
+            document.getElementById('resetConfirmInput').value = '';
+            document.getElementById('confirmResetBtn').disabled = true;
+            
+            // Add input listener
+            document.getElementById('resetConfirmInput').oninput = function() {
+                document.getElementById('confirmResetBtn').disabled = this.value !== 'DELETE';
+            };
+            
+            document.getElementById('resetRequestsModal').classList.add('active');
+        }
+        
+        function closeResetRequestsModal() {
+            document.getElementById('resetRequestsModal').classList.remove('active');
+        }
+        
+        async function confirmResetRequests() {
+            const confirmInput = document.getElementById('resetConfirmInput').value;
+            if (confirmInput !== 'DELETE') {
+                return;
+            }
+            
+            // Delete all maintenance requests for this organization
+            const { error } = await db
+                .from('maintenance_requests')
+                .delete()
+                .eq('organization_id', currentOrg.id);
+            
+            if (error) {
+                showToast(currentLang === 'es' ? 'Error al eliminar solicitudes' : 'Error deleting requests', 'error');
+                console.error('Reset error:', error);
+                return;
+            }
+            
+            closeResetRequestsModal();
+            showToast(currentLang === 'es' ? 'Todas las solicitudes han sido eliminadas' : 'All maintenance requests have been deleted');
+            
+            // Refresh data
+            loadDashboard();
+            loadRequests();
         }
 
         // ==============================================
