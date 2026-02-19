@@ -1697,6 +1697,36 @@
                                     </div>
                                 </div>
 
+                                <!-- Fee Features -->
+                                <div style="border-top:1px solid var(--gray-200);margin-top:1.5rem;padding-top:1.5rem">
+                                    <label class="form-label" data-translate="fee_tracking">Fee Tracking</label>
+                                    <p style="color:var(--gray-500);font-size:0.85rem;margin-bottom:1rem" data-translate="fee_tracking_desc">Enable the fee types relevant to your market</p>
+                                    
+                                    <!-- HOA Feature Toggle -->
+                                    <div class="feature-toggle" style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:var(--gray-50);border-radius:8px;margin-bottom:0.75rem">
+                                        <div style="flex:1">
+                                            <div style="font-weight:600;color:var(--gray-900)">HOA</div>
+                                            <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="hoa_feature_desc">Track HOA fees (common in US market)</div>
+                                        </div>
+                                        <label class="toggle-switch" style="margin-left:1rem">
+                                            <input type="checkbox" id="settingHoaEnabled" onchange="updateFeeSettings()">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Maintenance Fee Toggle -->
+                                    <div class="feature-toggle" style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:var(--gray-50);border-radius:8px;margin-bottom:1rem">
+                                        <div style="flex:1">
+                                            <div style="font-weight:600;color:var(--gray-900)" data-translate="maintenance_fee">Maintenance Fee</div>
+                                            <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="maint_feature_desc">Track building maintenance fees (common in DR/LATAM)</div>
+                                        </div>
+                                        <label class="toggle-switch" style="margin-left:1rem">
+                                            <input type="checkbox" id="settingMaintEnabled" onchange="updateFeeSettings()">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
                                 <button class="btn btn-primary" onclick="saveRegionalSettings()" data-translate="save_changes">Save Changes</button>
                             </div>
                         </div>
@@ -1814,18 +1844,22 @@
                     </div>
 
                     <!-- Financial Stats (Pro+ Only) -->
-                    <div class="stats-grid pro-only" style="margin-bottom:1.5rem;grid-template-columns:repeat(4, 1fr);display:none" id="financialStatsGrid">
+                    <div class="stats-grid pro-only" style="margin-bottom:1.5rem;grid-template-columns:repeat(5, 1fr);display:none" id="financialStatsGrid">
                         <div class="stat-card" style="text-align:center">
                             <div class="stat-value" style="color:var(--success);font-size:1.75rem" id="reportTotalRevenue">$0</div>
                             <div class="stat-label" data-translate="total_revenue">Total Revenue</div>
                         </div>
-                        <div class="stat-card" style="text-align:center">
+                        <div class="stat-card fee-card hoa-fee-card" style="text-align:center;display:none">
                             <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportTotalHoa">$0</div>
-                            <div class="stat-label" data-translate="total_hoa">HOA/Maintenance</div>
+                            <div class="stat-label">HOA</div>
+                        </div>
+                        <div class="stat-card fee-card maint-fee-card" style="text-align:center;display:none">
+                            <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportTotalMaint">$0</div>
+                            <div class="stat-label" data-translate="maintenance">Maintenance</div>
                         </div>
                         <div class="stat-card" style="text-align:center">
                             <div class="stat-value" style="color:var(--danger);font-size:1.75rem" id="reportTotalExpenses">$0</div>
-                            <div class="stat-label" data-translate="maintenance_costs">Maintenance Costs</div>
+                            <div class="stat-label" data-translate="repairs">Repairs</div>
                         </div>
                         <div class="stat-card" style="text-align:center">
                             <div class="stat-value" style="font-size:1.75rem" id="reportNetIncome">$0</div>
@@ -1866,9 +1900,9 @@
                                             <th data-translate="tenant">Tenant</th>
                                             <th data-translate="unit">Unit</th>
                                             <th data-translate="monthly_rent">Monthly Rent</th>
-                                            <th data-translate="hoa_maintenance">HOA/Maint.</th>
+                                            <th class="hoa-col" style="display:none">HOA</th>
+                                            <th class="maint-col" style="display:none" data-translate="maintenance">Maintenance</th>
                                             <th data-translate="net_income">Net Income</th>
-                                            <th data-translate="hoa_paid_by">Paid By</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tenantIncomeTable">
@@ -2307,9 +2341,9 @@
                     </div>
                     
                     <!-- HOA Section -->
-                    <div style="border-top:1px solid var(--gray-200);margin-top:1rem;padding-top:1rem">
-                        <div class="form-row" style="align-items:flex-start">
-                            <!-- HOA Fee -->
+                    <div id="feeTrackingSection" style="border-top:1px solid var(--gray-200);margin-top:1rem;padding-top:1rem">
+                        <!-- HOA Fee Row -->
+                        <div class="form-row hoa-fee-row" style="align-items:flex-start">
                             <div class="form-group" style="flex:1">
                                 <label class="form-label">HOA</label>
                                 <select class="form-select" id="residentHoaIncluded" onchange="toggleHoaFields()">
@@ -2330,8 +2364,8 @@
                             </div>
                         </div>
                         
-                        <!-- Maintenance Fee -->
-                        <div class="form-row" style="align-items:flex-start">
+                        <!-- Maintenance Fee Row -->
+                        <div class="form-row maint-fee-row" style="align-items:flex-start">
                             <div class="form-group" style="flex:1">
                                 <label class="form-label" data-translate="maintenance">Maintenance</label>
                                 <select class="form-select" id="residentMaintenanceIncluded" onchange="toggleMaintenanceFields()">
@@ -2579,6 +2613,12 @@
                 date_format: 'Date Format',
                 currency: 'Currency',
                 settings_saved: 'Settings saved successfully',
+                fee_tracking: 'Fee Tracking',
+                fee_tracking_desc: 'Enable the fee types relevant to your market',
+                hoa_feature_desc: 'Track HOA fees (common in US market)',
+                maintenance_fee: 'Maintenance Fee',
+                maint_feature_desc: 'Track building maintenance fees (common in DR/LATAM)',
+                repairs: 'Repairs',
                 // Features
                 features: 'Features',
                 features_description: 'Customize which features are enabled for your organization. Changes take effect immediately.',
@@ -2794,6 +2834,12 @@
                 date_format: 'Formato de Fecha',
                 currency: 'Moneda',
                 settings_saved: 'Configuración guardada exitosamente',
+                fee_tracking: 'Seguimiento de Cuotas',
+                fee_tracking_desc: 'Habilita los tipos de cuotas relevantes para tu mercado',
+                hoa_feature_desc: 'Seguimiento de cuotas HOA (común en mercado de EE.UU.)',
+                maintenance_fee: 'Cuota de Mantenimiento',
+                maint_feature_desc: 'Seguimiento de cuotas de mantenimiento del edificio (común en RD/LATAM)',
+                repairs: 'Reparaciones',
                 // Features
                 features: 'Funcionalidades',
                 features_description: 'Personaliza qué funcionalidades están habilitadas para tu organización. Los cambios se aplican inmediatamente.',
@@ -4807,6 +4853,8 @@
             const settings = currentOrg.settings || {};
             settings.date_format = selectedDateFormat;
             settings.currency = selectedCurrency;
+            settings.hoa_enabled = document.getElementById('settingHoaEnabled').checked;
+            settings.maintenance_enabled = document.getElementById('settingMaintEnabled').checked;
 
             const { error } = await db
                 .from('organizations')
@@ -4820,6 +4868,9 @@
 
             currentOrg.settings = settings;
             showToast(translations[currentLang].settings_saved || 'Settings saved successfully');
+            
+            // Update UI visibility based on settings
+            updateFeeVisibility();
         }
 
         function loadRegionalSettings() {
@@ -4830,6 +4881,57 @@
             // Update button states
             setDateFormat(selectedDateFormat);
             setCurrency(selectedCurrency);
+            
+            // Load fee toggles (default both to true for backwards compatibility)
+            document.getElementById('settingHoaEnabled').checked = settings.hoa_enabled !== false;
+            document.getElementById('settingMaintEnabled').checked = settings.maintenance_enabled !== false;
+            
+            // Update visibility
+            updateFeeVisibility();
+        }
+        
+        function updateFeeSettings() {
+            // Called when toggles change - just update visibility for preview
+            updateFeeVisibility();
+        }
+        
+        function updateFeeVisibility() {
+            const settings = currentOrg.settings || {};
+            const hoaEnabled = document.getElementById('settingHoaEnabled')?.checked ?? (settings.hoa_enabled !== false);
+            const maintEnabled = document.getElementById('settingMaintEnabled')?.checked ?? (settings.maintenance_enabled !== false);
+            
+            // Update resident modal fields
+            document.querySelectorAll('.hoa-fee-row').forEach(el => el.style.display = hoaEnabled ? '' : 'none');
+            document.querySelectorAll('.maint-fee-row').forEach(el => el.style.display = maintEnabled ? '' : 'none');
+            
+            // Hide entire fee section if neither is enabled
+            const feeSection = document.getElementById('feeTrackingSection');
+            if (feeSection) {
+                feeSection.style.display = (hoaEnabled || maintEnabled) ? '' : 'none';
+            }
+            
+            // Update report cards visibility
+            document.querySelectorAll('.hoa-fee-card').forEach(el => el.style.display = hoaEnabled ? '' : 'none');
+            document.querySelectorAll('.maint-fee-card').forEach(el => el.style.display = maintEnabled ? '' : 'none');
+            
+            // Update report table columns
+            document.querySelectorAll('.hoa-col').forEach(el => el.style.display = hoaEnabled ? '' : 'none');
+            document.querySelectorAll('.maint-col').forEach(el => el.style.display = maintEnabled ? '' : 'none');
+            
+            // Update grid columns based on visible cards
+            const visibleCards = 3 + (hoaEnabled ? 1 : 0) + (maintEnabled ? 1 : 0);
+            const grid = document.getElementById('financialStatsGrid');
+            if (grid) {
+                grid.style.gridTemplateColumns = `repeat(${visibleCards}, 1fr)`;
+            }
+        }
+        
+        function isHoaEnabled() {
+            return currentOrg.settings?.hoa_enabled !== false;
+        }
+        
+        function isMaintEnabled() {
+            return currentOrg.settings?.maintenance_enabled !== false;
         }
         
         function loadFeatureSettings() {
@@ -5158,12 +5260,25 @@
                 const netIncome = totalRevenue - totalFees - totalExpenses;
                 const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
                 
+                // Check which fees are enabled
+                const hoaEnabled = isHoaEnabled();
+                const maintEnabled = isMaintEnabled();
+                
                 // Update financial stats cards
                 document.getElementById('reportTotalRevenue').textContent = currencySymbol + totalRevenue.toLocaleString();
-                document.getElementById('reportTotalHoa').textContent = '-' + currencySymbol + totalFees.toLocaleString();
+                document.getElementById('reportTotalHoa').textContent = '-' + currencySymbol + totalHoa.toLocaleString();
+                document.getElementById('reportTotalMaint').textContent = '-' + currencySymbol + totalMaint.toLocaleString();
                 document.getElementById('reportTotalExpenses').textContent = '-' + currencySymbol + totalExpenses.toLocaleString();
                 document.getElementById('reportNetIncome').textContent = (netIncome >= 0 ? currencySymbol : '-' + currencySymbol) + Math.abs(netIncome).toLocaleString();
                 document.getElementById('reportNetIncome').style.color = netIncome >= 0 ? 'var(--success)' : 'var(--danger)';
+                
+                // Show/hide fee cards based on settings
+                document.querySelectorAll('.hoa-fee-card').forEach(el => el.style.display = hoaEnabled ? '' : 'none');
+                document.querySelectorAll('.maint-fee-card').forEach(el => el.style.display = maintEnabled ? '' : 'none');
+                
+                // Update grid columns
+                const visibleCards = 3 + (hoaEnabled ? 1 : 0) + (maintEnabled ? 1 : 0);
+                document.getElementById('financialStatsGrid').style.gridTemplateColumns = `repeat(${visibleCards}, 1fr)`;
                 
                 // Update occupancy stats
                 document.getElementById('reportTotalUnits').textContent = totalUnits;
@@ -5180,10 +5295,11 @@
                 const tenantSection = document.getElementById('tenantIncomeSection');
                 tenantSection.style.display = '';
                 
-                const tenantPaysText = currentLang === 'es' ? 'Inquilino' : 'Tenant';
-                const ownerPaysText = currentLang === 'es' ? 'Propietario' : 'Owner';
+                // Show/hide table columns based on settings
+                document.querySelectorAll('.hoa-col').forEach(el => el.style.display = hoaEnabled ? '' : 'none');
+                document.querySelectorAll('.maint-col').forEach(el => el.style.display = maintEnabled ? '' : 'none');
                 
-                let sumRent = 0, sumFees = 0, sumNet = 0;
+                let sumRent = 0, sumHoa = 0, sumMaint = 0, sumNet = 0;
                 
                 if (residents && residents.length > 0) {
                     tenantTable.innerHTML = residents.map(r => {
@@ -5193,21 +5309,11 @@
                         const totalFeesUnit = hoaFee + maintFee;
                         const net = rent - totalFeesUnit;
                         
-                        // Determine paid by status
-                        let paidByText = '-';
-                        let paidByColor = 'var(--gray-400)';
-                        if (hoaFee > 0 || maintFee > 0) {
-                            paidByText = ownerPaysText;
-                            paidByColor = 'var(--warning)';
-                        } else if (r.hoa_included || r.maintenance_included) {
-                            paidByText = tenantPaysText;
-                            paidByColor = 'var(--success)';
-                        }
-                        
                         // Only sum for primary tenants
                         if (r.is_primary !== false) {
                             sumRent += rent;
-                            sumFees += totalFeesUnit;
+                            sumHoa += hoaFee;
+                            sumMaint += maintFee;
                             sumNet += net;
                         }
                         
@@ -5220,9 +5326,9 @@
                                 <td style="font-weight:500">${r.name}${primaryBadge}</td>
                                 <td>${r.units?.properties?.name || ''} - ${r.units?.identifier || '-'}</td>
                                 <td style="color:var(--success)">${currencySymbol}${rent.toLocaleString()}</td>
-                                <td style="color:${totalFeesUnit > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${totalFeesUnit > 0 ? '-' + currencySymbol + totalFeesUnit.toLocaleString() : '-'}</td>
+                                <td class="hoa-col" style="display:${hoaEnabled ? '' : 'none'};color:${hoaFee > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${hoaFee > 0 ? '-' + currencySymbol + hoaFee.toLocaleString() : '-'}</td>
+                                <td class="maint-col" style="display:${maintEnabled ? '' : 'none'};color:${maintFee > 0 ? 'var(--warning)' : 'var(--gray-400)'}">${maintFee > 0 ? '-' + currencySymbol + maintFee.toLocaleString() : '-'}</td>
                                 <td style="font-weight:600;color:${net >= rent ? 'var(--success)' : 'var(--warning)'}">${currencySymbol}${net.toLocaleString()}</td>
-                                <td><span style="color:${paidByColor};font-size:0.85rem">${paidByText}</span></td>
                             </tr>
                         `;
                     }).join('');
@@ -5233,28 +5339,30 @@
                         <tr>
                             <td colspan="2" style="text-align:right">${totalsText}</td>
                             <td style="color:var(--success)">${currencySymbol}${sumRent.toLocaleString()}</td>
-                            <td style="color:var(--warning)">${sumFees > 0 ? '-' + currencySymbol + sumFees.toLocaleString() : '-'}</td>
+                            <td class="hoa-col" style="display:${hoaEnabled ? '' : 'none'};color:var(--warning)">${sumHoa > 0 ? '-' + currencySymbol + sumHoa.toLocaleString() : '-'}</td>
+                            <td class="maint-col" style="display:${maintEnabled ? '' : 'none'};color:var(--warning)">${sumMaint > 0 ? '-' + currencySymbol + sumMaint.toLocaleString() : '-'}</td>
                             <td style="color:${sumNet >= 0 ? 'var(--success)' : 'var(--danger)'}">
                                 ${currencySymbol}${sumNet.toLocaleString()}
                             </td>
-                            <td></td>
                         </tr>
                     `;
                 } else {
                     const noTenantsText = currentLang === 'es' ? 'No hay inquilinos activos' : 'No active tenants';
-                    tenantTable.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400)">${noTenantsText}</td></tr>`;
+                    const colSpan = 4 + (hoaEnabled ? 1 : 0) + (maintEnabled ? 1 : 0);
+                    tenantTable.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center;padding:2rem;color:var(--gray-400)">${noTenantsText}</td></tr>`;
                     tenantTotals.innerHTML = '';
                 }
                 
-                // Revenue vs Expenses Chart (updated to include HOA + Maintenance)
+                // Revenue vs Expenses Chart (with separate bars)
                 const chartContainer = document.getElementById('revenueExpenseChart');
-                const maxValue = Math.max(totalRevenue, totalFees + totalExpenses, 1);
+                const maxValue = Math.max(totalRevenue, totalHoa + totalMaint + totalExpenses, 1);
                 const revenueLabel = currentLang === 'es' ? 'Ingresos' : 'Revenue';
-                const feesLabel = currentLang === 'es' ? 'HOA + Mant.' : 'HOA + Maint.';
-                const expensesLabel = currentLang === 'es' ? 'Reparaciones' : 'Repairs';
+                const hoaLabel = 'HOA';
+                const maintLabel = currentLang === 'es' ? 'Mantenimiento' : 'Maintenance';
+                const repairsLabel = currentLang === 'es' ? 'Reparaciones' : 'Repairs';
                 const netLabel = currentLang === 'es' ? 'Neto' : 'Net';
                 
-                chartContainer.innerHTML = `
+                let chartHtml = `
                     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
                         <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${revenueLabel}</div>
                         <div style="flex:1;height:28px;background:var(--gray-100);border-radius:6px;overflow:hidden">
@@ -5262,17 +5370,35 @@
                                 <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalRevenue.toLocaleString()}</span>
                             </div>
                         </div>
-                    </div>
+                    </div>`;
+                
+                if (hoaEnabled) {
+                    chartHtml += `
                     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
-                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${feesLabel}</div>
+                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${hoaLabel}</div>
                         <div style="flex:1;height:28px;background:var(--gray-100);border-radius:6px;overflow:hidden">
-                            <div style="width:${(totalFees/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #F59E0B, #FBBF24);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
-                                <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalFees.toLocaleString()}</span>
+                            <div style="width:${(totalHoa/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #F59E0B, #FBBF24);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
+                                <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalHoa.toLocaleString()}</span>
                             </div>
                         </div>
-                    </div>
+                    </div>`;
+                }
+                
+                if (maintEnabled) {
+                    chartHtml += `
                     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
-                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${expensesLabel}</div>
+                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${maintLabel}</div>
+                        <div style="flex:1;height:28px;background:var(--gray-100);border-radius:6px;overflow:hidden">
+                            <div style="width:${(totalMaint/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #8B5CF6, #A78BFA);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
+                                <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalMaint.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                
+                chartHtml += `
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem">
+                        <div style="width:100px;font-size:0.85rem;color:var(--gray-600)">${repairsLabel}</div>
                         <div style="flex:1;height:28px;background:var(--gray-100);border-radius:6px;overflow:hidden">
                             <div style="width:${(totalExpenses/maxValue)*100}%;height:100%;background:linear-gradient(90deg, #EF4444, #F87171);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:0.75rem">
                                 <span style="color:white;font-weight:600;font-size:0.8rem">${currencySymbol}${totalExpenses.toLocaleString()}</span>
@@ -5286,6 +5412,8 @@
                         </div>
                     </div>
                 `;
+                
+                chartContainer.innerHTML = chartHtml;
                 
                 // Expense breakdown donut
                 const categoryColors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280', '#14B8A6'];
