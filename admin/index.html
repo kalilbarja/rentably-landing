@@ -1085,6 +1085,30 @@
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+
+        /* Date Format & Currency Buttons */
+        .date-format-btn, .currency-btn {
+            background: var(--gray-100);
+            border: 2px solid var(--gray-200);
+            color: var(--gray-700);
+            padding: 0.75rem 1rem;
+            transition: all 0.15s ease;
+        }
+
+        .date-format-btn:hover, .currency-btn:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        .date-format-btn.active, .currency-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .date-format-btn.active span, .currency-btn.active span {
+            color: white !important;
+        }
     </style>
 </head>
 <body>
@@ -1627,6 +1651,52 @@
                                     <input type="text" class="form-input" id="orgPlan" value="" disabled>
                                 </div>
                                 <button class="btn btn-primary" onclick="saveSettings()" data-translate="save_changes">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regional Settings -->
+                    <div class="card" style="margin-bottom:1.5rem">
+                        <div class="card-header">
+                            <h3 class="card-title" data-translate="regional_settings">Regional Settings</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="max-width:500px">
+                                <!-- Date Format -->
+                                <div class="form-group">
+                                    <label class="form-label" data-translate="date_format">Date Format</label>
+                                    <div style="display:flex;gap:0.5rem">
+                                        <button type="button" class="btn date-format-btn" data-format="en" onclick="setDateFormat('en')" style="flex:1">
+                                            <span style="display:block;font-weight:600">English</span>
+                                            <span style="font-size:0.8rem;color:var(--gray-500)">MM/DD/YYYY</span>
+                                        </button>
+                                        <button type="button" class="btn date-format-btn" data-format="es" onclick="setDateFormat('es')" style="flex:1">
+                                            <span style="display:block;font-weight:600">Español</span>
+                                            <span style="font-size:0.8rem;color:var(--gray-500)">DD/MM/YYYY</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Currency -->
+                                <div class="form-group">
+                                    <label class="form-label" data-translate="currency">Currency</label>
+                                    <div style="display:flex;gap:0.5rem">
+                                        <button type="button" class="btn currency-btn" data-currency="USD" onclick="setCurrency('USD')" style="flex:1">
+                                            <span style="display:block;font-weight:600">USD</span>
+                                            <span style="font-size:0.8rem;color:var(--gray-500)">$ Dollar</span>
+                                        </button>
+                                        <button type="button" class="btn currency-btn" data-currency="DOP" onclick="setCurrency('DOP')" style="flex:1">
+                                            <span style="display:block;font-weight:600">DOP</span>
+                                            <span style="font-size:0.8rem;color:var(--gray-500)">RD$ Peso</span>
+                                        </button>
+                                        <button type="button" class="btn currency-btn" data-currency="EUR" onclick="setCurrency('EUR')" style="flex:1">
+                                            <span style="display:block;font-weight:600">EUR</span>
+                                            <span style="font-size:0.8rem;color:var(--gray-500)">€ Euro</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary" onclick="saveRegionalSettings()" data-translate="save_changes">Save Changes</button>
                             </div>
                         </div>
                     </div>
@@ -2370,6 +2440,11 @@
                 subdomain: 'Subdomain',
                 plan: 'Plan',
                 save_changes: 'Save Changes',
+                // Regional Settings
+                regional_settings: 'Regional Settings',
+                date_format: 'Date Format',
+                currency: 'Currency',
+                settings_saved: 'Settings saved successfully',
                 // Features
                 features: 'Features',
                 features_description: 'Customize which features are enabled for your organization. Changes take effect immediately.',
@@ -2552,6 +2627,11 @@
                 subdomain: 'Subdominio',
                 plan: 'Plan',
                 save_changes: 'Guardar Cambios',
+                // Regional Settings
+                regional_settings: 'Configuración Regional',
+                date_format: 'Formato de Fecha',
+                currency: 'Moneda',
+                settings_saved: 'Configuración guardada exitosamente',
                 // Features
                 features: 'Funcionalidades',
                 features_description: 'Personaliza qué funcionalidades están habilitadas para tu organización. Los cambios se aplican inmediatamente.',
@@ -4353,6 +4433,59 @@
             currentOrg.name = name;
             showToast(translations[currentLang].saved_success);
         }
+
+        // Regional Settings
+        let selectedDateFormat = 'en';
+        let selectedCurrency = 'USD';
+
+        function setDateFormat(format) {
+            selectedDateFormat = format;
+            document.querySelectorAll('.date-format-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.format === format) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function setCurrency(currency) {
+            selectedCurrency = currency;
+            document.querySelectorAll('.currency-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.currency === currency) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        async function saveRegionalSettings() {
+            const settings = currentOrg.settings || {};
+            settings.date_format = selectedDateFormat;
+            settings.currency = selectedCurrency;
+
+            const { error } = await db
+                .from('organizations')
+                .update({ settings })
+                .eq('id', currentOrg.id);
+
+            if (error) {
+                showToast(currentLang === 'es' ? 'Error al guardar' : 'Error saving', 'error');
+                return;
+            }
+
+            currentOrg.settings = settings;
+            showToast(translations[currentLang].settings_saved || 'Settings saved successfully');
+        }
+
+        function loadRegionalSettings() {
+            const settings = currentOrg.settings || {};
+            selectedDateFormat = settings.date_format || 'en';
+            selectedCurrency = settings.currency || 'USD';
+
+            // Update button states
+            setDateFormat(selectedDateFormat);
+            setCurrency(selectedCurrency);
+        }
         
         function loadFeatureSettings() {
             // Populate org settings fields
@@ -4365,6 +4498,9 @@
                 business: 'Business'
             };
             document.getElementById('orgPlan').value = planNames[currentOrg.plan] || currentOrg.plan;
+            
+            // Load regional settings
+            loadRegionalSettings();
             
             // Show features card only for business plan
             if (currentOrg.plan === 'business') {
