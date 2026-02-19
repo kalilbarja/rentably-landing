@@ -185,24 +185,23 @@
             submitBtn.innerHTML = '<div class="loading-spinner"></div> Creating Account...';
 
             try {
-                // Create user in Supabase Auth
-                const { data: authData, error: authError } = await db.auth.signUp({
-                    email: email, 
-                    password: password,
-                    options: { data: { full_name: fullName, organization_id: currentOrg.id } }
+                // Use edge function to create user (bypasses email confirmation)
+                const response = await fetch('https://udmqecapkpkaluzuqjjk.supabase.co/functions/v1/admin-signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        fullName: fullName,
+                        organizationId: currentOrg.id
+                    })
                 });
-                if (authError) throw authError;
 
-                // Create admin_users record
-                const { error: userError } = await db.from('admin_users').insert({
-                    user_id: authData.user.id, 
-                    email: email, 
-                    name: fullName, 
-                    organization_id: currentOrg.id, 
-                    role: 'admin',
-                    is_active: true
-                });
-                if (userError) throw userError;
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
 
                 document.getElementById('signupForm').style.display = 'none';
                 document.getElementById('successState').classList.add('show');
