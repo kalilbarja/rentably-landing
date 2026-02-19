@@ -346,6 +346,36 @@
             text-align: center;
         }
 
+        .inline-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            min-width: 200px;
+        }
+
+        .inline-search:focus-within {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .inline-search input {
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 0.85rem;
+            width: 100%;
+            color: var(--gray-900);
+        }
+
+        .inline-search input::placeholder {
+            color: var(--gray-400);
+        }
+
         .icon-btn {
             width: 40px;
             height: 40px;
@@ -1476,12 +1506,18 @@
                 <!-- Requests Page -->
                 <div class="page" id="page-requests">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header" style="flex-wrap:wrap;gap:1rem">
                             <div class="tabs" style="margin-bottom:0;border-bottom:0;">
                                 <div class="tab active" data-tab="pending" data-translate="pending">Pending</div>
                                 <div class="tab" data-tab="in_progress" data-translate="in_progress">In Progress</div>
                                 <div class="tab" data-tab="completed" data-translate="completed">Completed</div>
                                 <div class="tab" data-tab="all" data-translate="all">All</div>
+                            </div>
+                            <div class="inline-search" style="margin-left:auto">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--gray-400)">
+                                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                                <input type="text" id="requestsSearch" placeholder="Search requests..." data-translate-placeholder="search_requests" oninput="filterTable('requestsTable', this.value)">
                             </div>
                         </div>
                         <!-- Client Filter (Business Plan Only) -->
@@ -1559,6 +1595,12 @@
                                         <option value="units_asc" data-translate="least_units">Least Units</option>
                                     </select>
                                 </div>
+                                <div class="inline-search">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--gray-400)">
+                                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                    </svg>
+                                    <input type="text" id="propertiesSearch" placeholder="Search properties..." data-translate-placeholder="search_properties" oninput="filterTable('propertiesTable', this.value)">
+                                </div>
                                 <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
                                     <span id="propertiesCount">0</span> <span data-translate="properties">properties</span>
                                 </div>
@@ -1618,6 +1660,12 @@
                                     <option value="vacant" data-translate="vacant">Vacant</option>
                                 </select>
                             </div>
+                            <div class="inline-search">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--gray-400)">
+                                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                                <input type="text" id="unitsSearch" placeholder="Search units..." data-translate-placeholder="search_units" oninput="filterTable('unitsTable', this.value)">
+                            </div>
                             <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
                                 <span id="unitsCount">0</span> <span data-translate="units_shown">units</span>
                             </div>
@@ -1654,6 +1702,18 @@
                                 </svg>
                                 <span data-translate="add_resident">Add Resident</span>
                             </button>
+                        </div>
+                        <!-- Filter Section -->
+                        <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-200); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                            <div class="inline-search">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--gray-400)">
+                                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                                <input type="text" id="residentsSearch" placeholder="Search residents..." data-translate-placeholder="search_residents" oninput="filterTable('residentsTable', this.value)">
+                            </div>
+                            <div style="margin-left: auto; color: var(--gray-500); font-size: 0.85rem;">
+                                <span id="residentsCount">0</span> <span data-translate="residents">residents</span>
+                            </div>
                         </div>
                         <div class="table-container">
                             <table>
@@ -6565,17 +6625,6 @@
             
             if (!query) {
                 dropdown.style.display = 'none';
-                // Reset table rows if on a page with a table
-                const activePage = document.querySelector('.page.active');
-                if (activePage) {
-                    const tbody = activePage.querySelector('tbody');
-                    if (tbody) {
-                        const rows = tbody.getElementsByTagName('tr');
-                        for (let i = 0; i < rows.length; i++) {
-                            rows[i].style.display = '';
-                        }
-                    }
-                }
                 return;
             }
             
@@ -6604,99 +6653,92 @@
                 return title.includes(query) || item.keywords.some(k => k.includes(query));
             });
             
-            // Also search in table data if on appropriate page
-            const activePage = document.querySelector('.page.active');
-            let tableMatches = [];
-            if (activePage) {
-                const tbody = activePage.querySelector('tbody');
-                if (tbody) {
-                    const rows = tbody.getElementsByTagName('tr');
-                    for (let i = 0; i < rows.length; i++) {
-                        const row = rows[i];
-                        const text = row.textContent.toLowerCase();
-                        if (text.includes(query)) {
-                            row.style.display = '';
-                            // Get first cell text as preview
-                            const firstCell = row.querySelector('td');
-                            if (firstCell && tableMatches.length < 3) {
-                                tableMatches.push({
-                                    type: 'data',
-                                    icon: '🔍',
-                                    title: firstCell.textContent.trim().substring(0, 40),
-                                    row: row
-                                });
-                            }
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                }
-            }
-            
             // Build dropdown HTML
-            if (matches.length > 0 || tableMatches.length > 0) {
+            if (matches.length > 0) {
                 let html = '';
                 
-                if (matches.length > 0) {
-                    const pages = matches.filter(m => m.type === 'page');
-                    const actions = matches.filter(m => m.type === 'action');
-                    
-                    if (pages.length > 0) {
-                        html += `<div class="search-dropdown-section">${currentLang === 'es' ? 'Páginas' : 'Pages'}</div>`;
-                        pages.forEach(item => {
-                            const title = currentLang === 'es' ? item.titleEs : item.title;
-                            html += `
-                                <div class="search-dropdown-item" onclick="executeSearchAction(${searchItems.indexOf(item)})">
-                                    <div class="search-icon page">${item.icon}</div>
-                                    <div class="search-text">
-                                        <div class="search-title">${title}</div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    }
-                    
-                    if (actions.length > 0) {
-                        html += `<div class="search-dropdown-section">${currentLang === 'es' ? 'Acciones' : 'Actions'}</div>`;
-                        actions.forEach(item => {
-                            const title = currentLang === 'es' ? item.titleEs : item.title;
-                            html += `
-                                <div class="search-dropdown-item" onclick="executeSearchAction(${searchItems.indexOf(item)})">
-                                    <div class="search-icon action">${item.icon}</div>
-                                    <div class="search-text">
-                                        <div class="search-title">${title}</div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    }
-                }
+                const pages = matches.filter(m => m.type === 'page');
+                const actions = matches.filter(m => m.type === 'action');
                 
-                if (tableMatches.length > 0) {
-                    html += `<div class="search-dropdown-section">${currentLang === 'es' ? 'Resultados' : 'Results'}</div>`;
-                    tableMatches.forEach((item, idx) => {
+                if (pages.length > 0) {
+                    html += `<div class="search-dropdown-section">${currentLang === 'es' ? 'Páginas' : 'Pages'}</div>`;
+                    pages.forEach(item => {
+                        const title = currentLang === 'es' ? item.titleEs : item.title;
                         html += `
-                            <div class="search-dropdown-item" onclick="scrollToSearchResult(${idx})">
-                                <div class="search-icon data">${item.icon}</div>
+                            <div class="search-dropdown-item" onclick="executeSearchAction(${searchItems.indexOf(item)})">
+                                <div class="search-icon page">${item.icon}</div>
                                 <div class="search-text">
-                                    <div class="search-title">${item.title}</div>
+                                    <div class="search-title">${title}</div>
                                 </div>
                             </div>
                         `;
                     });
                 }
                 
-                html += `<div class="search-dropdown-hint">${currentLang === 'es' ? 'Presiona Enter para seleccionar' : 'Press Enter to select'}</div>`;
+                if (actions.length > 0) {
+                    html += `<div class="search-dropdown-section">${currentLang === 'es' ? 'Acciones' : 'Actions'}</div>`;
+                    actions.forEach(item => {
+                        const title = currentLang === 'es' ? item.titleEs : item.title;
+                        html += `
+                            <div class="search-dropdown-item" onclick="executeSearchAction(${searchItems.indexOf(item)})">
+                                <div class="search-icon action">${item.icon}</div>
+                                <div class="search-text">
+                                    <div class="search-title">${title}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += `<div class="search-dropdown-hint">${currentLang === 'es' ? 'Clic para navegar' : 'Click to navigate'}</div>`;
                 
                 dropdown.innerHTML = html;
                 dropdown.style.display = 'block';
-                
-                // Store for keyboard navigation
-                window.searchMatches = matches;
-                window.tableMatches = tableMatches;
             } else {
                 dropdown.innerHTML = `<div class="search-dropdown-item"><div class="search-text"><div class="search-title" style="color:var(--gray-400)">${currentLang === 'es' ? 'Sin resultados' : 'No results'}</div></div></div>`;
                 dropdown.style.display = 'block';
+            }
+        }
+        
+        // Filter table rows - used by inline search bars in each tab
+        function filterTable(tableId, query) {
+            query = query.toLowerCase().trim();
+            const tbody = document.getElementById(tableId);
+            if (!tbody) return;
+            
+            const rows = tbody.getElementsByTagName('tr');
+            let visibleCount = 0;
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                // Skip "no results" placeholder rows
+                if (row.querySelector('td[colspan]')) {
+                    continue;
+                }
+                
+                if (!query) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            }
+            
+            // Update count displays
+            if (tableId === 'requestsTable') {
+                document.getElementById('requestsCount').textContent = visibleCount;
+            } else if (tableId === 'propertiesTable') {
+                document.getElementById('propertiesCount').textContent = visibleCount;
+            } else if (tableId === 'unitsTable') {
+                document.getElementById('unitsCount').textContent = visibleCount;
+            } else if (tableId === 'residentsTable') {
+                document.getElementById('residentsCount').textContent = visibleCount;
             }
         }
         
@@ -6719,17 +6761,6 @@
         function executeSearchAction(index) {
             globalSearchItems[index].action();
             document.getElementById('globalSearchInput').value = '';
-            document.getElementById('searchDropdown').style.display = 'none';
-        }
-        
-        function scrollToSearchResult(index) {
-            if (window.tableMatches && window.tableMatches[index]) {
-                window.tableMatches[index].row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                window.tableMatches[index].row.style.background = '#FEF3C7';
-                setTimeout(() => {
-                    window.tableMatches[index].row.style.background = '';
-                }, 2000);
-            }
             document.getElementById('searchDropdown').style.display = 'none';
         }
         
