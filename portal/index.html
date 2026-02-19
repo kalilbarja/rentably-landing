@@ -737,6 +737,176 @@
                 padding: 1.5rem;
             }
         }
+
+        /* Walkthrough Modal */
+        .walkthrough-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .walkthrough-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .walkthrough-modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .walkthrough-overlay.active .walkthrough-modal {
+            transform: scale(1);
+        }
+
+        .walkthrough-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #7C3AED 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .walkthrough-steps {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .walkthrough-step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .walkthrough-step.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        .walkthrough-step.completed {
+            background: #10B981;
+            color: white;
+        }
+
+        .walkthrough-body {
+            padding: 2rem;
+        }
+
+        .walkthrough-content {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .walkthrough-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+        }
+
+        .walkthrough-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            text-align: center;
+            color: var(--gray-900);
+        }
+
+        .walkthrough-text {
+            color: var(--gray-600);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .walkthrough-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+
+        .walkthrough-feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #EEF2FF, #E0E7FF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .walkthrough-feature-text h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--gray-900);
+        }
+
+        .walkthrough-feature-text p {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        .walkthrough-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .walkthrough-buttons .btn {
+            flex: 1;
+        }
+
+        .walkthrough-skip {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .walkthrough-skip a {
+            color: var(--gray-400);
+            font-size: 0.875rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .walkthrough-skip a:hover {
+            color: var(--gray-600);
+        }
     </style>
 </head>
 <body>
@@ -1008,6 +1178,78 @@
         </div>
     </div>
 
+    <!-- Walkthrough Modal -->
+    <div class="walkthrough-overlay" id="walkthroughModal">
+        <div class="walkthrough-modal">
+            <div class="walkthrough-header">
+                <h2 id="walkthroughTitle">¡Bienvenido a tu Portal! 🏠</h2>
+                <div class="walkthrough-steps" id="walkthroughSteps">
+                    <div class="walkthrough-step active" data-step="1">1</div>
+                    <div class="walkthrough-step" data-step="2">2</div>
+                    <div class="walkthrough-step" data-step="3">3</div>
+                </div>
+            </div>
+            <div class="walkthrough-body">
+                <!-- Step 1: Welcome -->
+                <div class="walkthrough-content" id="walkthroughStep1">
+                    <div class="walkthrough-icon" style="background:linear-gradient(135deg, #EEF2FF, #E0E7FF)">👋</div>
+                    <h3 class="walkthrough-title" id="wt1Title">¡Hola, residente!</h3>
+                    <p class="walkthrough-text" id="wt1Text">Este es tu portal personal donde podrás gestionar todo lo relacionado con tu vivienda. Te mostraremos las funciones principales.</p>
+                    <button class="btn btn-primary" style="width:100%" onclick="nextWalkthroughStep()">
+                        <span id="wt1Btn">Comenzar tour →</span>
+                    </button>
+                    <div class="walkthrough-skip">
+                        <a onclick="skipWalkthrough()" id="wtSkip">Omitir, ya lo conozco</a>
+                    </div>
+                </div>
+
+                <!-- Step 2: Features -->
+                <div class="walkthrough-content" id="walkthroughStep2" style="display:none">
+                    <h3 class="walkthrough-title" id="wt2Title">¿Qué puedes hacer aquí?</h3>
+                    <div class="walkthrough-feature">
+                        <div class="walkthrough-feature-icon">🔧</div>
+                        <div class="walkthrough-feature-text">
+                            <h4 id="wt2Feat1Title">Solicitudes de Mantenimiento</h4>
+                            <p id="wt2Feat1Text">Reporta problemas fácilmente y recibe actualizaciones en tiempo real</p>
+                        </div>
+                    </div>
+                    <div class="walkthrough-feature">
+                        <div class="walkthrough-feature-icon">📋</div>
+                        <div class="walkthrough-feature-text">
+                            <h4 id="wt2Feat2Title">Historial de Solicitudes</h4>
+                            <p id="wt2Feat2Text">Revisa todas tus solicitudes anteriores y su estado</p>
+                        </div>
+                    </div>
+                    <div class="walkthrough-feature">
+                        <div class="walkthrough-feature-icon">📄</div>
+                        <div class="walkthrough-feature-text">
+                            <h4 id="wt2Feat3Title">Información del Contrato</h4>
+                            <p id="wt2Feat3Text">Consulta los detalles de tu arrendamiento cuando lo necesites</p>
+                        </div>
+                    </div>
+                    <div class="walkthrough-buttons">
+                        <button class="btn" style="background:var(--gray-100);color:var(--gray-700)" onclick="prevWalkthroughStep()">← <span id="wt2Back">Atrás</span></button>
+                        <button class="btn btn-primary" onclick="nextWalkthroughStep()"><span id="wt2Next">Siguiente</span> →</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: How to submit -->
+                <div class="walkthrough-content" id="walkthroughStep3" style="display:none">
+                    <div class="walkthrough-icon" style="background:#D1FAE5">✅</div>
+                    <h3 class="walkthrough-title" id="wt3Title">¡Todo listo!</h3>
+                    <p class="walkthrough-text" id="wt3Text">Cuando tengas un problema de mantenimiento, simplemente haz clic en "Nueva Solicitud" y completa el formulario. Te mantendremos informado del progreso.</p>
+                    <div style="background:linear-gradient(135deg, #EEF2FF, #E0E7FF);padding:1rem;border-radius:12px;margin-bottom:1.5rem;text-align:center">
+                        <p style="font-size:0.9rem;color:var(--gray-700)" id="wt3Tip">💡 <strong>Consejo:</strong> Puedes agregar fotos a tus solicitudes para ayudarnos a entender mejor el problema.</p>
+                    </div>
+                    <div class="walkthrough-buttons">
+                        <button class="btn" style="background:var(--gray-100);color:var(--gray-700)" onclick="prevWalkthroughStep()">← <span id="wt3Back">Atrás</span></button>
+                        <button class="btn btn-primary" onclick="finishWalkthrough()"><span id="wt3Finish">¡Comenzar!</span> 🎉</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1260,6 +1502,100 @@
             document.getElementById('leaseEnd').textContent = currentResident.lease_end ? formatDate(currentResident.lease_end) : '-';
 
             loadRequests();
+
+            // Check if walkthrough needed
+            if (currentResident.walkthrough_completed === false) {
+                setTimeout(() => showWalkthrough(), 500);
+            }
+        }
+
+        // ==============================================
+        // WALKTHROUGH
+        // ==============================================
+        let currentWalkthroughStep = 1;
+        const totalWalkthroughSteps = 3;
+
+        function showWalkthrough() {
+            updateWalkthroughLanguage();
+            document.getElementById('walkthroughModal').classList.add('active');
+        }
+
+        function updateWalkthroughLanguage() {
+            const isSpanish = currentLang === 'es';
+            
+            // Header
+            document.getElementById('walkthroughTitle').textContent = isSpanish ? '¡Bienvenido a tu Portal! 🏠' : 'Welcome to Your Portal! 🏠';
+            
+            // Step 1
+            document.getElementById('wt1Title').textContent = isSpanish ? '¡Hola, residente!' : 'Hi there, resident!';
+            document.getElementById('wt1Text').textContent = isSpanish 
+                ? 'Este es tu portal personal donde podrás gestionar todo lo relacionado con tu vivienda. Te mostraremos las funciones principales.'
+                : 'This is your personal portal where you can manage everything related to your home. Let us show you the main features.';
+            document.getElementById('wt1Btn').textContent = isSpanish ? 'Comenzar tour →' : 'Start tour →';
+            document.getElementById('wtSkip').textContent = isSpanish ? 'Omitir, ya lo conozco' : 'Skip, I already know this';
+            
+            // Step 2
+            document.getElementById('wt2Title').textContent = isSpanish ? '¿Qué puedes hacer aquí?' : 'What can you do here?';
+            document.getElementById('wt2Feat1Title').textContent = isSpanish ? 'Solicitudes de Mantenimiento' : 'Maintenance Requests';
+            document.getElementById('wt2Feat1Text').textContent = isSpanish ? 'Reporta problemas fácilmente y recibe actualizaciones en tiempo real' : 'Report issues easily and receive real-time updates';
+            document.getElementById('wt2Feat2Title').textContent = isSpanish ? 'Historial de Solicitudes' : 'Request History';
+            document.getElementById('wt2Feat2Text').textContent = isSpanish ? 'Revisa todas tus solicitudes anteriores y su estado' : 'Review all your previous requests and their status';
+            document.getElementById('wt2Feat3Title').textContent = isSpanish ? 'Información del Contrato' : 'Lease Information';
+            document.getElementById('wt2Feat3Text').textContent = isSpanish ? 'Consulta los detalles de tu arrendamiento cuando lo necesites' : 'Check your lease details whenever you need';
+            document.getElementById('wt2Back').textContent = isSpanish ? 'Atrás' : 'Back';
+            document.getElementById('wt2Next').textContent = isSpanish ? 'Siguiente' : 'Next';
+            
+            // Step 3
+            document.getElementById('wt3Title').textContent = isSpanish ? '¡Todo listo!' : 'All set!';
+            document.getElementById('wt3Text').textContent = isSpanish 
+                ? 'Cuando tengas un problema de mantenimiento, simplemente haz clic en "Nueva Solicitud" y completa el formulario. Te mantendremos informado del progreso.'
+                : 'When you have a maintenance issue, just click "New Request" and fill out the form. We\'ll keep you informed of the progress.';
+            document.getElementById('wt3Tip').innerHTML = isSpanish 
+                ? '💡 <strong>Consejo:</strong> Puedes agregar fotos a tus solicitudes para ayudarnos a entender mejor el problema.'
+                : '💡 <strong>Tip:</strong> You can add photos to your requests to help us better understand the issue.';
+            document.getElementById('wt3Back').textContent = isSpanish ? 'Atrás' : 'Back';
+            document.getElementById('wt3Finish').textContent = isSpanish ? '¡Comenzar!' : 'Let\'s go!';
+        }
+
+        function nextWalkthroughStep() {
+            if (currentWalkthroughStep < totalWalkthroughSteps) {
+                document.getElementById(`walkthroughStep${currentWalkthroughStep}`).style.display = 'none';
+                currentWalkthroughStep++;
+                document.getElementById(`walkthroughStep${currentWalkthroughStep}`).style.display = 'block';
+                updateWalkthroughStepIndicators();
+            }
+        }
+
+        function prevWalkthroughStep() {
+            if (currentWalkthroughStep > 1) {
+                document.getElementById(`walkthroughStep${currentWalkthroughStep}`).style.display = 'none';
+                currentWalkthroughStep--;
+                document.getElementById(`walkthroughStep${currentWalkthroughStep}`).style.display = 'block';
+                updateWalkthroughStepIndicators();
+            }
+        }
+
+        function updateWalkthroughStepIndicators() {
+            document.querySelectorAll('.walkthrough-step').forEach(step => {
+                const stepNum = parseInt(step.dataset.step);
+                step.classList.remove('active', 'completed');
+                if (stepNum === currentWalkthroughStep) {
+                    step.classList.add('active');
+                } else if (stepNum < currentWalkthroughStep) {
+                    step.classList.add('completed');
+                }
+            });
+        }
+
+        async function finishWalkthrough() {
+            // Mark walkthrough as completed in database
+            await db.from('residents').update({ walkthrough_completed: true }).eq('id', currentResident.id);
+            currentResident.walkthrough_completed = true;
+            document.getElementById('walkthroughModal').classList.remove('active');
+        }
+
+        async function skipWalkthrough() {
+            await finishWalkthrough();
         }
 
         // ==============================================
@@ -1275,6 +1611,7 @@
                     btn.classList.add('active');
                 }
             });
+
 
             // Update all translated elements
             document.querySelectorAll('[data-translate]').forEach(el => {
