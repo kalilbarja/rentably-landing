@@ -4482,8 +4482,22 @@
         }
         
         function formatDate(dateStr) {
+            if (!dateStr) return '-';
             const date = new Date(dateStr);
-            return date.toLocaleDateString(currentLang === 'es' ? 'es-ES' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            // Get date format from organization settings
+            const dateFormat = currentOrg?.settings?.date_format || 'en';
+            
+            if (dateFormat === 'es') {
+                // DD/MM/YYYY format (Spanish/European)
+                return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            } else if (dateFormat === 'iso') {
+                // YYYY-MM-DD format (ISO)
+                return date.toISOString().split('T')[0];
+            } else {
+                // MM/DD/YYYY format (US English - default)
+                return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+            }
         }
 
         // ==============================================
@@ -5253,6 +5267,11 @@
             
             // Update UI visibility based on settings
             updateFeeVisibility();
+            
+            // Refresh data to apply new date format
+            loadDashboard();
+            loadRequests();
+            loadResidents();
         }
 
         function loadRegionalSettings() {
