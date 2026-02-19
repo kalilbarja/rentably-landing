@@ -3680,7 +3680,7 @@
             
             const { data: units } = await db
                 .from('units')
-                .select('*, properties(name, client_id), residents(name)')
+                .select('*, properties(name, client_id), residents(id, name, is_primary, monthly_payment, is_active)')
                 .eq('organization_id', currentOrg.id)
                 .order('identifier');
             
@@ -3756,6 +3756,10 @@
             // Update count
             document.getElementById('unitsCount').textContent = filtered.length;
             
+            // Get currency settings
+            const currency = currentOrg.settings?.currency || 'USD';
+            const currencySymbol = currency === 'DOP' ? 'RD$' : currency === 'EUR' ? '€' : '$';
+            
             const tbody = document.getElementById('unitsTable');
             if (filtered.length > 0) {
                 const occupiedText = currentLang === 'es' ? 'Ocupado' : 'Occupied';
@@ -3763,23 +3767,49 @@
                 const editText = currentLang === 'es' ? 'Editar' : 'Edit';
                 const bedText = currentLang === 'es' ? 'hab' : 'bed';
                 const bathText = currentLang === 'es' ? 'baño' : 'bath';
-                tbody.innerHTML = filtered.map(u => `
+                
+                tbody.innerHTML = filtered.map(u => {
+                    // Get active residents for this unit
+                    const activeResidents = (u.residents || []).filter(r => r.is_active !== false);
+                    
+                    // Get primary resident first, then others
+                    const primaryResident = activeResidents.find(r => r.is_primary !== false);
+                    const otherResidents = activeResidents.filter(r => r.is_primary === false);
+                    
+                    // Build resident display
+                    let residentDisplay = '-';
+                    if (activeResidents.length > 0) {
+                        if (primaryResident) {
+                            residentDisplay = primaryResident.name;
+                            if (otherResidents.length > 0) {
+                                residentDisplay += ` <span style="color:var(--gray-400);font-size:0.8rem">+${otherResidents.length}</span>`;
+                            }
+                        } else if (otherResidents.length > 0) {
+                            residentDisplay = otherResidents.map(r => r.name).join(', ');
+                        }
+                    }
+                    
+                    // Get rent from primary resident's monthly_payment
+                    const rent = primaryResident?.monthly_payment || u.rent_amount || null;
+                    const rentDisplay = rent ? `${currencySymbol}${Number(rent).toLocaleString()}` : '-';
+                    
+                    return `
                     <tr>
                         <td style="font-weight:500">${u.identifier}</td>
                         <td>${u.properties?.name || '-'}</td>
                         <td>${u.bedrooms || '-'} ${bedText} / ${u.bathrooms || '-'} ${bathText}</td>
-                        <td>${u.rent_amount ? '$' + u.rent_amount.toLocaleString() : '-'}</td>
+                        <td>${rentDisplay}</td>
                         <td>
                             <span class="status ${u.is_occupied ? 'occupied' : 'vacant'}">
                                 ${u.is_occupied ? occupiedText : vacantText}
                             </span>
                         </td>
-                        <td>${u.residents?.name || '-'}</td>
+                        <td>${residentDisplay}</td>
                         <td>
                             <button class="btn btn-secondary btn-sm" onclick="editUnit('${u.id}')">${editText}</button>
                         </td>
                     </tr>
-                `).join('');
+                `}).join('');
             } else {
                 const noUnitsText = currentLang === 'es' ? 'No hay unidades con estos filtros.' : 'No units match these filters.';
                 tbody.innerHTML = `
