@@ -120,7 +120,7 @@
                 <div class="plan-name">Starter</div>
                 <div class="plan-desc">Perfect for small landlords</div>
                 <div class="plan-price">
-                    <span class="price-amount">$49.99</span>
+                    <span class="price-amount">$49</span>
                     <span class="price-period">/month</span>
                 </div>
                 <div class="plan-units">Up to 5 units</div>
@@ -138,10 +138,10 @@
 
             <div class="pricing-card popular" data-plan="pro">
                 <div class="popular-badge">Most Popular</div>
-                <div class="plan-name">Professional</div>
+                <div class="plan-name">Pro</div>
                 <div class="plan-desc">For growing property managers</div>
                 <div class="plan-price">
-                    <span class="price-amount">$99.99</span>
+                    <span class="price-amount">$99</span>
                     <span class="price-period">/month</span>
                 </div>
                 <div class="plan-units">Up to 13 units</div>
@@ -222,11 +222,11 @@
     </div>
 
     <script>
-        const STRIPE_PUBLISHABLE_KEY = 'pk_test_YOUR_KEY_HERE'; // Replace with actual key
+        const STRIPE_PUBLISHABLE_KEY = 'pk_live_51T1gLpEOGLTjV8SIzXXDwSjZXWZeata1uYug9lg7EdAUO4Yw5FxRlvIyZ0y4v68gfL31TXpfAKk87psF11Riax6J00UPACscbm';
         const PLAN_DETAILS = {
-            starter: { name: 'Starter', units: 'Up to 5', price: '$49.99/mo', priceId: 'price_starter' },
-            pro: { name: 'Professional', units: 'Up to 13', price: '$99.99/mo', priceId: 'price_pro' },
-            business: { name: 'Business', units: 'Up to 30', price: '$250/mo', priceId: 'price_business' }
+            starter: { name: 'Starter', units: 'Up to 5', price: '$49/mo', priceId: 'price_1T2KhpEOGLTjV8SIIviOjAAP' },
+            pro: { name: 'Pro', units: 'Up to 13', price: '$99/mo', priceId: 'price_1T2KiqEOGLTjV8SINREyAaBG' },
+            business: { name: 'Business', units: 'Up to 30', price: '$250/mo', priceId: 'price_1T2KjFEOGLTjV8SIHMRV9C9a' }
         };
         let stripe, elements, selectedPlan = null;
 
