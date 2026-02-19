@@ -6209,61 +6209,47 @@
             query = query.toLowerCase().trim();
             
             if (!query) {
-                // Reset all views to show all items
-                if (currentPage === 'requests') loadRequests();
-                if (currentPage === 'properties') loadProperties();
-                if (currentPage === 'units') filterUnits();
-                if (currentPage === 'residents') loadResidents();
+                // Reset all views to show all items - show all rows
+                document.querySelectorAll('#requestsTable tr, #propertiesTable tr, #unitsTable tr, #residentsTable tr').forEach(row => {
+                    row.style.display = '';
+                });
                 return;
             }
             
             // Search based on current page
             switch(currentPage) {
                 case 'requests':
-                    searchRequests(query);
+                    searchInTable('requestsTable', query);
                     break;
                 case 'properties':
-                    searchProperties(query);
+                    searchInTable('propertiesTable', query);
                     break;
                 case 'units':
-                    searchUnits(query);
+                    searchInTable('unitsTable', query);
                     break;
                 case 'residents':
-                    searchResidents(query);
+                    searchInTable('residentsTable', query);
                     break;
+                default:
+                    // Search all tables on dashboard
+                    searchInTable('requestsTable', query);
             }
         }
         
-        function searchRequests(query) {
-            const rows = document.querySelectorAll('#requestsTable tr');
-            rows.forEach(row => {
+        function searchInTable(tableId, query) {
+            const tbody = document.getElementById(tableId);
+            if (!tbody) return;
+            
+            const rows = tbody.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
                 const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-        
-        function searchProperties(query) {
-            const rows = document.querySelectorAll('#propertiesTable tr');
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-        
-        function searchUnits(query) {
-            const rows = document.querySelectorAll('#unitsTable tr');
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-        
-        function searchResidents(query) {
-            const rows = document.querySelectorAll('#residentsTable tr');
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
+                if (text.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
         }
 
         // ==============================================
