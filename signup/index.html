@@ -74,8 +74,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" id="email" readonly>
-                    <p class="form-hint">This is the email associated with your subscription</p>
+                    <input type="email" class="form-input" id="email" placeholder="you@example.com" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
@@ -108,17 +107,25 @@
         async function init() {
             const params = new URLSearchParams(window.location.search);
             const orgId = params.get('org');
+            const inviteEmail = params.get('email'); // Optional: pre-fill email from invite link
+            
             if (!orgId) { showInvalidState(); return; }
 
             const { data: org, error } = await db.from('organizations').select('*').eq('id', orgId).single();
             if (error || !org) { showInvalidState(); return; }
 
-            const { data: existingUsers } = await db.from('users').select('id').eq('organization_id', orgId).limit(1);
-            if (existingUsers && existingUsers.length > 0) { window.location.href = '/admin'; return; }
-
             currentOrg = org;
             document.getElementById('orgBadge').textContent = org.name;
-            document.getElementById('email').value = org.created_by_email || '';
+            
+            // Pre-fill email if provided in URL or from org
+            const emailField = document.getElementById('email');
+            if (inviteEmail) {
+                emailField.value = inviteEmail;
+            } else if (org.created_by_email) {
+                emailField.value = org.created_by_email;
+            }
+            emailField.readOnly = !!inviteEmail; // Only readonly if invite email provided
+            
             document.getElementById('signupForm').style.display = 'block';
         }
 
@@ -143,6 +150,7 @@
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
+            if (!email) { showError('Email is required'); return; }
             if (password !== confirmPassword) { showError('Passwords do not match'); return; }
             if (password.length < 8) { showError('Password must be at least 8 characters'); return; }
 
@@ -151,18 +159,24 @@
             submitBtn.innerHTML = '<div class="loading-spinner"></div> Creating Account...';
 
             try {
+                // Create user in Supabase Auth
                 const { data: authData, error: authError } = await db.auth.signUp({
-                    email: email, password: password,
+                    email: email, 
+                    password: password,
                     options: { data: { full_name: fullName, organization_id: currentOrg.id } }
                 });
                 if (authError) throw authError;
 
-                const { error: userError } = await db.from('users').insert({
-                    id: authData.user.id, email: email, full_name: fullName, organization_id: currentOrg.id, role: 'admin'
+                // Create admin_users record
+                const { error: userError } = await db.from('admin_users').insert({
+                    user_id: authData.user.id, 
+                    email: email, 
+                    name: fullName, 
+                    organization_id: currentOrg.id, 
+                    role: 'admin',
+                    is_active: true
                 });
                 if (userError) throw userError;
-
-                await db.from('organizations').update({ onboarding_completed: false }).eq('id', currentOrg.id);
 
                 document.getElementById('signupForm').style.display = 'none';
                 document.getElementById('successState').classList.add('show');
