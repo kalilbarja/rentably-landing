@@ -319,41 +319,42 @@
 
         .lang-toggle {
             display: flex;
-            gap: 0.5rem;
+            background: var(--gray-100);
+            border-radius: 8px;
+            padding: 3px;
+            gap: 2px;
         }
 
         .lang-btn {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 0.15rem;
-            padding: 0.4rem 0.6rem;
-            border: 2px solid transparent;
-            background: var(--gray-100);
-            font-size: 0.65rem;
-            font-weight: 500;
+            gap: 0.35rem;
+            padding: 0.4rem 0.65rem;
+            border: none;
+            background: none;
+            font-size: 0.75rem;
+            font-weight: 600;
             color: var(--gray-500);
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 6px;
             transition: all 0.15s ease;
         }
 
         .lang-btn:hover {
-            background: var(--gray-200);
+            color: var(--gray-700);
         }
 
         .lang-btn.active {
             background: white;
             color: var(--gray-900);
-            border-color: var(--primary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .lang-btn .flag {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            overflow: hidden;
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            flex-shrink: 0;
         }
 
         .user-menu {
@@ -1082,37 +1083,21 @@
             </div>
             <div class="header-right">
                 <div class="lang-toggle">
+                    <button class="lang-btn" onclick="setLanguage('en')">
+                        <svg class="flag" viewBox="0 0 36 36" width="18" height="18">
+                            <path fill="#B22234" d="M35.445 7C34.752 5.809 33.477 5 32 5H4c-1.477 0-2.752.809-3.445 2h34.89z"/>
+                            <path fill="#EEE" d="M0 9h36v2H0zm0 4h36v2H0zm0 4h36v2H0zm0 4h36v2H0zm0 4h36v2H0z"/>
+                            <path fill="#B22234" d="M0 11h36v2H0zm0 4h36v2H0zm0 4h36v2H0zm0 4h36v2H0zm0 4h36v2H0z"/>
+                            <path fill="#3C3B6E" d="M18 5H4a4 4 0 0 0-4 4v10h18V5z"/>
+                        </svg>
+                        EN
+                    </button>
                     <button class="lang-btn active" onclick="setLanguage('es')">
-                        <svg class="flag" viewBox="0 0 36 36" width="24" height="24">
+                        <svg class="flag" viewBox="0 0 36 36" width="18" height="18">
                             <path fill="#C60A1D" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v18z"/>
                             <path fill="#FFC400" d="M0 12h36v12H0z"/>
-                            <path fill="#EA596E" d="M9 17v3a3 3 0 1 0 6 0v-3H9z"/>
-                            <path fill="#F4A2B2" d="M12 16h3v3h-3z"/>
-                            <path fill="#DD2E44" d="M9 16h3v3H9z"/>
-                            <ellipse fill="#EA596E" cx="12" cy="14.5" rx="3" ry="1.5"/>
-                            <ellipse fill="#FFAC33" cx="12" cy="17" rx="3" ry="1"/>
-                            <path fill="#99AAB5" d="M7 14h1v7H7zm8 0h1v7h-1z"/>
-                            <path fill="#66757F" d="M6 13.5a1 1 0 1 1 2 0 1 1 0 0 1-2 0zm8 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0z"/>
                         </svg>
-                        Español
-                    </button>
-                    <button class="lang-btn" onclick="setLanguage('en')">
-                        <svg class="flag" viewBox="0 0 36 36" width="24" height="24">
-                            <path fill="#B22234" d="M35.445 7C34.752 5.809 33.477 5 32 5H4a3.98 3.98 0 0 0-2.582.947L1.33 5.87A3.982 3.982 0 0 0 .555 7H35.445z"/>
-                            <path fill="#EEE" d="M0 9h36v2H0z"/>
-                            <path fill="#B22234" d="M0 11h36v2H0z"/>
-                            <path fill="#EEE" d="M0 13h36v2H0z"/>
-                            <path fill="#B22234" d="M0 15h36v2H0z"/>
-                            <path fill="#EEE" d="M0 17h36v2H0z"/>
-                            <path fill="#B22234" d="M0 19h36v2H0z"/>
-                            <path fill="#EEE" d="M0 21h36v2H0z"/>
-                            <path fill="#B22234" d="M0 23h36v2H0z"/>
-                            <path fill="#EEE" d="M0 25h36v2H0z"/>
-                            <path fill="#B22234" d="M0 27h36v2H0zm.555 4h34.89a3.982 3.982 0 0 0 1.665-1.947L35.67 29.13A3.98 3.98 0 0 0 32 31H4a3.98 3.98 0 0 0-2.582-.947L1.33 30.13A3.982 3.982 0 0 0 .555 31z"/>
-                            <path fill="#3C3B6E" d="M18 5H4a4 4 0 0 0-4 4v10h18V5z"/>
-                            <path fill="#FFF" d="m1.571 6.5.449 1.105.862.203-.69.664.173 1.009L1.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L4.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L7.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L10.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L13.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L16.571 9l-.794.481.173-1.009-.69-.664.862-.203zM3.071 8.5l.449 1.105.862.203-.69.664.173 1.009-.794-.481-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009-.794-.481-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009-.794-.481-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009-.794-.481-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009-.794-.481-.794.481.173-1.009-.69-.664.862-.203z"/>
-                        </svg>
-                        English
+                        ES
                     </button>
                 </div>
                 <div class="user-menu" onclick="logout()">
@@ -1347,22 +1332,21 @@
             <h3 id="langPickerTitle">🌐 Choose Your Language</h3>
             <p id="langPickerText">Select your preferred language to continue</p>
             <div class="lang-picker-buttons">
-                <button class="lang-picker-btn" onclick="selectLanguage('es')">
-                    <svg viewBox="0 0 36 36" width="32" height="32" style="border-radius:4px">
-                        <path fill="#C60A1D" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v18z"/>
-                        <path fill="#FFC400" d="M0 12h36v12H0z"/>
-                    </svg>
-                    Español
-                </button>
                 <button class="lang-picker-btn" onclick="selectLanguage('en')">
-                    <svg viewBox="0 0 36 36" width="32" height="32" style="border-radius:4px">
+                    <svg viewBox="0 0 36 36" width="28" height="28" style="border-radius:4px">
                         <path fill="#B22234" d="M35.445 7C34.752 5.809 33.477 5 32 5H4c-1.477 0-2.752.809-3.445 2h34.89z"/>
                         <path fill="#EEE" d="M0 9h36v2H0zm0 4h36v2H0zm0 4h36v2H0zm0 4h36v2H0zm0 4h36v2H0z"/>
                         <path fill="#B22234" d="M0 11h36v2H0zm0 4h36v2H0zm0 4h36v2H0zm0 4h36v2H0zm0 4h36v2H0z"/>
                         <path fill="#3C3B6E" d="M18 5H4a4 4 0 0 0-4 4v10h18V5z"/>
-                        <path fill="#FFF" d="m1.571 6.5.449 1.105.862.203-.69.664.173 1.009L1.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L4.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L7.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L10.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L13.571 9l-.794.481.173-1.009-.69-.664.862-.203zm3 0 .449 1.105.862.203-.69.664.173 1.009L16.571 9l-.794.481.173-1.009-.69-.664.862-.203z"/>
                     </svg>
                     English
+                </button>
+                <button class="lang-picker-btn" onclick="selectLanguage('es')">
+                    <svg viewBox="0 0 36 36" width="28" height="28" style="border-radius:4px">
+                        <path fill="#C60A1D" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v18z"/>
+                        <path fill="#FFC400" d="M0 12h36v12H0z"/>
+                    </svg>
+                    Español
                 </button>
             </div>
         </div>
