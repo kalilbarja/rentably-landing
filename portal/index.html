@@ -907,6 +907,120 @@
         .walkthrough-skip a:hover {
             color: var(--gray-600);
         }
+
+        /* Language Picker Overlay */
+        .lang-picker-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .lang-picker-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lang-picker-spotlight {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 80px;
+            background: transparent;
+            z-index: 1001;
+        }
+
+        .lang-picker-arrow {
+            position: fixed;
+            top: 70px;
+            right: 100px;
+            z-index: 1002;
+            animation: bounceArrow 1s ease-in-out infinite;
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .lang-picker-tooltip {
+            position: fixed;
+            top: 120px;
+            right: 20px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 1002;
+            max-width: 280px;
+            text-align: center;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lang-picker-tooltip h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray-900);
+        }
+
+        .lang-picker-tooltip p {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .lang-picker-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .lang-picker-btn {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .lang-picker-btn:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+        }
+
+        .lang-picker-btn span {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Make lang-toggle stand out when picker is active */
+        .lang-toggle.highlight {
+            position: relative;
+            z-index: 1003;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            box-shadow: 0 0 0 4px var(--primary), 0 10px 40px rgba(79, 70, 229, 0.4);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 4px var(--primary), 0 10px 40px rgba(79, 70, 229, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(79, 70, 229, 0.3), 0 10px 40px rgba(79, 70, 229, 0.4); }
+        }
     </style>
 </head>
 <body>
@@ -1175,6 +1289,29 @@
                     <button type="submit" class="btn btn-primary" id="submitRequestBtn" data-translate="submit_request">Enviar Solicitud</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Language Picker Overlay -->
+    <div class="lang-picker-overlay" id="langPickerOverlay">
+        <div class="lang-picker-arrow">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                <path d="M30 10 L30 40 M20 30 L30 40 L40 30" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="lang-picker-tooltip">
+            <h3 id="langPickerTitle">🌐 Choose Your Language</h3>
+            <p id="langPickerText">Select your preferred language to continue</p>
+            <div class="lang-picker-buttons">
+                <button class="lang-picker-btn" onclick="selectLanguage('es')">
+                    <span>🇪🇸</span>
+                    Español
+                </button>
+                <button class="lang-picker-btn" onclick="selectLanguage('en')">
+                    <span>🇺🇸</span>
+                    English
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1503,10 +1640,30 @@
 
             loadRequests();
 
-            // Check if walkthrough needed
+            // Check if walkthrough needed - show language picker first
             if (currentResident.walkthrough_completed === false) {
-                setTimeout(() => showWalkthrough(), 500);
+                setTimeout(() => showLanguagePicker(), 500);
             }
+        }
+
+        // ==============================================
+        // LANGUAGE PICKER (before walkthrough)
+        // ==============================================
+        function showLanguagePicker() {
+            document.querySelector('.lang-toggle').classList.add('highlight');
+            document.getElementById('langPickerOverlay').classList.add('active');
+        }
+
+        function selectLanguage(lang) {
+            // Set the language
+            setLanguage(lang);
+            
+            // Hide language picker
+            document.querySelector('.lang-toggle').classList.remove('highlight');
+            document.getElementById('langPickerOverlay').classList.remove('active');
+            
+            // Show walkthrough after a brief delay
+            setTimeout(() => showWalkthrough(), 300);
         }
 
         // ==============================================
