@@ -2179,9 +2179,9 @@
                 <!-- Reports Page -->
                 <div class="page pro-only" id="page-reports" style="display:none">
                     <!-- Missing Data Warning Banner -->
-                    <div id="missingDataWarning" class="card" style="display:none;margin-bottom:1rem;background:linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);border:1px solid #F59E0B">
-                        <div class="card-body" style="padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem">
-                            <span style="font-size:1.25rem">⚠️</span>
+                    <div id="missingDataWarning" class="card" style="display:none;margin-bottom:1.5rem;background:linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);border:1px solid #F59E0B">
+                        <div class="card-body" style="padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem">
+                            <span style="font-size:1.5rem">⚠️</span>
                             <div style="flex:1">
                                 <strong style="color:#92400E" data-translate="incomplete_data">Incomplete Data</strong>
                                 <span style="color:#92400E;font-size:0.9rem" id="missingDataText"></span>
@@ -2190,99 +2190,102 @@
                         </div>
                     </div>
 
-                    <!-- Quick Date Range Buttons -->
-                    <div class="card" style="margin-bottom:1.5rem">
-                        <div class="card-body" style="padding:1rem 1.5rem">
-                            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
-                                <span style="font-weight:500;color:var(--gray-600);margin-right:0.5rem" data-translate="quick_select">Quick Select:</span>
-                                <button class="btn btn-sm date-range-btn active" data-period="7days" onclick="setReportPeriod('7days')">7 Days</button>
-                                <button class="btn btn-sm date-range-btn" data-period="30days" onclick="setReportPeriod('30days')">30 Days</button>
-                                <button class="btn btn-sm date-range-btn" data-period="month" onclick="setReportPeriod('month')" data-translate="this_month">This Month</button>
-                                <button class="btn btn-sm date-range-btn" data-period="last_month" onclick="setReportPeriod('last_month')" data-translate="last_month">Last Month</button>
-                                <button class="btn btn-sm date-range-btn" data-period="quarter" onclick="setReportPeriod('quarter')" data-translate="this_quarter">This Quarter</button>
-                                <button class="btn btn-sm date-range-btn" data-period="year" onclick="setReportPeriod('year')" data-translate="this_year">This Year</button>
-                                <button class="btn btn-sm date-range-btn" data-period="all" onclick="setReportPeriod('all')" data-translate="all_time">All Time</button>
-                                
-                                <div style="margin-left:auto;display:flex;gap:0.5rem;align-items:center">
-                                    <div class="form-group enterprise-only" id="reportClientGroup" style="margin:0;display:none">
-                                        <select class="form-select" id="reportClient" onchange="loadReports()" style="min-width:160px;padding:0.4rem 0.75rem;font-size:0.85rem">
-                                            <option value="all" data-translate="all_clients">All Clients</option>
-                                        </select>
-                                    </div>
-                                    <button class="btn btn-secondary btn-sm" onclick="showExportModal()">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
-                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                            <polyline points="7 10 12 15 17 10"/>
-                                            <line x1="12" y1="15" x2="12" y2="3"/>
-                                        </svg>
-                                        <span data-translate="export">Export</span>
-                                    </button>
-                                </div>
+                    <!-- Header with Date Range and Export -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+                        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+                            <button class="date-range-btn active" data-period="7days" onclick="setReportPeriod('7days')">7D</button>
+                            <button class="date-range-btn" data-period="30days" onclick="setReportPeriod('30days')">30D</button>
+                            <button class="date-range-btn" data-period="month" onclick="setReportPeriod('month')" data-translate="this_month">Month</button>
+                            <button class="date-range-btn" data-period="quarter" onclick="setReportPeriod('quarter')">Quarter</button>
+                            <button class="date-range-btn" data-period="year" onclick="setReportPeriod('year')">Year</button>
+                            <button class="date-range-btn" data-period="all" onclick="setReportPeriod('all')">All</button>
+                        </div>
+                        <div style="display:flex;gap:0.75rem;align-items:center">
+                            <div class="form-group enterprise-only" id="reportClientGroup" style="margin:0;display:none">
+                                <select class="form-select" id="reportClient" onchange="loadReports()" style="min-width:160px;padding:0.5rem 0.75rem;font-size:0.85rem">
+                                    <option value="all" data-translate="all_clients">All Clients</option>
+                                </select>
                             </div>
+                            <button class="btn btn-secondary" onclick="showExportModal()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                <span data-translate="export">Export</span>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Summary Cards - Basic Stats (All Plans) -->
                     <div class="stats-grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(4, 1fr)" id="basicStatsGrid">
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--primary);font-size:1.75rem" id="reportTotalRequests">0</div>
+                        <div class="stat-card blue" style="text-align:center">
+                            <div class="stat-value" style="font-size:2rem" id="reportTotalRequests">0</div>
                             <div class="stat-label" data-translate="total_requests">Total Requests</div>
                         </div>
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportPendingRequests">0</div>
+                        <div class="stat-card yellow" style="text-align:center">
+                            <div class="stat-value" style="font-size:2rem" id="reportPendingRequests">0</div>
                             <div class="stat-label" data-translate="pending">Pending</div>
                         </div>
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--success);font-size:1.75rem" id="reportCompletedRequests">0</div>
+                        <div class="stat-card green" style="text-align:center">
+                            <div class="stat-value" style="font-size:2rem" id="reportCompletedRequests">0</div>
                             <div class="stat-label" data-translate="completed">Completed</div>
                         </div>
                         <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--gray-600);font-size:1.75rem" id="reportAvgDays">0</div>
+                            <div class="stat-value" style="font-size:2rem" id="reportAvgDays">0</div>
                             <div class="stat-label" data-translate="avg_days">Avg. Days to Complete</div>
                         </div>
                     </div>
 
-                    <!-- Financial Stats (Pro+ Only) -->
-                    <div class="stats-grid pro-only" style="margin-bottom:1.5rem;grid-template-columns:repeat(5, 1fr);display:none" id="financialStatsGrid">
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--success);font-size:1.75rem" id="reportTotalRevenue">$0</div>
-                            <div class="stat-label" data-translate="total_revenue">Total Revenue</div>
-                        </div>
-                        <div class="stat-card fee-card hoa-fee-card" style="text-align:center;display:none">
-                            <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportTotalHoa">$0</div>
-                            <div class="stat-label">HOA</div>
-                        </div>
-                        <div class="stat-card fee-card maint-fee-card" style="text-align:center;display:none">
-                            <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportTotalMaint">$0</div>
-                            <div class="stat-label" data-translate="maintenance">Maintenance</div>
-                        </div>
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--danger);font-size:1.75rem" id="reportTotalExpenses">$0</div>
-                            <div class="stat-label" data-translate="repairs">Repairs</div>
-                        </div>
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="font-size:1.75rem" id="reportNetIncome">$0</div>
-                            <div class="stat-label" data-translate="net_income">Net Income</div>
+                    <!-- Financial Stats (Pro+ Only) - Combined Row -->
+                    <div class="card pro-only" style="margin-bottom:1.5rem;display:none" id="financialStatsGrid">
+                        <div class="card-body" style="padding:1.25rem">
+                            <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:1.5rem;text-align:center">
+                                <div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--success)" id="reportTotalRevenue">$0</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="total_revenue">Revenue</div>
+                                </div>
+                                <div class="fee-card hoa-fee-card" style="display:none">
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--warning)" id="reportTotalHoa">$0</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)">HOA</div>
+                                </div>
+                                <div class="fee-card maint-fee-card" style="display:none">
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--warning)" id="reportTotalMaint">$0</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="maintenance">Maintenance</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--danger)" id="reportTotalExpenses">$0</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="repairs">Repairs</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary)" id="reportNetIncome">$0</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="net_income">Net Income</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Occupancy Stats (Pro+ Only) -->
-                    <div class="stats-grid pro-only" style="margin-bottom:1.5rem;grid-template-columns:repeat(4, 1fr);display:none" id="occupancyStatsGrid">
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--primary);font-size:1.75rem" id="reportTotalUnits">0</div>
-                            <div class="stat-label" data-translate="total_units">Total Units</div>
-                        </div>
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--success);font-size:1.75rem" id="reportOccupiedUnits">0</div>
-                            <div class="stat-label" data-translate="occupied_units">Occupied</div>
-                        </div>
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--gray-500);font-size:1.75rem" id="reportVacantUnits">0</div>
-                            <div class="stat-label" data-translate="vacant_units">Vacant</div>
-                        </div>
-                        <div class="stat-card" style="text-align:center">
-                            <div class="stat-value" style="color:var(--warning);font-size:1.75rem" id="reportOccupancyRate">0%</div>
-                            <div class="stat-label" data-translate="occupancy_rate">Occupancy Rate</div>
+                    <!-- Occupancy Stats (Pro+ Only) - Compact -->
+                    <div class="card pro-only" style="margin-bottom:1.5rem;display:none" id="occupancyStatsGrid">
+                        <div class="card-body" style="padding:1.25rem">
+                            <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:1.5rem;text-align:center">
+                                <div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary)" id="reportTotalUnits">0</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="total_units">Total Units</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--success)" id="reportOccupiedUnits">0</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="occupied_units">Occupied</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--gray-400)" id="reportVacantUnits">0</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="vacant_units">Vacant</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:1.5rem;font-weight:700;color:var(--warning)" id="reportOccupancyRate">0%</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="occupancy_rate">Occupancy</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -2313,7 +2316,7 @@
                         </div>
                     </div>
 
-                    <!-- Basic Charts (All Plans) -->
+                    <!-- Charts Row -->
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
                         <!-- Requests by Category -->
                         <div class="card">
@@ -2362,10 +2365,10 @@
                     </div>
 
                     <!-- Upgrade Banner (Starter Only) -->
-                    <div class="card starter-only" id="upgradeReportsBanner" style="display:none;margin-bottom:1.5rem;background:linear-gradient(135deg, var(--primary) 0%, #6366F1 100%);color:white">
-                        <div class="card-body" style="padding:1.5rem;text-align:center">
+                    <div class="card starter-only" id="upgradeReportsBanner" style="display:none;margin-bottom:1.5rem;background:var(--gradient-primary);color:white">
+                        <div class="card-body" style="padding:2rem;text-align:center">
                             <h3 style="margin-bottom:0.5rem;font-size:1.25rem" data-translate="unlock_financial_reports">Unlock Financial Reports</h3>
-                            <p style="opacity:0.9;margin-bottom:1rem;font-size:0.95rem" data-translate="upgrade_pro_desc">Upgrade to Pro to access income tracking, expense reports, and detailed financial analytics for all your properties.</p>
+                            <p style="opacity:0.9;margin-bottom:1.25rem;font-size:0.95rem" data-translate="upgrade_pro_desc">Upgrade to Pro to access income tracking, expense reports, and detailed financial analytics for all your properties.</p>
                             <button class="btn" style="background:white;color:var(--primary);font-weight:600" onclick="showPage('settings')" data-translate="upgrade_now">Upgrade Now</button>
                         </div>
                     </div>
