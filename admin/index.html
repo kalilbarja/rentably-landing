@@ -1256,20 +1256,235 @@
         }
 
         @media (max-width: 768px) {
+            /* Sidebar - hidden by default on mobile */
             .sidebar {
+                position: fixed;
                 transform: translateX(-100%);
+                z-index: 1000;
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            /* Overlay when sidebar is open */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
             }
 
             .main-content {
                 margin-left: 0;
             }
 
+            /* Header adjustments */
+            header {
+                padding: 1rem;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            header .page-title {
+                font-size: 1.25rem;
+                order: 2;
+                width: 100%;
+            }
+
+            .header-actions {
+                order: 1;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            /* Add hamburger menu button */
+            .mobile-menu-btn {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: white;
+                border: 2px solid var(--gray-200);
+                border-radius: var(--radius-md);
+                cursor: pointer;
+            }
+
+            /* Stats grid */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            /* Cards */
+            .card {
+                border-radius: var(--radius-md);
+            }
+
+            .card-header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            /* Grid layouts */
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            /* Tables - horizontal scroll */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 600px;
+            }
+
+            /* Forms */
+            .form-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .form-row .form-group {
+                width: 100%;
+            }
+
+            /* Modals */
+            .modal {
+                max-width: 100%;
+                max-height: 100%;
+                border-radius: 0;
+                margin: 0;
+            }
+
+            .modal-body {
+                max-height: calc(100vh - 140px);
+            }
+
+            /* Financial overview card on dashboard */
+            #dashboardFinancials .card-body > div:nth-child(2) {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+                text-align: center;
+            }
+
+            #dashboardFinancials .card-body > div:nth-child(2) > div {
+                padding: 0.75rem;
+                background: rgba(255,255,255,0.05);
+                border-radius: var(--radius-sm);
+            }
+
+            /* Tabs */
+            .tabs {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .tab {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            /* Date range buttons */
+            .date-range-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            /* Buttons */
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .btn-sm {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            /* Page content padding */
+            .page-content {
+                padding: 1rem;
+            }
+
+            /* Search box in header */
+            .header-actions .inline-search {
+                display: none;
+            }
+
+            /* Reports financial overview */
+            #financialStatsGrid .card-body > div:nth-child(2) {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+
+            /* Charts - stack vertically */
+            #page-reports > div[style*="grid-template-columns: 1fr 1fr"],
+            #page-reports > div[style*="grid-template-columns: 2fr 1fr"] {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+
+            /* Login page */
+            .login-container {
+                padding: 1rem;
+            }
+
+            .login-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Even smaller screens */
             .stats-grid {
                 grid-template-columns: 1fr;
             }
 
-            .grid-2 {
-                grid-template-columns: 1fr;
+            header .page-title {
+                font-size: 1.1rem;
+            }
+
+            .stat-value {
+                font-size: 1.25rem !important;
+            }
+
+            /* Hide some columns on very small screens */
+            table th:nth-child(4),
+            table td:nth-child(4),
+            table th:nth-child(5),
+            table td:nth-child(5) {
+                display: none;
             }
         }
 
@@ -1522,8 +1737,11 @@
 
     <!-- Main App -->
     <div class="app-container" id="app">
+        <!-- Mobile Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+        
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="#" class="logo">
                     <div class="logo-icon">R</div>
@@ -1628,7 +1846,14 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">
-                <div class="header-left">
+                <div class="header-left" style="display:flex;align-items:center;gap:1rem">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()" style="display:none">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px">
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
                     <h1 class="page-title" id="pageTitle">Dashboard</h1>
                 </div>
                 <div class="header-right">
@@ -4932,6 +5157,44 @@
                 return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
             }
         }
+
+        // ==============================================
+        // MOBILE NAVIGATION
+        // ==============================================
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+        }
+
+        // Close sidebar when clicking a nav item on mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        closeMobileSidebar();
+                    }
+                });
+            });
+
+            // Show mobile menu button on small screens
+            function checkMobileView() {
+                const mobileBtn = document.getElementById('mobileMenuBtn');
+                if (mobileBtn) {
+                    mobileBtn.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+                }
+            }
+            checkMobileView();
+            window.addEventListener('resize', checkMobileView);
+        });
 
         // ==============================================
         // LANGUAGE
