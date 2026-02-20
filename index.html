@@ -1200,106 +1200,96 @@
 
     <!-- Login Preview -->
     <section class="login-section scroll-padding" id="login">
-        <div class="login-container" style="grid-template-columns: 1fr; max-width: 480px;">
-            <div class="login-form-side">
-                <div class="login-logo" style="justify-content: center;">
-                    <div class="login-logo-icon">R</div>
-                    <span class="login-logo-text">Rentably</span>
-                </div>
-                
-                <!-- Portal Selector Dropdown -->
-                <div class="portal-selector">
-                    <label class="form-label" style="text-align: center; display: block; margin-bottom: 0.75rem;">Select Portal</label>
-                    <div class="portal-dropdown" onclick="togglePortalDropdown()" style="position: relative;">
-                        <div class="portal-dropdown-trigger" style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); cursor: pointer; background: var(--gray-50); transition: all 0.2s;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                <span style="font-size: 1.25rem;" id="selectedPortalIcon">🏢</span>
-                                <div>
-                                    <div style="font-weight: 600;" id="selectedPortalName">Select a portal...</div>
-                                    <div style="font-size: 0.8rem; color: var(--gray-500);" id="selectedPortalDesc">Choose where to sign in</div>
-                                </div>
+        <div style="text-align: center; max-width: 500px;">
+            <div class="login-logo" style="justify-content: center; margin-bottom: 2rem;">
+                <div class="login-logo-icon">R</div>
+                <span class="login-logo-text" style="color: white;">Rentably</span>
+            </div>
+            
+            <h2 style="color: white; font-size: 2rem; margin-bottom: 0.5rem;">Sign in to your portal</h2>
+            <p style="color: var(--gray-400); margin-bottom: 2.5rem;">Select your portal type to continue</p>
+            
+            <!-- Portal Selector Dropdown -->
+            <div class="portal-selector" style="position: relative;">
+                <div class="portal-dropdown" id="portalDropdown">
+                    <div class="portal-dropdown-trigger" onclick="togglePortalDropdown()" style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border: 2px solid rgba(255,255,255,0.2); border-radius: var(--radius-lg); cursor: pointer; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); transition: all 0.2s;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="font-size: 1.5rem;">🔐</span>
+                            <div style="text-align: left;">
+                                <div style="font-weight: 600; color: white; font-size: 1.1rem;">Choose Portal</div>
+                                <div style="font-size: 0.85rem; color: var(--gray-400);">Admin or Resident</div>
                             </div>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400); transition: transform 0.2s;" id="dropdownArrow">
-                                <polyline points="6 9 12 15 18 9"/>
+                        </div>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400); transition: transform 0.3s;" id="dropdownArrow">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="portal-dropdown-menu" id="portalMenu" style="display: none; position: absolute; top: calc(100% + 12px); left: 0; right: 0; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); overflow: hidden; z-index: 100;">
+                        <a href="/admin" class="portal-option" style="display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid var(--gray-100); text-decoration: none; color: inherit;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏢</div>
+                            <div style="flex: 1; text-align: left;">
+                                <div style="font-weight: 600; font-size: 1.05rem; color: var(--gray-900);">Admin Portal</div>
+                                <div style="font-size: 0.85rem; color: var(--gray-500);">For property managers & landlords</div>
+                            </div>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400);">
+                                <polyline points="9 18 15 12 9 6"/>
                             </svg>
-                        </div>
-                        <div class="portal-dropdown-menu" id="portalMenu" style="display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); overflow: hidden; z-index: 100;">
-                            <div class="portal-option" onclick="selectPortal('admin', '🏢', 'Admin Portal', 'For property managers & landlords')" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid var(--gray-100);">
-                                <span style="font-size: 1.25rem;">🏢</span>
-                                <div>
-                                    <div style="font-weight: 600;">Admin Portal</div>
-                                    <div style="font-size: 0.8rem; color: var(--gray-500);">For property managers & landlords</div>
-                                </div>
+                        </a>
+                        <a href="/portal" class="portal-option" style="display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏠</div>
+                            <div style="flex: 1; text-align: left;">
+                                <div style="font-weight: 600; font-size: 1.05rem; color: var(--gray-900);">Resident Portal</div>
+                                <div style="font-size: 0.85rem; color: var(--gray-500);">For tenants & residents</div>
                             </div>
-                            <div class="portal-option" onclick="selectPortal('resident', '🏠', 'Resident Portal', 'For tenants & residents')" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; cursor: pointer; transition: background 0.2s;">
-                                <span style="font-size: 1.25rem;">🏠</span>
-                                <div>
-                                    <div style="font-weight: 600;">Resident Portal</div>
-                                    <div style="font-size: 0.8rem; color: var(--gray-500);">For tenants & residents</div>
-                                </div>
-                            </div>
-                        </div>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400);">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </a>
                     </div>
-                </div>
-                
-                <div class="login-form" style="margin-top: 2rem;">
-                    <div class="form-group">
-                        <label class="form-label">Email address</label>
-                        <input type="email" class="form-input" placeholder="you@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-input" placeholder="••••••••">
-                    </div>
-                    <button class="btn btn-primary btn-login">Sign In</button>
-                    <p style="text-align: center; margin-top: 1.5rem; color: var(--gray-500); font-size: 0.875rem;">
-                        Don't have an account? <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 500;">Contact your landlord</a>
-                    </p>
                 </div>
             </div>
+            
+            <p style="color: var(--gray-500); font-size: 0.875rem; margin-top: 2rem;">
+                Need help? <a href="mailto:support@rentably.io" style="color: var(--primary-light); text-decoration: none;">Contact support</a>
+            </p>
         </div>
     </section>
     
     <style>
         .portal-dropdown-trigger:hover {
-            border-color: var(--primary);
-            background: white;
+            border-color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.1);
         }
-        .portal-dropdown-trigger:focus-within {
+        .portal-dropdown.open .portal-dropdown-trigger {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            background: rgba(255,255,255,0.1);
+        }
+        .portal-dropdown.open #dropdownArrow {
+            transform: rotate(180deg);
         }
         .portal-option:hover {
             background: var(--gray-50);
         }
-        .portal-dropdown.open .portal-dropdown-trigger {
-            border-color: var(--primary);
-            background: white;
+        .portal-option:hover svg:last-child {
+            color: var(--primary);
+            transform: translateX(4px);
         }
-        .portal-dropdown.open #dropdownArrow {
-            transform: rotate(180deg);
+        .portal-option svg:last-child {
+            transition: all 0.2s;
         }
     </style>
     
     <script>
         function togglePortalDropdown() {
-            const dropdown = document.querySelector('.portal-dropdown');
+            const dropdown = document.getElementById('portalDropdown');
             const menu = document.getElementById('portalMenu');
             dropdown.classList.toggle('open');
             menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
         }
         
-        function selectPortal(type, icon, name, desc) {
-            document.getElementById('selectedPortalIcon').textContent = icon;
-            document.getElementById('selectedPortalName').textContent = name;
-            document.getElementById('selectedPortalDesc').textContent = desc;
-            document.getElementById('portalMenu').style.display = 'none';
-            document.querySelector('.portal-dropdown').classList.remove('open');
-        }
-        
         // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
-            const dropdown = document.querySelector('.portal-dropdown');
+            const dropdown = document.getElementById('portalDropdown');
             if (dropdown && !dropdown.contains(e.target)) {
                 document.getElementById('portalMenu').style.display = 'none';
                 dropdown.classList.remove('open');
