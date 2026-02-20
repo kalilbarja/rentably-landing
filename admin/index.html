@@ -4005,13 +4005,13 @@
                 const { data: residents } = await residentsQuery;
                 console.log('Residents data:', residents);
                 
-                // Sum up monthly payments from active residents (with optional client filter)
+                // Sum up monthly payments from active residents for current month
                 let monthlyRevenue = 0;
                 residents?.forEach(r => {
                     if (propertyIds && propertyIds.length > 0) {
                         if (!r.units || !propertyIds.includes(r.units.property_id)) return;
                     }
-                    // Include all active residents - lease dates are optional
+                    // Include all active residents
                     monthlyRevenue += parseFloat(r.monthly_payment || 0);
                 });
                 
@@ -6181,19 +6181,39 @@
                         const leaseStart = r.lease_start ? new Date(r.lease_start) : new Date(2020, 0, 1);
                         const leaseEnd = r.lease_end ? new Date(r.lease_end) : new Date(2030, 11, 31);
                         
-                        // Get overlap period
-                        const overlapStart = new Date(Math.max(startDate.getTime(), leaseStart.getTime()));
-                        const overlapEnd = new Date(Math.min(endDate.getTime(), leaseEnd.getTime()));
+                        // For monthly rent, we count how many full months are in the period
+                        // Simple approach: if tenant is active during this period, count their monthly rent
                         
-                        if (overlapStart <= overlapEnd) {
-                            // Calculate number of months (prorated)
-                            const msPerDay = 24 * 60 * 60 * 1000;
-                            const daysInPeriod = Math.ceil((overlapEnd - overlapStart) / msPerDay) + 1;
-                            const monthsInPeriod = daysInPeriod / 30.44; // Average days per month
+                        if (period === 'month' || period === 'last_month') {
+                            // For "This Month" or "Last Month" - just show the monthly rent if tenant is active
+                            const periodMonth = period === 'last_month' 
+                                ? new Date(now.getFullYear(), now.getMonth() - 1, 1)
+                                : new Date(now.getFullYear(), now.getMonth(), 1);
+                            const periodMonthEnd = period === 'last_month'
+                                ? new Date(now.getFullYear(), now.getMonth(), 0)
+                                : new Date(now.getFullYear(), now.getMonth() + 1, 0);
                             
-                            totalRevenue += monthlyPayment * monthsInPeriod;
-                            totalHoa += hoaAmount * monthsInPeriod;
-                            totalMaint += maintAmount * monthsInPeriod;
+                            // If lease overlaps with this month at all, count full month's rent
+                            if (leaseStart <= periodMonthEnd && leaseEnd >= periodMonth) {
+                                totalRevenue += monthlyPayment;
+                                totalHoa += hoaAmount;
+                                totalMaint += maintAmount;
+                            }
+                        } else {
+                            // For other periods (7days, 30days, quarter, year, all), calculate months in range
+                            const overlapStart = new Date(Math.max(startDate.getTime(), leaseStart.getTime()));
+                            const overlapEnd = new Date(Math.min(endDate.getTime(), leaseEnd.getTime()));
+                            
+                            if (overlapStart <= overlapEnd) {
+                                // Count number of months (approximate for longer periods)
+                                const msPerDay = 24 * 60 * 60 * 1000;
+                                const daysInPeriod = Math.ceil((overlapEnd - overlapStart) / msPerDay) + 1;
+                                const monthsInPeriod = daysInPeriod / 30.44;
+                                
+                                totalRevenue += monthlyPayment * monthsInPeriod;
+                                totalHoa += hoaAmount * monthsInPeriod;
+                                totalMaint += maintAmount * monthsInPeriod;
+                            }
                         }
                     }
                 });
