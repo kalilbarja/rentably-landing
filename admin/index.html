@@ -1629,8 +1629,54 @@
                             </div>
                         </div>
                     </div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
+
+                    <!-- Welcome & Quick Stats Row -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+                        <div>
+                            <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.25rem" id="dashboardGreeting">Welcome back! 👋</h2>
+                            <p style="color:var(--gray-500);font-size:0.95rem">Here's what's happening with your properties</p>
+                        </div>
+                        <div style="display:flex;gap:0.75rem">
+                            <button class="btn btn-secondary" onclick="showPage('reports')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                <span data-translate="view_reports">View Reports</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Financial Overview (Pro+ Only) -->
+                    <div class="card pro-only" id="dashboardFinancials" style="margin-bottom:1.5rem;display:none;background:linear-gradient(135deg, #0F0F1A 0%, #1a1a2e 100%);color:white;border:none">
+                        <div class="card-body" style="padding:1.5rem">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+                                <span style="font-size:0.85rem;opacity:0.7">Monthly Overview</span>
+                                <span style="font-size:0.75rem;opacity:0.5" id="dashboardMonth"></span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:2rem">
+                                <div>
+                                    <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Revenue</div>
+                                    <div style="font-size:1.75rem;font-weight:700" id="dashRevenue">$0</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Expenses</div>
+                                    <div style="font-size:1.75rem;font-weight:700;color:#F87171" id="dashExpenses">$0</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Net Income</div>
+                                    <div style="font-size:1.75rem;font-weight:700;color:#34D399" id="dashNetIncome">$0</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Occupancy</div>
+                                    <div style="font-size:1.75rem;font-weight:700" id="dashOccupancy">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Stats Grid -->
+                    <div class="stats-grid" style="margin-bottom:1.5rem">
+                        <div class="stat-card yellow">
                             <div class="stat-header">
                                 <div class="stat-icon yellow">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1642,7 +1688,7 @@
                             <div class="stat-value" id="statPending">0</div>
                             <div class="stat-label" data-translate="pending_requests">Pending Requests</div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card blue">
                             <div class="stat-header">
                                 <div class="stat-icon blue">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1653,7 +1699,7 @@
                             <div class="stat-value" id="statInProgress">0</div>
                             <div class="stat-label" data-translate="in_progress">In Progress</div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card green">
                             <div class="stat-header">
                                 <div class="stat-icon green">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1663,15 +1709,14 @@
                                 </div>
                             </div>
                             <div class="stat-value" id="statCompleted">0</div>
-                            <div class="stat-label" data-translate="completed">Completed</div>
+                            <div class="stat-label" data-translate="completed_month">Completed This Month</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-header">
                                 <div class="stat-icon blue">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                        <line x1="3" y1="9" x2="21" y2="9"/>
-                                        <line x1="9" y1="3" x2="9" y2="21"/>
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                        <polyline points="9 22 9 12 15 12 15 22"/>
                                     </svg>
                                 </div>
                             </div>
@@ -1680,7 +1725,18 @@
                         </div>
                     </div>
 
-                    <div class="grid-2">
+                    <!-- Quick Stats Row (Starter - Shows what they're missing) -->
+                    <div class="card starter-only" id="dashboardUpgradeBanner" style="display:none;margin-bottom:1.5rem;background:var(--gradient-primary);color:white;border:none">
+                        <div class="card-body" style="padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+                            <div>
+                                <div style="font-weight:600;margin-bottom:0.25rem">📊 Unlock Financial Insights</div>
+                                <div style="font-size:0.9rem;opacity:0.9">Track revenue, expenses, and occupancy rates with Pro</div>
+                            </div>
+                            <button class="btn" style="background:white;color:var(--primary);font-weight:600" onclick="showPage('settings')">Upgrade Now</button>
+                        </div>
+                    </div>
+
+                    <div class="grid-2" style="margin-bottom:1.5rem">
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title" data-translate="recent_requests">Recent Requests</h3>
@@ -1708,6 +1764,31 @@
                                         <polyline points="9 22 9 12 15 12 15 22"/>
                                     </svg>
                                     <p>No properties yet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Occupancy Overview (Pro+ Only) -->
+                    <div class="card pro-only" id="dashboardOccupancyCard" style="display:none">
+                        <div class="card-header">
+                            <h3 class="card-title">Occupancy Overview</h3>
+                            <button class="btn btn-secondary btn-sm" onclick="showPage('units')">Manage Units</button>
+                        </div>
+                        <div class="card-body">
+                            <div style="display:flex;gap:2rem;align-items:center">
+                                <div style="flex:1">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+                                        <span style="font-size:0.9rem;color:var(--gray-600)">Occupied Units</span>
+                                        <span style="font-weight:600" id="dashOccupiedCount">0 / 0</span>
+                                    </div>
+                                    <div style="height:12px;background:var(--gray-200);border-radius:6px;overflow:hidden">
+                                        <div id="dashOccupancyBar" style="width:0%;height:100%;background:var(--gradient-success);border-radius:6px;transition:width 0.5s ease"></div>
+                                    </div>
+                                </div>
+                                <div style="text-align:center;min-width:100px">
+                                    <div style="font-size:2rem;font-weight:700;color:var(--success)" id="dashOccupancyPercent">0%</div>
+                                    <div style="font-size:0.8rem;color:var(--gray-500)">Occupancy Rate</div>
                                 </div>
                             </div>
                         </div>
@@ -3802,6 +3883,18 @@
                 await loadDashboardClientOptions();
             }
             
+            // Set greeting based on time of day
+            const hour = new Date().getHours();
+            let greeting = 'Good morning';
+            if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
+            else if (hour >= 17) greeting = 'Good evening';
+            document.getElementById('dashboardGreeting').textContent = `${greeting}! 👋`;
+            
+            // Set current month label
+            const monthLabel = new Date().toLocaleDateString(currentLang === 'es' ? 'es-ES' : 'en-US', { month: 'long', year: 'numeric' });
+            const dashMonth = document.getElementById('dashboardMonth');
+            if (dashMonth) dashMonth.textContent = monthLabel;
+            
             const clientId = document.getElementById('dashboardClient')?.value || 'all';
             
             // Get property IDs for selected client
@@ -3817,7 +3910,7 @@
             // Load stats - filter by client's properties
             let requestsQuery = db
                 .from('maintenance_requests')
-                .select('status, property_id')
+                .select('status, property_id, created_at, cost')
                 .eq('organization_id', currentOrg.id);
             
             if (propertyIds && propertyIds.length > 0) {
@@ -3828,7 +3921,7 @@
             
             let unitsQuery = db
                 .from('units')
-                .select('id, property_id')
+                .select('id, property_id, is_occupied')
                 .eq('organization_id', currentOrg.id);
             
             if (propertyIds && propertyIds.length > 0) {
@@ -3837,15 +3930,83 @@
             
             const { data: units } = await unitsQuery;
             
+            // Get current month's requests for "Completed This Month"
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+            const completedThisMonth = requests?.filter(r => 
+                r.status === 'completed' && 
+                new Date(r.created_at) >= new Date(startOfMonth)
+            ).length || 0;
+            
             const pending = requests?.filter(r => r.status === 'pending').length || 0;
             const inProgress = requests?.filter(r => r.status === 'in_progress').length || 0;
-            const completed = requests?.filter(r => r.status === 'completed').length || 0;
+            const completed = completedThisMonth;
             
             document.getElementById('statPending').textContent = pending;
             document.getElementById('statInProgress').textContent = inProgress;
             document.getElementById('statCompleted').textContent = completed;
             document.getElementById('statUnits').textContent = units?.length || 0;
             document.getElementById('requestsBadge').textContent = pending;
+            
+            // Calculate occupancy
+            const totalUnits = units?.length || 0;
+            const occupiedUnits = units?.filter(u => u.is_occupied).length || 0;
+            const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
+            
+            // Show financial dashboard for Pro+ users
+            const plan = currentOrg?.subscription_plan || 'starter';
+            const isPro = plan === 'pro' || plan === 'business' || plan === 'enterprise';
+            
+            if (isPro) {
+                document.getElementById('dashboardFinancials').style.display = '';
+                document.getElementById('dashboardOccupancyCard').style.display = '';
+                document.getElementById('dashboardUpgradeBanner').style.display = 'none';
+                
+                // Calculate monthly revenue from residents with active leases
+                let residentsQuery = db
+                    .from('residents')
+                    .select('monthly_rent, lease_start, lease_end, unit_id, units(property_id)')
+                    .eq('organization_id', currentOrg.id)
+                    .eq('is_active', true);
+                
+                const { data: residents } = await residentsQuery;
+                
+                // Filter to only residents with valid leases in current month and matching client filter
+                const today = new Date();
+                let monthlyRevenue = 0;
+                residents?.forEach(r => {
+                    if (propertyIds && propertyIds.length > 0) {
+                        if (!r.units || !propertyIds.includes(r.units.property_id)) return;
+                    }
+                    const leaseStart = r.lease_start ? new Date(r.lease_start) : null;
+                    const leaseEnd = r.lease_end ? new Date(r.lease_end) : null;
+                    if (leaseStart && leaseStart <= today && (!leaseEnd || leaseEnd >= today)) {
+                        monthlyRevenue += parseFloat(r.monthly_rent || 0);
+                    }
+                });
+                
+                // Calculate expenses from maintenance costs this month
+                const monthlyExpenses = requests?.filter(r => 
+                    new Date(r.created_at) >= new Date(startOfMonth) && r.cost
+                ).reduce((sum, r) => sum + parseFloat(r.cost || 0), 0) || 0;
+                
+                const netIncome = monthlyRevenue - monthlyExpenses;
+                
+                document.getElementById('dashRevenue').textContent = formatCurrency(monthlyRevenue);
+                document.getElementById('dashExpenses').textContent = formatCurrency(monthlyExpenses);
+                document.getElementById('dashNetIncome').textContent = formatCurrency(netIncome);
+                document.getElementById('dashNetIncome').style.color = netIncome >= 0 ? '#34D399' : '#F87171';
+                document.getElementById('dashOccupancy').textContent = occupancyRate + '%';
+                
+                // Update occupancy card
+                document.getElementById('dashOccupiedCount').textContent = `${occupiedUnits} / ${totalUnits}`;
+                document.getElementById('dashOccupancyBar').style.width = occupancyRate + '%';
+                document.getElementById('dashOccupancyPercent').textContent = occupancyRate + '%';
+            } else {
+                document.getElementById('dashboardFinancials').style.display = 'none';
+                document.getElementById('dashboardOccupancyCard').style.display = 'none';
+                document.getElementById('dashboardUpgradeBanner').style.display = '';
+            }
             
             // Load recent requests
             let recentQuery = db
