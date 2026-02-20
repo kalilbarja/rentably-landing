@@ -1273,6 +1273,47 @@
             }
         }
 
+        /* Custom Tooltip */
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip-trigger .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gray-900);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+            z-index: 100;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .tooltip-trigger .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--gray-900) transparent transparent transparent;
+        }
+
+        .tooltip-trigger:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             position: fixed;
@@ -2283,7 +2324,58 @@
                         </div>
                     </div>
 
-                    <!-- Summary Cards - Basic Stats (All Plans) -->
+                    <!-- Financial Overview Card (Pro+ Only) - Matches Dashboard Style -->
+                    <div class="card pro-only" id="financialStatsGrid" style="margin-bottom:1.5rem;display:none;background:linear-gradient(135deg, #0F0F1A 0%, #1a1a2e 100%);color:white;border:none">
+                        <div class="card-body" style="padding:1.5rem">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+                                <span style="font-size:0.9rem;font-weight:600">Financial Overview</span>
+                                <span style="font-size:0.75rem;opacity:0.5" id="reportPeriodLabel">Last 7 Days</span>
+                            </div>
+                            <!-- Financial Stats Row -->
+                            <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:2rem;margin-bottom:1.5rem">
+                                <div>
+                                    <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Revenue</div>
+                                    <div style="font-size:1.75rem;font-weight:700" id="reportTotalRevenue">$0</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Expenses</div>
+                                    <div style="font-size:1.75rem;font-weight:700;color:#F87171" id="reportTotalExpenses">$0</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Net Income</div>
+                                    <div style="font-size:1.75rem;font-weight:700;color:#34D399" id="reportNetIncome">$0</div>
+                                </div>
+                            </div>
+                            <!-- HOA/Maintenance fees (hidden by default) -->
+                            <div class="fee-card hoa-fee-card" style="display:none;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.1);margin-bottom:1rem">
+                                <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:2rem">
+                                    <div>
+                                        <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">HOA Fees</div>
+                                        <div style="font-size:1.25rem;font-weight:700;color:#FBBF24" id="reportTotalHoa">$0</div>
+                                    </div>
+                                    <div class="maint-fee-card" style="display:none">
+                                        <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Maintenance Fees</div>
+                                        <div style="font-size:1.25rem;font-weight:700;color:#FBBF24" id="reportTotalMaint">$0</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Occupancy Bar -->
+                            <div style="padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.1)">
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+                                    <span style="font-size:0.8rem;opacity:0.7">Occupancy Rate</span>
+                                    <span style="font-size:0.9rem;font-weight:600"><span id="reportOccupiedUnits">0</span> / <span id="reportTotalUnits">0</span> units occupied</span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:1rem">
+                                    <div style="flex:1;height:10px;background:rgba(255,255,255,0.1);border-radius:5px;overflow:hidden">
+                                        <div id="reportOccupancyBar" style="width:0%;height:100%;background:linear-gradient(90deg, #34D399 0%, #10B981 100%);border-radius:5px;transition:width 0.5s ease"></div>
+                                    </div>
+                                    <span style="font-size:1.25rem;font-weight:700;min-width:50px;text-align:right" id="reportOccupancyRate">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Maintenance Stats Grid -->
                     <div class="stats-grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(4, 1fr)" id="basicStatsGrid">
                         <div class="stat-card blue" style="text-align:center">
                             <div class="stat-value" style="font-size:2rem" id="reportTotalRequests">0</div>
@@ -2303,55 +2395,14 @@
                         </div>
                     </div>
 
-                    <!-- Financial Stats (Pro+ Only) - Combined Row -->
-                    <div class="card pro-only" style="margin-bottom:1.5rem;display:none" id="financialStatsGrid">
-                        <div class="card-body" style="padding:1.25rem">
-                            <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:1.5rem;text-align:center">
-                                <div>
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--success)" id="reportTotalRevenue">$0</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="total_revenue">Revenue</div>
-                                </div>
-                                <div class="fee-card hoa-fee-card" style="display:none">
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--warning)" id="reportTotalHoa">$0</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)">HOA</div>
-                                </div>
-                                <div class="fee-card maint-fee-card" style="display:none">
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--warning)" id="reportTotalMaint">$0</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="maintenance">Maintenance</div>
-                                </div>
-                                <div>
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--danger)" id="reportTotalExpenses">$0</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="repairs">Repairs</div>
-                                </div>
-                                <div>
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary)" id="reportNetIncome">$0</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="net_income">Net Income</div>
-                                </div>
+                    <!-- Upgrade Banner (Starter Only) -->
+                    <div class="card starter-only" id="upgradeReportsBanner" style="display:none;margin-bottom:1.5rem;background:var(--gradient-primary);color:white;border:none">
+                        <div class="card-body" style="padding:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+                            <div>
+                                <div style="font-weight:600;margin-bottom:0.25rem">📊 Unlock Financial Reports</div>
+                                <div style="font-size:0.9rem;opacity:0.9">Track revenue, expenses, and occupancy with detailed analytics</div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Occupancy Stats (Pro+ Only) - Compact -->
-                    <div class="card pro-only" style="margin-bottom:1.5rem;display:none" id="occupancyStatsGrid">
-                        <div class="card-body" style="padding:1.25rem">
-                            <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:1.5rem;text-align:center">
-                                <div>
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary)" id="reportTotalUnits">0</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="total_units">Total Units</div>
-                                </div>
-                                <div>
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--success)" id="reportOccupiedUnits">0</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="occupied_units">Occupied</div>
-                                </div>
-                                <div>
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--gray-400)" id="reportVacantUnits">0</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="vacant_units">Vacant</div>
-                                </div>
-                                <div>
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--warning)" id="reportOccupancyRate">0%</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)" data-translate="occupancy_rate">Occupancy</div>
-                                </div>
-                            </div>
+                            <button class="btn" style="background:white;color:var(--primary);font-weight:600" onclick="showPage('settings')">Upgrade Now</button>
                         </div>
                     </div>
 
@@ -2427,15 +2478,6 @@
                                     <div id="expenseDonutChart" style="min-height:200px"></div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Upgrade Banner (Starter Only) -->
-                    <div class="card starter-only" id="upgradeReportsBanner" style="display:none;margin-bottom:1.5rem;background:var(--gradient-primary);color:white">
-                        <div class="card-body" style="padding:2rem;text-align:center">
-                            <h3 style="margin-bottom:0.5rem;font-size:1.25rem" data-translate="unlock_financial_reports">Unlock Financial Reports</h3>
-                            <p style="opacity:0.9;margin-bottom:1.25rem;font-size:0.95rem" data-translate="upgrade_pro_desc">Upgrade to Pro to access income tracking, expense reports, and detailed financial analytics for all your properties.</p>
-                            <button class="btn" style="background:white;color:var(--primary);font-weight:600" onclick="showPage('settings')" data-translate="upgrade_now">Upgrade Now</button>
                         </div>
                     </div>
 
@@ -4512,6 +4554,12 @@
                         ? `<span style="display:inline-block;background:var(--primary);color:white;font-size:0.7rem;padding:2px 6px;border-radius:4px;margin-left:0.5rem">${primaryText}</span>`
                         : `<span style="display:inline-block;background:var(--gray-200);color:var(--gray-600);font-size:0.7rem;padding:2px 6px;border-radius:4px;margin-left:0.5rem">${coTenantText}</span>`;
                     
+                    // Warning for missing lease dates or monthly payment
+                    const missingInfo = (!r.lease_start || !r.lease_end || !r.monthly_payment);
+                    const warningTooltip = missingInfo 
+                        ? `<span class="tooltip-trigger" style="margin-left:0.25rem">⚠️<span class="tooltip-text">${currentLang === 'es' ? 'Este inquilino tiene información incompleta' : 'This tenant has missing information'}</span></span>` 
+                        : '';
+                    
                     const rent = r.monthly_payment || 0;
                     const hoaAmount = (r.hoa_included && r.hoa_paid_by === 'owner') ? (r.hoa_amount || 0) : 0;
                     const maintAmount = (r.maintenance_included && r.maintenance_paid_by === 'owner') ? (r.maintenance_amount || 0) : 0;
@@ -4528,7 +4576,7 @@
                     
                     return `
                     <tr>
-                        <td style="font-weight:500">${r.name}${badge}</td>
+                        <td style="font-weight:500">${r.name}${badge}${warningTooltip}</td>
                         <td>${r.email}</td>
                         <td>
                             ${r.units?.identifier || '-'}
@@ -6165,14 +6213,11 @@
                 const visibleCards = 3 + (hoaEnabled ? 1 : 0) + (maintEnabled ? 1 : 0);
                 document.getElementById('financialStatsGrid').style.gridTemplateColumns = `repeat(${visibleCards}, 1fr)`;
                 
-                // Update occupancy stats
+                // Update occupancy stats with bar
                 document.getElementById('reportTotalUnits').textContent = totalUnits;
                 document.getElementById('reportOccupiedUnits').textContent = occupiedUnits;
-                document.getElementById('reportVacantUnits').textContent = totalUnits - occupiedUnits;
                 document.getElementById('reportOccupancyRate').textContent = occupancyRate + '%';
-                
-                // Show occupancy stats grid
-                document.getElementById('occupancyStatsGrid').style.display = '';
+                document.getElementById('reportOccupancyBar').style.width = occupancyRate + '%';
                 
                 // Store report data for export
                 window.reportData = {
@@ -6242,7 +6287,7 @@
                             : `<span style="display:inline-block;background:var(--gray-200);color:var(--gray-600);font-size:0.65rem;padding:1px 4px;border-radius:3px;margin-left:0.25rem">${currentLang === 'es' ? 'Co' : 'Co'}</span>`;
                         
                         const missingDates = (!r.lease_start || !r.lease_end) 
-                            ? `<span style="color:var(--warning);font-size:0.7rem;margin-left:0.25rem" title="${currentLang === 'es' ? 'Fechas de contrato incompletas' : 'Missing lease dates'}">⚠️</span>` 
+                            ? `<span class="tooltip-trigger" style="margin-left:0.25rem">⚠️<span class="tooltip-text">${currentLang === 'es' ? 'Este inquilino tiene información incompleta' : 'This tenant has missing information'}</span></span>` 
                             : '';
                         
                         return `
@@ -6421,6 +6466,19 @@
                     btn.classList.add('active');
                 }
             });
+            
+            // Update period label
+            const periodLabels = {
+                '7days': 'Last 7 Days',
+                '30days': 'Last 30 Days',
+                'month': 'This Month',
+                'quarter': 'This Quarter',
+                'year': 'This Year',
+                'all': 'All Time'
+            };
+            const labelEl = document.getElementById('reportPeriodLabel');
+            if (labelEl) labelEl.textContent = periodLabels[period] || period;
+            
             loadReports();
         }
         
