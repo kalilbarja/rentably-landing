@@ -3910,7 +3910,7 @@
             // Load stats - filter by client's properties
             let requestsQuery = db
                 .from('maintenance_requests')
-                .select('status, property_id, created_at, cost')
+                .select('status, property_id, created_at, total_cost')
                 .eq('organization_id', currentOrg.id);
             
             if (propertyIds && propertyIds.length > 0) {
@@ -3957,10 +3957,14 @@
             const plan = currentOrg?.plan || 'starter';
             const isPro = plan === 'professional' || plan === 'pro' || plan === 'business' || plan === 'enterprise';
             
+            console.log('Dashboard Debug:', { plan, isPro, totalUnits, occupiedUnits, occupancyRate });
+            
             if (isPro) {
-                document.getElementById('dashboardFinancials').style.display = '';
-                document.getElementById('dashboardOccupancyCard').style.display = '';
-                document.getElementById('dashboardUpgradeBanner').style.display = 'none';
+                console.log('Showing financial dashboard for Pro+ user');
+                document.getElementById('dashboardFinancials').style.display = 'block';
+                document.getElementById('dashboardOccupancyCard').style.display = 'block';
+                const upgradeBanner = document.getElementById('dashboardUpgradeBanner');
+                if (upgradeBanner) upgradeBanner.style.display = 'none';
                 
                 // Calculate monthly revenue from active residents
                 let residentsQuery = db
@@ -3970,6 +3974,7 @@
                     .eq('is_active', true);
                 
                 const { data: residents } = await residentsQuery;
+                console.log('Residents data:', residents);
                 
                 // Sum up monthly payments from active residents (with optional client filter)
                 let monthlyRevenue = 0;
@@ -3980,6 +3985,8 @@
                     // Include all active residents - lease dates are optional
                     monthlyRevenue += parseFloat(r.monthly_payment || 0);
                 });
+                
+                console.log('Monthly Revenue calculated:', monthlyRevenue);
                 
                 // Calculate expenses from maintenance costs this month
                 let expensesQuery = db
@@ -3998,6 +4005,8 @@
                 
                 const netIncome = monthlyRevenue - monthlyExpenses;
                 
+                console.log('Financial Summary:', { monthlyRevenue, monthlyExpenses, netIncome, occupancyRate });
+                
                 document.getElementById('dashRevenue').textContent = formatCurrency(monthlyRevenue);
                 document.getElementById('dashExpenses').textContent = formatCurrency(monthlyExpenses);
                 document.getElementById('dashNetIncome').textContent = formatCurrency(netIncome);
@@ -4008,10 +4017,13 @@
                 document.getElementById('dashOccupiedCount').textContent = `${occupiedUnits} / ${totalUnits}`;
                 document.getElementById('dashOccupancyBar').style.width = occupancyRate + '%';
                 document.getElementById('dashOccupancyPercent').textContent = occupancyRate + '%';
+                
+                console.log('Dashboard financial elements updated');
             } else {
+                console.log('Not Pro plan, hiding financials. Plan:', plan);
                 document.getElementById('dashboardFinancials').style.display = 'none';
                 document.getElementById('dashboardOccupancyCard').style.display = 'none';
-                document.getElementById('dashboardUpgradeBanner').style.display = '';
+                document.getElementById('dashboardUpgradeBanner').style.display = 'block';
             }
             
             // Load recent requests
@@ -4860,6 +4872,12 @@
                 }
             };
             return names[currentLang][status] || status;
+        }
+        
+        function formatCurrency(amount) {
+            if (amount === null || amount === undefined) return '$0';
+            const num = parseFloat(amount) || 0;
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
         }
         
         function formatDate(dateStr) {
