@@ -3954,8 +3954,8 @@
             const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
             
             // Show financial dashboard for Pro+ users
-            const plan = currentOrg?.subscription_plan || 'starter';
-            const isPro = plan === 'pro' || plan === 'business' || plan === 'enterprise';
+            const plan = currentOrg?.plan || 'starter';
+            const isPro = plan === 'professional' || plan === 'pro' || plan === 'business' || plan === 'enterprise';
             
             if (isPro) {
                 document.getElementById('dashboardFinancials').style.display = '';
