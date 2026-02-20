@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rentably UI Preview - Modern Redesign</title>
+    <title>Rentably | Property Management Made Simple</title>
+    <meta name="description" content="Streamline maintenance requests, track expenses, and delight your tenants with the modern property management platform.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,41 +75,244 @@
             line-height: 1.2;
         }
 
-        /* ========== SECTION STYLES ========== */
-        .preview-section {
-            padding: 4rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
+        /* ========== NAVIGATION ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
         }
 
-        .section-label {
+        .navbar.scrolled {
+            background: rgba(15, 15, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 2rem;
+        }
+
+        .navbar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .navbar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.25rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .navbar-logo-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .navbar-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .navbar-links a:hover {
+            color: white;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Login Dropdown */
+        .login-dropdown {
+            position: relative;
+        }
+
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .login-btn svg {
+            transition: transform 0.2s;
+        }
+
+        .login-dropdown.open .login-btn {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .login-dropdown.open .login-btn svg {
+            transform: rotate(180deg);
+        }
+
+        .login-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 280px;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .login-dropdown.open .login-menu {
+            display: block;
+            animation: dropdownFade 0.2s ease;
+        }
+
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.2s;
+        }
+
+        .login-option:first-child {
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .login-option:hover {
+            background: var(--gray-50);
+        }
+
+        .login-option-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .login-option-icon.admin {
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+        }
+
+        .login-option-icon.resident {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+        }
+
+        .login-option-text {
+            flex: 1;
+        }
+
+        .login-option-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 0.95rem;
+        }
+
+        .login-option-desc {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        .login-option svg {
+            color: var(--gray-400);
+            transition: all 0.2s;
+        }
+
+        .login-option:hover svg {
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.5rem 1rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
             background: var(--gradient-primary);
             color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            border-radius: 50px;
-            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         }
 
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
         }
 
-        .section-desc {
-            color: var(--gray-500);
-            font-size: 1.1rem;
-            margin-bottom: 3rem;
+        .btn-large {
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         /* ========== HERO SECTION ========== */
@@ -120,7 +324,7 @@
             background: linear-gradient(180deg, #0F0F1A 0%, #1a1a2e 100%);
             position: relative;
             overflow: hidden;
-            padding: 2rem;
+            padding: 6rem 2rem 4rem;
         }
 
         .hero::before {
@@ -230,43 +434,6 @@
             flex-wrap: wrap;
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.875rem 1.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: var(--radius-md);
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
         .hero-stats {
             display: flex;
             justify-content: center;
@@ -293,13 +460,107 @@
             font-size: 0.875rem;
         }
 
-        /* ========== DASHBOARD PREVIEW ========== */
-        .dashboard-section {
+        /* ========== SECTION STYLES ========== */
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-desc {
+            color: var(--gray-500);
+            font-size: 1.1rem;
+        }
+
+        /* ========== FEATURES SECTION ========== */
+        .features-section {
             background: white;
-            padding: 5rem 2rem;
+            padding: 6rem 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: transparent;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon.blue { background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); }
+        .feature-icon.purple { background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%); }
+        .feature-icon.green { background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); }
+        .feature-icon.orange { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); }
+        .feature-icon.pink { background: linear-gradient(135deg, #FCE7F3 0%, #FBCFE8 100%); }
+        .feature-icon.cyan { background: linear-gradient(135deg, #CFFAFE 0%, #A5F3FC 100%); }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-desc {
+            color: var(--gray-500);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ========== DASHBOARD PREVIEW SECTION ========== */
+        .dashboard-section {
+            background: var(--gray-50);
+            padding: 6rem 2rem;
         }
 
         .dashboard-preview {
+            max-width: 1200px;
+            margin: 0 auto;
             background: var(--gray-100);
             border-radius: var(--radius-xl);
             padding: 2rem;
@@ -409,7 +670,6 @@
             color: var(--danger);
         }
 
-        /* ========== MODERN CARDS ========== */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -458,7 +718,6 @@
             padding: 1.5rem;
         }
 
-        /* ========== REQUEST LIST ========== */
         .request-item {
             display: flex;
             align-items: center;
@@ -538,213 +797,9 @@
         }
         .status-badge.completed::before { background: var(--success); }
 
-        /* ========== LOGIN PREVIEW ========== */
-        .login-section {
-            background: linear-gradient(135deg, #0F0F1A 0%, #1a1a2e 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .login-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            max-width: 1000px;
-            width: 100%;
-            background: white;
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            box-shadow: var(--shadow-xl), var(--shadow-glow);
-        }
-
-        .login-illustration {
-            background: var(--gradient-primary);
-            padding: 3rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-illustration::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.5;
-        }
-
-        .login-illustration h2 {
-            color: white;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .login-illustration p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.1rem;
-            line-height: 1.7;
-            position: relative;
-        }
-
-        .login-features {
-            margin-top: 2rem;
-            position: relative;
-        }
-
-        .login-feature {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: white;
-            margin-bottom: 1rem;
-        }
-
-        .login-feature-icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .login-form-side {
-            padding: 3rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .login-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-        }
-
-        .login-logo-icon {
-            width: 44px;
-            height: 44px;
-            background: var(--gradient-primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 800;
-            font-size: 1.25rem;
-        }
-
-        .login-logo-text {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-        }
-
-        .login-form h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .login-form p {
-            color: var(--gray-500);
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--gray-700);
-            margin-bottom: 0.5rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid var(--gray-200);
-            border-radius: var(--radius-md);
-            font-size: 1rem;
-            transition: all 0.2s;
-            background: var(--gray-50);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
-        .form-input::placeholder {
-            color: var(--gray-400);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 1rem;
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .login-divider {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            color: var(--gray-400);
-            font-size: 0.875rem;
-        }
-
-        .login-divider::before,
-        .login-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--gray-200);
-        }
-
-        .social-login {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn-social {
-            flex: 1;
-            padding: 0.75rem;
-            border: 2px solid var(--gray-200);
-            border-radius: var(--radius-md);
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-weight: 500;
-        }
-
-        .btn-social:hover {
-            border-color: var(--gray-300);
-            background: var(--gray-50);
-        }
-
         /* ========== PRICING SECTION ========== */
         .pricing-section {
-            background: var(--gray-50);
+            background: white;
             padding: 6rem 2rem;
         }
 
@@ -757,7 +812,7 @@
         }
 
         .pricing-card {
-            background: white;
+            background: var(--gray-50);
             border-radius: var(--radius-xl);
             padding: 2.5rem;
             border: 2px solid var(--gray-200);
@@ -771,6 +826,7 @@
         }
 
         .pricing-card.popular {
+            background: white;
             border-color: var(--primary);
             box-shadow: var(--shadow-lg), 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
@@ -835,7 +891,7 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem 0;
-            border-bottom: 1px solid var(--gray-100);
+            border-bottom: 1px solid var(--gray-200);
             font-size: 0.95rem;
         }
 
@@ -857,6 +913,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 1rem;
         }
 
         .btn-pricing.outline {
@@ -882,61 +939,98 @@
             box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
         }
 
-        /* ========== FEATURES GRID ========== */
-        .features-section {
-            background: white;
-            padding: 6rem 2rem;
+        /* ========== FOOTER ========== */
+        .footer {
+            background: var(--gray-900);
+            color: white;
+            padding: 4rem 2rem 2rem;
         }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+        .footer-inner {
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .feature-card {
-            padding: 2rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--gray-200);
-            transition: all 0.3s ease;
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
         }
 
-        .feature-card:hover {
-            border-color: transparent;
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-4px);
+        .footer-brand {
+            max-width: 300px;
         }
 
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: var(--radius-md);
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
         }
 
-        .feature-icon.blue { background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); }
-        .feature-icon.purple { background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%); }
-        .feature-icon.green { background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); }
-        .feature-icon.orange { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); }
-        .feature-icon.pink { background: linear-gradient(135deg, #FCE7F3 0%, #FBCFE8 100%); }
-        .feature-icon.cyan { background: linear-gradient(135deg, #CFFAFE 0%, #A5F3FC 100%); }
+        .footer-logo-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
 
-        .feature-title {
-            font-size: 1.125rem;
-            font-weight: 700;
+        .footer-brand p {
+            color: var(--gray-400);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .footer-column h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
             margin-bottom: 0.75rem;
         }
 
-        .feature-desc {
+        .footer-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-800);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
             color: var(--gray-500);
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.875rem;
         }
 
         /* ========== RESPONSIVE ========== */
@@ -951,10 +1045,10 @@
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .login-container {
-                grid-template-columns: 1fr;
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            .login-illustration {
+            .navbar-links {
                 display: none;
             }
         }
@@ -972,74 +1066,73 @@
             .features-grid {
                 grid-template-columns: 1fr;
             }
-        }
-
-        /* ========== NAVIGATION ========== */
-        .preview-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--gray-200);
-            padding: 1rem 2rem;
-        }
-
-        .preview-nav-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .preview-nav-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-
-        .preview-nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .preview-nav-links a {
-            color: var(--gray-600);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-
-        .preview-nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .scroll-padding {
-            padding-top: 70px;
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="preview-nav">
-        <div class="preview-nav-inner">
-            <div class="preview-nav-title">🎨 Rentably UI Preview</div>
-            <div class="preview-nav-links">
-                <a href="#hero">Hero</a>
-                <a href="#dashboard">Dashboard</a>
-                <a href="#login">Login</a>
-                <a href="#pricing">Pricing</a>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-logo">
+                <div class="navbar-logo-icon">R</div>
+                <span class="navbar-logo-text">Rentably</span>
+            </a>
+            
+            <div class="navbar-links">
                 <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#dashboard">Demo</a>
+            </div>
+            
+            <div class="navbar-actions">
+                <div class="login-dropdown" id="loginDropdown">
+                    <button class="login-btn" onclick="toggleLoginDropdown()">
+                        Login
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="login-menu">
+                        <a href="/admin" class="login-option">
+                            <div class="login-option-icon admin">🏢</div>
+                            <div class="login-option-text">
+                                <div class="login-option-title">Admin Portal</div>
+                                <div class="login-option-desc">Property managers & landlords</div>
+                            </div>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </a>
+                        <a href="/portal" class="login-option">
+                            <div class="login-option-icon resident">🏠</div>
+                            <div class="login-option-text">
+                                <div class="login-option-title">Resident Portal</div>
+                                <div class="login-option-desc">Tenants & residents</div>
+                            </div>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <a href="#pricing" class="btn btn-primary">Get Started</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero scroll-padding" id="hero">
+    <section class="hero" id="hero">
         <div class="hero-grid"></div>
         <div class="hero-glow"></div>
         <div class="hero-content">
@@ -1050,13 +1143,13 @@
             <h1>Property Management<br><span>Made Simple</span></h1>
             <p>Streamline maintenance requests, track expenses, and delight your tenants with the modern property management platform built for landlords.</p>
             <div class="hero-buttons">
-                <a href="#" class="btn btn-primary">
+                <a href="#pricing" class="btn btn-primary btn-large">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                     Start Free Trial
                 </a>
-                <a href="#" class="btn btn-secondary">
+                <a href="#dashboard" class="btn btn-secondary btn-large">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/>
@@ -1081,378 +1174,350 @@
         </div>
     </section>
 
-    <!-- Dashboard Preview -->
-    <section class="dashboard-section scroll-padding" id="dashboard">
-        <div class="preview-section">
-            <span class="section-label">📊 Dashboard</span>
-            <h2 class="section-title">Modern Admin Dashboard</h2>
-            <p class="section-desc">Clean cards, smooth animations, and intuitive navigation</p>
-            
-            <div class="dashboard-preview">
-                <div class="dashboard-header">
-                    <div class="dashboard-greeting">
-                        <h2>Good morning, Joe 👋</h2>
-                        <p>Here's what's happening with your properties today.</p>
-                    </div>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card blue">
-                        <div class="stat-icon">🏢</div>
-                        <div class="stat-value">24</div>
-                        <div class="stat-label">Total Units</div>
-                        <div class="stat-trend up">↑ 4 this month</div>
-                    </div>
-                    <div class="stat-card orange">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-value">8</div>
-                        <div class="stat-label">Pending Requests</div>
-                        <div class="stat-trend down">↓ 2 from yesterday</div>
-                    </div>
-                    <div class="stat-card green">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-value">156</div>
-                        <div class="stat-label">Completed</div>
-                        <div class="stat-trend up">↑ 12% this month</div>
-                    </div>
-                    <div class="stat-card purple">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-value">$48.5k</div>
-                        <div class="stat-label">Monthly Revenue</div>
-                        <div class="stat-trend up">↑ 8% growth</div>
-                    </div>
-                </div>
-                
-                <div class="cards-grid">
-                    <div class="modern-card">
-                        <div class="card-header">
-                            <span class="card-title">🔧 Recent Requests</span>
-                            <span class="card-badge">3 New</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="request-item">
-                                <div class="request-icon plumbing">🔧</div>
-                                <div class="request-content">
-                                    <div class="request-title">Leaky faucet in bathroom</div>
-                                    <div class="request-meta">Unit 204 • Maria Garcia • 2 hours ago</div>
-                                </div>
-                                <span class="status-badge pending">Pending</span>
-                            </div>
-                            <div class="request-item">
-                                <div class="request-icon electrical">⚡</div>
-                                <div class="request-content">
-                                    <div class="request-title">Outlet not working</div>
-                                    <div class="request-meta">Unit 108 • John Smith • 5 hours ago</div>
-                                </div>
-                                <span class="status-badge in-progress">In Progress</span>
-                            </div>
-                            <div class="request-item">
-                                <div class="request-icon hvac">❄️</div>
-                                <div class="request-content">
-                                    <div class="request-title">AC not cooling properly</div>
-                                    <div class="request-meta">Unit 312 • Ana Rodriguez • Yesterday</div>
-                                </div>
-                                <span class="status-badge completed">Completed</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="modern-card">
-                        <div class="card-header">
-                            <span class="card-title">📈 Quick Stats</span>
-                        </div>
-                        <div class="card-body">
-                            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                        <span style="font-size: 0.875rem; color: var(--gray-600);">Occupancy Rate</span>
-                                        <span style="font-weight: 600;">92%</span>
-                                    </div>
-                                    <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
-                                        <div style="width: 92%; height: 100%; background: var(--gradient-primary); border-radius: 4px;"></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                        <span style="font-size: 0.875rem; color: var(--gray-600);">Rent Collection</span>
-                                        <span style="font-weight: 600;">87%</span>
-                                    </div>
-                                    <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
-                                        <div style="width: 87%; height: 100%; background: linear-gradient(135deg, #10B981 0%, #34D399 100%); border-radius: 4px;"></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                        <span style="font-size: 0.875rem; color: var(--gray-600);">Request Resolution</span>
-                                        <span style="font-weight: 600;">78%</span>
-                                    </div>
-                                    <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
-                                        <div style="width: 78%; height: 100%; background: var(--gradient-accent); border-radius: 4px;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="section-header">
+            <span class="section-label">⚡ Features</span>
+            <h2 class="section-title">Everything you need</h2>
+            <p class="section-desc">Powerful tools to manage your properties efficiently</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon blue">🔧</div>
+                <h3 class="feature-title">Maintenance Tracking</h3>
+                <p class="feature-desc">Track all maintenance requests from submission to completion with automatic status updates.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon purple">👥</div>
+                <h3 class="feature-title">Tenant Portal</h3>
+                <p class="feature-desc">Give tenants a beautiful self-service portal to submit requests and track progress.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green">📊</div>
+                <h3 class="feature-title">Financial Reports</h3>
+                <p class="feature-desc">Get detailed insights into income, expenses, and profitability per property.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon orange">🔔</div>
+                <h3 class="feature-title">Smart Notifications</h3>
+                <p class="feature-desc">Keep everyone informed with automatic email and SMS notifications.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon pink">🌍</div>
+                <h3 class="feature-title">Bilingual Support</h3>
+                <p class="feature-desc">Full Spanish and English support for landlords and tenants in LATAM markets.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon cyan">📱</div>
+                <h3 class="feature-title">Mobile Ready</h3>
+                <p class="feature-desc">Access your dashboard from anywhere with our responsive design.</p>
             </div>
         </div>
     </section>
 
-    <!-- Login Preview -->
-    <section class="login-section scroll-padding" id="login">
-        <div style="text-align: center; max-width: 500px;">
-            <div class="login-logo" style="justify-content: center; margin-bottom: 2rem;">
-                <div class="login-logo-icon">R</div>
-                <span class="login-logo-text" style="color: white;">Rentably</span>
-            </div>
-            
-            <h2 style="color: white; font-size: 2rem; margin-bottom: 0.5rem;">Sign in to your portal</h2>
-            <p style="color: var(--gray-400); margin-bottom: 2.5rem;">Select your portal type to continue</p>
-            
-            <!-- Portal Selector Dropdown -->
-            <div class="portal-selector" style="position: relative;">
-                <div class="portal-dropdown" id="portalDropdown">
-                    <div class="portal-dropdown-trigger" onclick="togglePortalDropdown()" style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border: 2px solid rgba(255,255,255,0.2); border-radius: var(--radius-lg); cursor: pointer; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); transition: all 0.2s;">
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span style="font-size: 1.5rem;">🔐</span>
-                            <div style="text-align: left;">
-                                <div style="font-weight: 600; color: white; font-size: 1.1rem;">Choose Portal</div>
-                                <div style="font-size: 0.85rem; color: var(--gray-400);">Admin or Resident</div>
-                            </div>
-                        </div>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400); transition: transform 0.3s;" id="dropdownArrow">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                    </div>
-                    <div class="portal-dropdown-menu" id="portalMenu" style="display: none; position: absolute; top: calc(100% + 12px); left: 0; right: 0; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); overflow: hidden; z-index: 100;">
-                        <a href="/admin" class="portal-option" style="display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid var(--gray-100); text-decoration: none; color: inherit;">
-                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏢</div>
-                            <div style="flex: 1; text-align: left;">
-                                <div style="font-weight: 600; font-size: 1.05rem; color: var(--gray-900);">Admin Portal</div>
-                                <div style="font-size: 0.85rem; color: var(--gray-500);">For property managers & landlords</div>
-                            </div>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400);">
-                                <polyline points="9 18 15 12 9 6"/>
-                            </svg>
-                        </a>
-                        <a href="/portal" class="portal-option" style="display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit;">
-                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏠</div>
-                            <div style="flex: 1; text-align: left;">
-                                <div style="font-weight: 600; font-size: 1.05rem; color: var(--gray-900);">Resident Portal</div>
-                                <div style="font-size: 0.85rem; color: var(--gray-500);">For tenants & residents</div>
-                            </div>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400);">
-                                <polyline points="9 18 15 12 9 6"/>
-                            </svg>
-                        </a>
-                    </div>
+    <!-- Dashboard Preview Section -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="section-header">
+            <span class="section-label">📊 Dashboard</span>
+            <h2 class="section-title">Powerful Admin Dashboard</h2>
+            <p class="section-desc">Everything you need to manage your properties in one place</p>
+        </div>
+        
+        <div class="dashboard-preview">
+            <div class="dashboard-header">
+                <div class="dashboard-greeting">
+                    <h2>Good morning, Joe 👋</h2>
+                    <p>Here's what's happening with your properties today.</p>
                 </div>
             </div>
             
-            <p style="color: var(--gray-500); font-size: 0.875rem; margin-top: 2rem;">
-                Need help? <a href="mailto:support@rentably.io" style="color: var(--primary-light); text-decoration: none;">Contact support</a>
-            </p>
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Total Units</div>
+                    <div class="stat-trend up">↑ 4 this month</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Pending Requests</div>
+                    <div class="stat-trend down">↓ 2 from yesterday</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Completed</div>
+                    <div class="stat-trend up">↑ 12% this month</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value">$48.5k</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                    <div class="stat-trend up">↑ 8% growth</div>
+                </div>
+            </div>
+            
+            <div class="cards-grid">
+                <div class="modern-card">
+                    <div class="card-header">
+                        <span class="card-title">🔧 Recent Requests</span>
+                        <span class="card-badge">3 New</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="request-item">
+                            <div class="request-icon plumbing">🔧</div>
+                            <div class="request-content">
+                                <div class="request-title">Leaky faucet in bathroom</div>
+                                <div class="request-meta">Unit 204 • Maria Garcia • 2 hours ago</div>
+                            </div>
+                            <span class="status-badge pending">Pending</span>
+                        </div>
+                        <div class="request-item">
+                            <div class="request-icon electrical">⚡</div>
+                            <div class="request-content">
+                                <div class="request-title">Outlet not working</div>
+                                <div class="request-meta">Unit 108 • John Smith • 5 hours ago</div>
+                            </div>
+                            <span class="status-badge in-progress">In Progress</span>
+                        </div>
+                        <div class="request-item">
+                            <div class="request-icon hvac">❄️</div>
+                            <div class="request-content">
+                                <div class="request-title">AC not cooling properly</div>
+                                <div class="request-meta">Unit 312 • Ana Rodriguez • Yesterday</div>
+                            </div>
+                            <span class="status-badge completed">Completed</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modern-card">
+                    <div class="card-header">
+                        <span class="card-title">📈 Quick Stats</span>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.875rem; color: var(--gray-600);">Occupancy Rate</span>
+                                    <span style="font-weight: 600;">92%</span>
+                                </div>
+                                <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 92%; height: 100%; background: var(--gradient-primary); border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.875rem; color: var(--gray-600);">Rent Collection</span>
+                                    <span style="font-weight: 600;">87%</span>
+                                </div>
+                                <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 87%; height: 100%; background: linear-gradient(135deg, #10B981 0%, #34D399 100%); border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.875rem; color: var(--gray-600);">Request Resolution</span>
+                                    <span style="font-weight: 600;">78%</span>
+                                </div>
+                                <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 78%; height: 100%; background: var(--gradient-accent); border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
-    
-    <style>
-        .portal-dropdown-trigger:hover {
-            border-color: rgba(255,255,255,0.4);
-            background: rgba(255,255,255,0.1);
-        }
-        .portal-dropdown.open .portal-dropdown-trigger {
-            border-color: var(--primary);
-            background: rgba(255,255,255,0.1);
-        }
-        .portal-dropdown.open #dropdownArrow {
-            transform: rotate(180deg);
-        }
-        .portal-option:hover {
-            background: var(--gray-50);
-        }
-        .portal-option:hover svg:last-child {
-            color: var(--primary);
-            transform: translateX(4px);
-        }
-        .portal-option svg:last-child {
-            transition: all 0.2s;
-        }
-    </style>
-    
-    <script>
-        function togglePortalDropdown() {
-            const dropdown = document.getElementById('portalDropdown');
-            const menu = document.getElementById('portalMenu');
-            dropdown.classList.toggle('open');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('portalDropdown');
-            if (dropdown && !dropdown.contains(e.target)) {
-                document.getElementById('portalMenu').style.display = 'none';
-                dropdown.classList.remove('open');
-            }
-        });
-    </script>
 
     <!-- Pricing Section -->
-    <section class="pricing-section scroll-padding" id="pricing">
-        <div class="preview-section" style="padding-top: 0;">
-            <div style="text-align: center; margin-bottom: 4rem;">
-                <span class="section-label">💎 Pricing</span>
-                <h2 class="section-title" style="font-size: 2.5rem;">Simple, transparent pricing</h2>
-                <p class="section-desc" style="margin-bottom: 0;">Choose the plan that fits your portfolio</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-name">Starter</div>
-                    <div class="pricing-desc">Perfect for small landlords</div>
-                    <div class="pricing-price">
-                        <span class="pricing-currency">$</span>
-                        <span class="pricing-amount">49</span>
-                        <span class="pricing-period">/month</span>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Up to 5 units
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Maintenance tracking
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Tenant portal
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Email notifications
-                        </li>
-                    </ul>
-                    <button class="btn-pricing outline">Get Started</button>
-                </div>
-                
-                <div class="pricing-card popular">
-                    <div class="pricing-name">Professional</div>
-                    <div class="pricing-desc">For growing portfolios</div>
-                    <div class="pricing-price">
-                        <span class="pricing-currency">$</span>
-                        <span class="pricing-amount">99</span>
-                        <span class="pricing-period">/month</span>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Up to 15 units
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Everything in Starter
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Financial reports
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            SMS notifications
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Priority support
-                        </li>
-                    </ul>
-                    <button class="btn-pricing filled">Get Started</button>
-                </div>
-                
-                <div class="pricing-card">
-                    <div class="pricing-name">Business</div>
-                    <div class="pricing-desc">For property managers</div>
-                    <div class="pricing-price">
-                        <span class="pricing-currency">$</span>
-                        <span class="pricing-amount">249</span>
-                        <span class="pricing-period">/month</span>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Up to 50 units
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Everything in Pro
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            Multi-client support
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            White-label portal
-                        </li>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                            API access
-                        </li>
-                    </ul>
-                    <button class="btn-pricing outline">Contact Sales</button>
-                </div>
-            </div>
+    <section class="pricing-section" id="pricing">
+        <div class="section-header">
+            <span class="section-label">💎 Pricing</span>
+            <h2 class="section-title">Simple, transparent pricing</h2>
+            <p class="section-desc">Choose the plan that fits your portfolio</p>
         </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section scroll-padding" id="features">
-        <div class="preview-section" style="padding-top: 0;">
-            <div style="text-align: center; margin-bottom: 4rem;">
-                <span class="section-label">⚡ Features</span>
-                <h2 class="section-title" style="font-size: 2.5rem;">Everything you need</h2>
-                <p class="section-desc" style="margin-bottom: 0;">Powerful tools to manage your properties efficiently</p>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-name">Starter</div>
+                <div class="pricing-desc">Perfect for small landlords</div>
+                <div class="pricing-price">
+                    <span class="pricing-currency">$</span>
+                    <span class="pricing-amount">49</span>
+                    <span class="pricing-period">/month</span>
+                </div>
+                <ul class="pricing-features">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Up to 5 units
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Maintenance tracking
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Tenant portal
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Email notifications
+                    </li>
+                </ul>
+                <button class="btn-pricing outline">Get Started</button>
             </div>
             
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon blue">🔧</div>
-                    <h3 class="feature-title">Maintenance Tracking</h3>
-                    <p class="feature-desc">Track all maintenance requests from submission to completion with automatic status updates.</p>
+            <div class="pricing-card popular">
+                <div class="pricing-name">Professional</div>
+                <div class="pricing-desc">For growing portfolios</div>
+                <div class="pricing-price">
+                    <span class="pricing-currency">$</span>
+                    <span class="pricing-amount">99</span>
+                    <span class="pricing-period">/month</span>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon purple">👥</div>
-                    <h3 class="feature-title">Tenant Portal</h3>
-                    <p class="feature-desc">Give tenants a beautiful self-service portal to submit requests and track progress.</p>
+                <ul class="pricing-features">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Up to 15 units
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Everything in Starter
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Financial reports
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        SMS notifications
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Priority support
+                    </li>
+                </ul>
+                <button class="btn-pricing filled">Get Started</button>
+            </div>
+            
+            <div class="pricing-card">
+                <div class="pricing-name">Business</div>
+                <div class="pricing-desc">For property managers</div>
+                <div class="pricing-price">
+                    <span class="pricing-currency">$</span>
+                    <span class="pricing-amount">249</span>
+                    <span class="pricing-period">/month</span>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon green">📊</div>
-                    <h3 class="feature-title">Financial Reports</h3>
-                    <p class="feature-desc">Get detailed insights into income, expenses, and profitability per property.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon orange">🔔</div>
-                    <h3 class="feature-title">Smart Notifications</h3>
-                    <p class="feature-desc">Keep everyone informed with automatic email and SMS notifications.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon pink">🌍</div>
-                    <h3 class="feature-title">Bilingual Support</h3>
-                    <p class="feature-desc">Full Spanish and English support for landlords and tenants in LATAM markets.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon cyan">📱</div>
-                    <h3 class="feature-title">Mobile Ready</h3>
-                    <p class="feature-desc">Access your dashboard from anywhere with our responsive design.</p>
-                </div>
+                <ul class="pricing-features">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Up to 50 units
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Everything in Pro
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Multi-client support
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        White-label portal
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        API access
+                    </li>
+                </ul>
+                <button class="btn-pricing outline">Contact Sales</button>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer style="background: var(--gray-900); color: white; padding: 3rem 2rem; text-align: center;">
-        <p style="color: var(--gray-500);">This is a UI preview for Rentably redesign concepts</p>
-        <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.5rem;">Ready to implement these changes? Let's do it! 🚀</p>
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <div class="footer-logo-icon">R</div>
+                        <span class="footer-logo-text">Rentably</span>
+                    </div>
+                    <p>The modern property management platform built for landlords in the Dominican Republic and beyond.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#dashboard">Demo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rentably. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Login dropdown toggle
+        function toggleLoginDropdown() {
+            const dropdown = document.getElementById('loginDropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('loginDropdown');
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
