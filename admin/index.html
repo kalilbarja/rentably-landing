@@ -1646,14 +1646,15 @@
                         </div>
                     </div>
 
-                    <!-- Financial Overview (Pro+ Only) -->
+                    <!-- Financial & Occupancy Overview (Pro+ Only) -->
                     <div class="card pro-only" id="dashboardFinancials" style="margin-bottom:1.5rem;display:none;background:linear-gradient(135deg, #0F0F1A 0%, #1a1a2e 100%);color:white;border:none">
                         <div class="card-body" style="padding:1.5rem">
-                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-                                <span style="font-size:0.85rem;opacity:0.7">Monthly Overview</span>
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+                                <span style="font-size:0.9rem;font-weight:600">Monthly Overview</span>
                                 <span style="font-size:0.75rem;opacity:0.5" id="dashboardMonth"></span>
                             </div>
-                            <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:2rem">
+                            <!-- Financial Stats Row -->
+                            <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:2rem;margin-bottom:1.5rem">
                                 <div>
                                     <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Revenue</div>
                                     <div style="font-size:1.75rem;font-weight:700" id="dashRevenue">$0</div>
@@ -1666,9 +1667,18 @@
                                     <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Net Income</div>
                                     <div style="font-size:1.75rem;font-weight:700;color:#34D399" id="dashNetIncome">$0</div>
                                 </div>
-                                <div>
-                                    <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.25rem">Occupancy</div>
-                                    <div style="font-size:1.75rem;font-weight:700" id="dashOccupancy">0%</div>
+                            </div>
+                            <!-- Occupancy Bar -->
+                            <div style="padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.1)">
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+                                    <span style="font-size:0.8rem;opacity:0.7">Occupancy Rate</span>
+                                    <span style="font-size:0.9rem;font-weight:600"><span id="dashOccupiedCount">0 / 0</span> units occupied</span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:1rem">
+                                    <div style="flex:1;height:10px;background:rgba(255,255,255,0.1);border-radius:5px;overflow:hidden">
+                                        <div id="dashOccupancyBar" style="width:0%;height:100%;background:linear-gradient(90deg, #34D399 0%, #10B981 100%);border-radius:5px;transition:width 0.5s ease"></div>
+                                    </div>
+                                    <span style="font-size:1.25rem;font-weight:700;min-width:50px;text-align:right" id="dashOccupancy">0%</span>
                                 </div>
                             </div>
                         </div>
@@ -1764,31 +1774,6 @@
                                         <polyline points="9 22 9 12 15 12 15 22"/>
                                     </svg>
                                     <p>No properties yet</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Occupancy Overview (Pro+ Only) -->
-                    <div class="card pro-only" id="dashboardOccupancyCard" style="display:none">
-                        <div class="card-header">
-                            <h3 class="card-title">Occupancy Overview</h3>
-                            <button class="btn btn-secondary btn-sm" onclick="showPage('units')">Manage Units</button>
-                        </div>
-                        <div class="card-body">
-                            <div style="display:flex;gap:2rem;align-items:center">
-                                <div style="flex:1">
-                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
-                                        <span style="font-size:0.9rem;color:var(--gray-600)">Occupied Units</span>
-                                        <span style="font-weight:600" id="dashOccupiedCount">0 / 0</span>
-                                    </div>
-                                    <div style="height:12px;background:var(--gray-200);border-radius:6px;overflow:hidden">
-                                        <div id="dashOccupancyBar" style="width:0%;height:100%;background:var(--gradient-success);border-radius:6px;transition:width 0.5s ease"></div>
-                                    </div>
-                                </div>
-                                <div style="text-align:center;min-width:100px">
-                                    <div style="font-size:2rem;font-weight:700;color:var(--success)" id="dashOccupancyPercent">0%</div>
-                                    <div style="font-size:0.8rem;color:var(--gray-500)">Occupancy Rate</div>
                                 </div>
                             </div>
                         </div>
@@ -3962,7 +3947,6 @@
             if (isPro) {
                 console.log('Showing financial dashboard for Pro+ user');
                 document.getElementById('dashboardFinancials').style.display = 'block';
-                document.getElementById('dashboardOccupancyCard').style.display = 'block';
                 const upgradeBanner = document.getElementById('dashboardUpgradeBanner');
                 if (upgradeBanner) upgradeBanner.style.display = 'none';
                 
@@ -4007,22 +3991,21 @@
                 
                 console.log('Financial Summary:', { monthlyRevenue, monthlyExpenses, netIncome, occupancyRate });
                 
+                // Update financial stats
                 document.getElementById('dashRevenue').textContent = formatCurrency(monthlyRevenue);
                 document.getElementById('dashExpenses').textContent = formatCurrency(monthlyExpenses);
                 document.getElementById('dashNetIncome').textContent = formatCurrency(netIncome);
                 document.getElementById('dashNetIncome').style.color = netIncome >= 0 ? '#34D399' : '#F87171';
-                document.getElementById('dashOccupancy').textContent = occupancyRate + '%';
                 
-                // Update occupancy card
+                // Update occupancy stats
+                document.getElementById('dashOccupancy').textContent = occupancyRate + '%';
                 document.getElementById('dashOccupiedCount').textContent = `${occupiedUnits} / ${totalUnits}`;
                 document.getElementById('dashOccupancyBar').style.width = occupancyRate + '%';
-                document.getElementById('dashOccupancyPercent').textContent = occupancyRate + '%';
                 
                 console.log('Dashboard financial elements updated');
             } else {
                 console.log('Not Pro plan, hiding financials. Plan:', plan);
                 document.getElementById('dashboardFinancials').style.display = 'none';
-                document.getElementById('dashboardOccupancyCard').style.display = 'none';
                 document.getElementById('dashboardUpgradeBanner').style.display = 'block';
             }
             
