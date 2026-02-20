@@ -3,29 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rentably | Property Management Made Simple</title>
-    <meta name="description" content="The modern property management platform. Streamline maintenance requests, tenant communication, and property operations.">
+    <title>Rentably UI Preview - Modern Redesign</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800&family=Satoshi:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #0F1729;
-            --accent: #4F46E5;
-            --accent-light: #818CF8;
-            --accent-glow: rgba(79, 70, 229, 0.4);
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --primary-light: #A5B4FC;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --secondary: #8B5CF6;
+            --accent: #06B6D4;
             --success: #10B981;
+            --success-light: #D1FAE5;
             --warning: #F59E0B;
-            --surface: #FFFFFF;
-            --surface-dim: #F8FAFC;
-            --surface-dark: #1E293B;
-            --text: #0F172A;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --gradient-1: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
-            --gradient-2: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+            --warning-light: #FEF3C7;
+            --danger: #EF4444;
+            --danger-light: #FEE2E2;
+            
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            
+            --gradient-primary: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A855F7 100%);
+            --gradient-accent: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+            --gradient-warm: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+            --gradient-mesh: radial-gradient(at 40% 20%, hsla(240, 100%, 74%, 0.15) 0px, transparent 50%),
+                            radial-gradient(at 80% 0%, hsla(280, 100%, 70%, 0.1) 0px, transparent 50%),
+                            radial-gradient(at 0% 50%, hsla(200, 100%, 70%, 0.1) 0px, transparent 50%);
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
         }
 
         * {
@@ -34,250 +60,78 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--surface);
-            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* Typography */
-        h1, h2, h3, h4 {
-            font-family: 'Cabinet Grotesk', sans-serif;
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
-            line-height: 1.1;
+            line-height: 1.2;
         }
 
-        /* Navbar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s ease;
+        /* ========== SECTION STYLES ========== */
+        .preview-section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: 'Cabinet Grotesk', sans-serif;
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--gradient-1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.1rem;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--text);
-        }
-
-        /* Login Dropdown */
-        .login-dropdown {
-            position: relative;
-        }
-
-        .login-trigger {
-            cursor: pointer;
-        }
-
-        .login-menu {
-            position: absolute;
-            top: calc(100% + 0.5rem);
-            right: 0;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            border: 1px solid var(--border);
-            padding: 0.5rem;
-            min-width: 220px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.2s ease;
-            z-index: 1001;
-        }
-
-        .login-dropdown:hover .login-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .login-option {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--text);
-            transition: background 0.15s ease;
-        }
-
-        .login-option:hover {
-            background: var(--surface-dim);
-        }
-
-        .login-icon {
-            font-size: 1.5rem;
-        }
-
-        .login-option strong {
-            display: block;
-            font-size: 0.9rem;
-        }
-
-        .login-option small {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-        }
-
-        /* Language Toggle */
-        .lang-toggle {
-            display: flex;
-            background: var(--surface-dim);
-            border-radius: 8px;
-            padding: 3px;
-            gap: 2px;
-        }
-
-        .lang-btn {
-            padding: 0.4rem 0.75rem;
-            border: none;
-            background: none;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.15s ease;
-            font-family: 'Satoshi', sans-serif;
-        }
-
-        .lang-btn:hover {
-            color: var(--text);
-        }
-
-        .lang-btn.active {
-            background: white;
-            color: var(--text);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .btn {
+        .section-label {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            font-family: 'Satoshi', sans-serif;
+            padding: 0.5rem 1rem;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 0.75rem;
             font-weight: 600;
-            font-size: 0.95rem;
-            border-radius: 10px;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 50px;
+            margin-bottom: 1rem;
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .btn-primary:hover {
-            background: var(--surface-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.2);
+        .section-desc {
+            color: var(--gray-500);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
         }
 
-        .btn-ghost {
-            background: transparent;
-            color: var(--text);
-        }
-
-        .btn-ghost:hover {
-            background: var(--surface-dim);
-        }
-
-        .btn-large {
-            padding: 1rem 2rem;
-            font-size: 1.05rem;
-            border-radius: 12px;
-        }
-
-        .btn-accent {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-accent:hover {
-            background: #4338CA;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px var(--accent-glow);
-        }
-
-        /* Hero Section */
+        /* ========== HERO SECTION ========== */
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            padding: 8rem 2rem 4rem;
+            justify-content: center;
+            background: linear-gradient(180deg, #0F0F1A 0%, #1a1a2e 100%);
             position: relative;
             overflow: hidden;
+            padding: 2rem;
         }
 
-        .hero-bg {
+        .hero::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(79, 70, 229, 0.15), transparent),
-                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(236, 72, 153, 0.08), transparent),
-                var(--gradient-2);
-            z-index: -1;
+            background: var(--gradient-mesh);
+            pointer-events: none;
         }
 
         .hero-grid {
@@ -287,73 +141,74 @@
             right: 0;
             bottom: 0;
             background-image: 
-                linear-gradient(rgba(79, 70, 229, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(79, 70, 229, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
             background-size: 60px 60px;
-            z-index: -1;
-            mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black, transparent);
+            pointer-events: none;
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
         }
 
         .hero-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 900px;
         }
 
-        .hero-text {
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .badge {
+        .hero-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             padding: 0.5rem 1rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            font-size: 0.85rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 50px;
+            color: var(--primary-light);
+            font-size: 0.875rem;
             font-weight: 500;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
         }
 
-        .badge-dot {
+        .hero-badge-dot {
             width: 8px;
             height: 8px;
             background: var(--success);
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            animation: blink 2s ease-in-out infinite;
         }
 
-        @keyframes pulse {
+        @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
             margin-bottom: 1.5rem;
             letter-spacing: -0.02em;
         }
 
         .hero h1 span {
-            background: var(--gradient-1);
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -361,412 +216,613 @@
 
         .hero p {
             font-size: 1.25rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            max-width: 500px;
+            color: var(--gray-400);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-buttons {
             display: flex;
             gap: 1rem;
+            justify-content: center;
             flex-wrap: wrap;
         }
 
-        .hero-visual {
-            position: relative;
-            animation: fadeInUp 0.8s ease 0.2s forwards;
-            opacity: 0;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
         }
 
-        .hero-image {
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: 
-                0 4px 6px rgba(0,0,0,0.05),
-                0 20px 50px rgba(0,0,0,0.1),
-                0 0 0 1px rgba(0,0,0,0.05);
-            background: var(--surface);
-            overflow: hidden;
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-stat-label {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        /* ========== DASHBOARD PREVIEW ========== */
+        .dashboard-section {
+            background: white;
+            padding: 5rem 2rem;
         }
 
         .dashboard-preview {
-            background: linear-gradient(180deg, #F1F5F9 0%, #E2E8F0 100%);
-            padding: 1.5rem;
-            border-radius: 20px;
+            background: var(--gray-100);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-xl);
         }
 
         .dashboard-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .dashboard-title {
-            font-family: 'Cabinet Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
+        .dashboard-greeting h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
         }
 
-        .dashboard-stats {
+        .dashboard-greeting p {
+            color: var(--gray-500);
+        }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
             background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-200);
         }
 
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
         }
 
-        .stat-value {
-            font-family: 'Cabinet Grotesk', sans-serif;
-            font-weight: 700;
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .stat-card.blue::before { background: var(--gradient-accent); }
+        .stat-card.purple::before { background: var(--gradient-primary); }
+        .stat-card.green::before { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); }
+        .stat-card.orange::before { background: var(--gradient-warm); }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
             font-size: 1.5rem;
         }
 
-        .stat-value.green { color: var(--success); }
-        .stat-value.orange { color: var(--warning); }
-        .stat-value.purple { color: var(--accent); }
+        .stat-card.blue .stat-icon { background: rgba(6, 182, 212, 0.1); }
+        .stat-card.purple .stat-icon { background: rgba(99, 102, 241, 0.1); }
+        .stat-card.green .stat-icon { background: rgba(16, 185, 129, 0.1); }
+        .stat-card.orange .stat-icon { background: rgba(245, 158, 11, 0.1); }
 
-        .dashboard-list {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        .stat-value {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
         }
 
-        .list-item {
+        .stat-label {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .stat-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            margin-top: 0.75rem;
+        }
+
+        .stat-trend.up {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .stat-trend.down {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        /* ========== MODERN CARDS ========== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .modern-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modern-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-lg), 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-badge {
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 50px;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* ========== REQUEST LIST ========== */
+        .request-item {
             display: flex;
             align-items: center;
             gap: 1rem;
             padding: 1rem;
-            border-bottom: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+            cursor: pointer;
         }
 
-        .list-item:last-child {
-            border-bottom: none;
+        .request-item:hover {
+            background: var(--gray-50);
         }
 
-        .list-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--surface-dim);
-            border-radius: 8px;
+        .request-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-        }
-
-        .list-content {
-            flex: 1;
-        }
-
-        .list-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .list-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .list-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .list-badge.pending {
-            background: #FEF3C7;
-            color: #D97706;
-        }
-
-        .list-badge.progress {
-            background: #DBEAFE;
-            color: #2563EB;
-        }
-
-        .floating-card {
-            position: absolute;
-            background: white;
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .floating-card-1 {
-            top: 10%;
-            right: -30px;
-            animation-delay: 0s;
-        }
-
-        .floating-card-2 {
-            bottom: 20%;
-            left: -40px;
-            animation-delay: 1s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .floating-card .mini-stat {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .floating-card .mini-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--success);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .floating-card .mini-icon.purple {
-            background: var(--accent);
-        }
-
-        .floating-card .mini-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .floating-card .mini-value {
-            font-family: 'Cabinet Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 6rem 2rem;
-            background: var(--surface);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto 4rem;
-        }
-
-        .section-header h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            margin-bottom: 1rem;
-        }
-
-        .section-header p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-
-        .feature-card {
-            padding: 2rem;
-            background: var(--surface-dim);
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .feature-card:hover {
-            background: var(--surface);
-            border-color: var(--border);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: var(--gradient-1);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card h3 {
             font-size: 1.25rem;
-            margin-bottom: 0.75rem;
+            flex-shrink: 0;
         }
 
-        .feature-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
+        .request-icon.plumbing { background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); }
+        .request-icon.electrical { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); }
+        .request-icon.hvac { background: linear-gradient(135deg, #CFFAFE 0%, #A5F3FC 100%); }
+
+        .request-content {
+            flex: 1;
+            min-width: 0;
         }
 
-        /* How It Works */
-        .how-it-works {
-            padding: 6rem 2rem;
-            background: var(--primary);
-            color: white;
+        .request-title {
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+        }
+
+        .request-meta {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-badge.pending {
+            background: var(--warning-light);
+            color: #B45309;
+        }
+        .status-badge.pending::before { background: var(--warning); }
+
+        .status-badge.in-progress {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-dark);
+        }
+        .status-badge.in-progress::before { background: var(--primary); }
+
+        .status-badge.completed {
+            background: var(--success-light);
+            color: #047857;
+        }
+        .status-badge.completed::before { background: var(--success); }
+
+        /* ========== LOGIN PREVIEW ========== */
+        .login-section {
+            background: linear-gradient(135deg, #0F0F1A 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl), var(--shadow-glow);
+        }
+
+        .login-illustration {
+            background: var(--gradient-primary);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             position: relative;
             overflow: hidden;
         }
 
-        .how-it-works::before {
+        .login-illustration::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
-                radial-gradient(ellipse 50% 50% at 20% 20%, rgba(79, 70, 229, 0.3), transparent),
-                radial-gradient(ellipse 40% 40% at 80% 80%, rgba(236, 72, 153, 0.2), transparent);
-            z-index: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
         }
 
-        .how-it-works .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        .how-it-works .section-header h2 {
+        .login-illustration h2 {
             color: white;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
         }
 
-        .how-it-works .section-header p {
-            color: rgba(255,255,255,0.7);
+        .login-illustration p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            position: relative;
         }
 
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 3rem;
+        .login-features {
+            margin-top: 2rem;
+            position: relative;
         }
 
-        .step {
-            text-align: center;
+        .login-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            margin-bottom: 1rem;
         }
 
-        .step-number {
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
+        .login-feature-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Cabinet Grotesk', sans-serif;
+        }
+
+        .login-form-side {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             font-weight: 800;
-            font-size: 1.5rem;
-            margin: 0 auto 1.5rem;
-        }
-
-        .step h3 {
             font-size: 1.25rem;
-            margin-bottom: 0.75rem;
         }
 
-        .step p {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.95rem;
+        .login-logo-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
         }
 
-        /* Pricing Section */
-        .pricing {
+        .login-form h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form p {
+            color: var(--gray-500);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: var(--gray-50);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--gray-400);
+            font-size: 0.875rem;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-social {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .btn-social:hover {
+            border-color: var(--gray-300);
+            background: var(--gray-50);
+        }
+
+        /* ========== PRICING SECTION ========== */
+        .pricing-section {
+            background: var(--gray-50);
             padding: 6rem 2rem;
-            background: var(--surface-dim);
         }
 
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .pricing-card {
-            background: var(--surface);
-            border-radius: 20px;
+            background: white;
+            border-radius: var(--radius-xl);
             padding: 2.5rem;
-            border: 1px solid var(--border);
+            border: 2px solid var(--gray-200);
+            position: relative;
             transition: all 0.3s ease;
         }
 
-        .pricing-card.featured {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.05);
-            border: none;
-            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.3);
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
         }
 
-        .pricing-card:hover:not(.featured) {
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.1);
+        .pricing-card.popular {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg), 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .pricing-card.popular::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.375rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
         .pricing-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--accent);
+            font-size: 1.25rem;
+            font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
-        .pricing-card.featured .pricing-name {
-            color: var(--accent-light);
+        .pricing-desc {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
         }
 
         .pricing-price {
-            font-family: 'Cabinet Grotesk', sans-serif;
-            font-weight: 800;
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .pricing-price span {
-            font-size: 1rem;
-            font-weight: 500;
-            opacity: 0.7;
-        }
-
-        .pricing-description {
-            font-size: 0.95rem;
-            color: var(--text-muted);
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
             margin-bottom: 2rem;
         }
 
-        .pricing-card.featured .pricing-description {
-            color: rgba(255,255,255,0.7);
+        .pricing-currency {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .pricing-amount {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+        }
+
+        .pricing-period {
+            color: var(--gray-500);
+            font-size: 1rem;
         }
 
         .pricing-features {
@@ -778,949 +834,635 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.5rem 0;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-100);
             font-size: 0.95rem;
         }
 
-        .pricing-features li::before {
-            content: '✓';
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features li svg {
             width: 20px;
             height: 20px;
-            background: rgba(16, 185, 129, 0.1);
             color: var(--success);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 700;
+            flex-shrink: 0;
         }
 
-        .pricing-card.featured .pricing-features li::before {
-            background: rgba(16, 185, 129, 0.2);
-        }
-
-        .pricing-card .btn {
+        .btn-pricing {
             width: 100%;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .pricing-card.featured .btn-primary {
+        .btn-pricing.outline {
             background: white;
+            border: 2px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-pricing.outline:hover {
+            border-color: var(--primary);
             color: var(--primary);
         }
 
-        .pricing-card.featured .btn-primary:hover {
-            background: var(--surface-dim);
-        }
-
-        /* CTA Section */
-        .cta {
-            padding: 6rem 2rem;
-            text-align: center;
-        }
-
-        .cta-box {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 4rem;
-            background: var(--gradient-1);
-            border-radius: 30px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .cta-box h2 {
-            font-size: clamp(1.75rem, 3vw, 2.5rem);
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .cta-box p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .cta-box .btn {
-            background: white;
-            color: var(--accent);
-            position: relative;
-        }
-
-        .cta-box .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        }
-
-        /* Footer */
-        .footer {
-            padding: 4rem 2rem 2rem;
-            background: var(--primary);
-            color: white;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
-            padding-bottom: 3rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .footer-brand .logo {
-            color: white;
-            margin-bottom: 1rem;
-        }
-
-        .footer-brand .logo-icon {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .footer-brand p {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.95rem;
-            max-width: 300px;
-        }
-
-        .footer-column h4 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 1.5rem;
-            color: rgba(255,255,255,0.5);
-        }
-
-        .footer-column a {
-            display: block;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            font-size: 0.95rem;
-            padding: 0.4rem 0;
-            transition: color 0.2s ease;
-        }
-
-        .footer-column a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: rgba(255,255,255,0.5);
-            font-size: 0.9rem;
-        }
-
-        /* Waitlist Form */
-        .waitlist-form {
-            display: flex;
-            gap: 0.75rem;
-            max-width: 450px;
-        }
-
-        .waitlist-form input {
-            flex: 1;
-            padding: 1rem 1.25rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-family: 'Satoshi', sans-serif;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
-
-        .waitlist-form input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-glow);
-        }
-
-        .cta-box .waitlist-form input {
-            background: rgba(255,255,255,0.95);
+        .btn-pricing.filled {
+            background: var(--gradient-primary);
             border: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
-        /* Responsive */
+        .btn-pricing.filled:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* ========== FEATURES GRID ========== */
+        .features-section {
+            background: white;
+            padding: 6rem 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: transparent;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon.blue { background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); }
+        .feature-icon.purple { background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%); }
+        .feature-icon.green { background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); }
+        .feature-icon.orange { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); }
+        .feature-icon.pink { background: linear-gradient(135deg, #FCE7F3 0%, #FBCFE8 100%); }
+        .feature-icon.cyan { background: linear-gradient(135deg, #CFFAFE 0%, #A5F3FC 100%); }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-desc {
+            color: var(--gray-500);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 1024px) {
-            .hero-content {
-                grid-template-columns: 1fr;
-                text-align: center;
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-
-            .hero-text {
-                order: 1;
-            }
-
-            .hero-visual {
-                order: 2;
-                max-width: 600px;
-                margin: 0 auto;
-            }
-
-            .hero p {
-                margin: 0 auto 2rem;
-            }
-
-            .hero-buttons {
-                justify-content: center;
-            }
-
-            .floating-card {
-                display: none;
-            }
-
-            .features-grid,
-            .steps,
             .pricing-grid {
                 grid-template-columns: 1fr;
-                max-width: 500px;
-                margin: 0 auto;
+                max-width: 400px;
             }
-
-            .pricing-card.featured {
-                transform: none;
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+            .login-illustration {
+                display: none;
             }
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
+            .hero h1 {
+                font-size: 2.5rem;
             }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                padding: 7rem 1rem 3rem;
-            }
-
-            .features,
-            .how-it-works,
-            .pricing,
-            .cta {
-                padding: 4rem 1rem;
-            }
-
-            .cta-box {
-                padding: 2.5rem 1.5rem;
-            }
-
-            .waitlist-form {
+            .hero-stats {
                 flex-direction: column;
+                gap: 2rem;
             }
-
-            .footer-content {
+            .stats-grid,
+            .cards-grid,
+            .features-grid {
                 grid-template-columns: 1fr;
-                text-align: center;
             }
+        }
 
-            .footer-brand p {
-                margin: 0 auto;
-            }
+        /* ========== NAVIGATION ========== */
+        .preview-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 2rem;
+        }
 
-            .footer-bottom {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
+        .preview-nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-nav-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .preview-nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .preview-nav-links a {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .preview-nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .scroll-padding {
+            padding-top: 70px;
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="#" class="logo">
-            <div class="logo-icon">R</div>
-            Rentably
-        </a>
-        <div class="nav-links">
-            <a href="#features" data-translate="nav_features">Features</a>
-            <a href="#how-it-works" data-translate="nav_how">How It Works</a>
-            <a href="#pricing" data-translate="nav_pricing">Pricing</a>
-            <div class="lang-toggle">
-                <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
-                <button class="lang-btn" onclick="setLanguage('es')">ES</button>
+    <!-- Navigation -->
+    <nav class="preview-nav">
+        <div class="preview-nav-inner">
+            <div class="preview-nav-title">🎨 Rentably UI Preview</div>
+            <div class="preview-nav-links">
+                <a href="#hero">Hero</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#login">Login</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#features">Features</a>
             </div>
-            <div class="login-dropdown">
-                <a href="#" class="btn btn-ghost login-trigger" data-translate="nav_login">Log In ▾</a>
-                <div class="login-menu">
-                    <a href="/portal" class="login-option">
-                        <span class="login-icon">🏠</span>
-                        <div>
-                            <strong data-translate="login_resident">Resident Portal</strong>
-                            <small data-translate="login_resident_sub">For tenants</small>
-                        </div>
-                    </a>
-                    <a href="/admin" class="login-option">
-                        <span class="login-icon">⚙️</span>
-                        <div>
-                            <strong data-translate="login_admin">Admin Dashboard</strong>
-                            <small data-translate="login_admin_sub">For property managers</small>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <a href="#pricing" class="btn btn-primary" data-translate="nav_start">Get Started</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-bg"></div>
+    <section class="hero scroll-padding" id="hero">
         <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
         <div class="hero-content">
-            <div class="hero-text">
-                <div class="badge">
-                    <span class="badge-dot"></span>
-                    <span data-translate="hero_badge">Now accepting early access signups</span>
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Now available in the Dominican Republic
+            </div>
+            <h1>Property Management<br><span>Made Simple</span></h1>
+            <p>Streamline maintenance requests, track expenses, and delight your tenants with the modern property management platform built for landlords.</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    Start Free Trial
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/>
+                    </svg>
+                    Watch Demo
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">50+</div>
+                    <div class="hero-stat-label">Properties Managed</div>
                 </div>
-                <h1 data-translate="hero_title">Property Management <span>Made Simple</span></h1>
-                <p data-translate="hero_subtitle">Streamline maintenance requests, tenant communication, and property operations — all in one beautiful platform.</p>
-                <div class="hero-buttons">
-                    <a href="#cta" class="btn btn-primary btn-large" data-translate="hero_cta">Join Waitlist →</a>
-                    <a href="#features" class="btn btn-ghost btn-large" data-translate="hero_features">See Features</a>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">240+</div>
+                    <div class="hero-stat-label">Maintenance Requests</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">98%</div>
+                    <div class="hero-stat-label">Customer Satisfaction</div>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="dashboard-preview hero-image">
-                    <div class="dashboard-header">
-                        <div class="dashboard-title">Dashboard</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);" data-translate="dash_today">Today</div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section class="dashboard-section scroll-padding" id="dashboard">
+        <div class="preview-section">
+            <span class="section-label">📊 Dashboard</span>
+            <h2 class="section-title">Modern Admin Dashboard</h2>
+            <p class="section-desc">Clean cards, smooth animations, and intuitive navigation</p>
+            
+            <div class="dashboard-preview">
+                <div class="dashboard-header">
+                    <div class="dashboard-greeting">
+                        <h2>Good morning, Joe 👋</h2>
+                        <p>Here's what's happening with your properties today.</p>
                     </div>
-                    <div class="dashboard-stats">
-                        <div class="stat-card">
-                            <div class="stat-label" data-translate="dash_pending">Pending</div>
-                            <div class="stat-value orange">12</div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <div class="stat-icon">🏢</div>
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Total Units</div>
+                        <div class="stat-trend up">↑ 4 this month</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Pending Requests</div>
+                        <div class="stat-trend down">↓ 2 from yesterday</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Completed</div>
+                        <div class="stat-trend up">↑ 12% this month</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">$48.5k</div>
+                        <div class="stat-label">Monthly Revenue</div>
+                        <div class="stat-trend up">↑ 8% growth</div>
+                    </div>
+                </div>
+                
+                <div class="cards-grid">
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <span class="card-title">🔧 Recent Requests</span>
+                            <span class="card-badge">3 New</span>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label" data-translate="dash_progress">In Progress</div>
-                            <div class="stat-value purple">8</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label" data-translate="dash_completed">Completed</div>
-                            <div class="stat-value green">47</div>
+                        <div class="card-body">
+                            <div class="request-item">
+                                <div class="request-icon plumbing">🔧</div>
+                                <div class="request-content">
+                                    <div class="request-title">Leaky faucet in bathroom</div>
+                                    <div class="request-meta">Unit 204 • Maria Garcia • 2 hours ago</div>
+                                </div>
+                                <span class="status-badge pending">Pending</span>
+                            </div>
+                            <div class="request-item">
+                                <div class="request-icon electrical">⚡</div>
+                                <div class="request-content">
+                                    <div class="request-title">Outlet not working</div>
+                                    <div class="request-meta">Unit 108 • John Smith • 5 hours ago</div>
+                                </div>
+                                <span class="status-badge in-progress">In Progress</span>
+                            </div>
+                            <div class="request-item">
+                                <div class="request-icon hvac">❄️</div>
+                                <div class="request-content">
+                                    <div class="request-title">AC not cooling properly</div>
+                                    <div class="request-meta">Unit 312 • Ana Rodriguez • Yesterday</div>
+                                </div>
+                                <span class="status-badge completed">Completed</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="dashboard-list">
-                        <div class="list-item">
-                            <div class="list-icon">🔧</div>
-                            <div class="list-content">
-                                <div class="list-title" data-translate="dash_item1">Plumbing Issue - Unit 4B</div>
-                                <div class="list-subtitle" data-translate="dash_item1_sub">Submitted 2 hours ago</div>
-                            </div>
-                            <div class="list-badge pending" data-translate="dash_pending">Pending</div>
+                    
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <span class="card-title">📈 Quick Stats</span>
                         </div>
-                        <div class="list-item">
-                            <div class="list-icon">⚡</div>
-                            <div class="list-content">
-                                <div class="list-title" data-translate="dash_item2">Electrical - Unit 2A</div>
-                                <div class="list-subtitle" data-translate="dash_item2_sub">Technician assigned</div>
+                        <div class="card-body">
+                            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span style="font-size: 0.875rem; color: var(--gray-600);">Occupancy Rate</span>
+                                        <span style="font-weight: 600;">92%</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 92%; height: 100%; background: var(--gradient-primary); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span style="font-size: 0.875rem; color: var(--gray-600);">Rent Collection</span>
+                                        <span style="font-weight: 600;">87%</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 87%; height: 100%; background: linear-gradient(135deg, #10B981 0%, #34D399 100%); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span style="font-size: 0.875rem; color: var(--gray-600);">Request Resolution</span>
+                                        <span style="font-weight: 600;">78%</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 78%; height: 100%; background: var(--gradient-accent); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="list-badge progress" data-translate="dash_progress">In Progress</div>
-                        </div>
-                        <div class="list-item">
-                            <div class="list-icon">❄️</div>
-                            <div class="list-content">
-                                <div class="list-title">HVAC Repair - Unit 7C</div>
-                                <div class="list-subtitle">Scheduled for tomorrow</div>
-                            </div>
-                            <div class="list-badge progress">In Progress</div>
                         </div>
                     </div>
                 </div>
-                <div class="floating-card floating-card-1">
-                    <div class="mini-stat">
-                        <div class="mini-icon">✓</div>
-                        <div>
-                            <div class="mini-label">This Month</div>
-                            <div class="mini-value">98% Resolved</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Preview -->
+    <section class="login-section scroll-padding" id="login">
+        <div class="login-container" style="grid-template-columns: 1fr; max-width: 480px;">
+            <div class="login-form-side">
+                <div class="login-logo" style="justify-content: center;">
+                    <div class="login-logo-icon">R</div>
+                    <span class="login-logo-text">Rentably</span>
+                </div>
+                
+                <!-- Portal Selector Dropdown -->
+                <div class="portal-selector">
+                    <label class="form-label" style="text-align: center; display: block; margin-bottom: 0.75rem;">Select Portal</label>
+                    <div class="portal-dropdown" onclick="togglePortalDropdown()" style="position: relative;">
+                        <div class="portal-dropdown-trigger" style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); cursor: pointer; background: var(--gray-50); transition: all 0.2s;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span style="font-size: 1.25rem;" id="selectedPortalIcon">🏢</span>
+                                <div>
+                                    <div style="font-weight: 600;" id="selectedPortalName">Select a portal...</div>
+                                    <div style="font-size: 0.8rem; color: var(--gray-500);" id="selectedPortalDesc">Choose where to sign in</div>
+                                </div>
+                            </div>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gray-400); transition: transform 0.2s;" id="dropdownArrow">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="portal-dropdown-menu" id="portalMenu" style="display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); overflow: hidden; z-index: 100;">
+                            <div class="portal-option" onclick="selectPortal('admin', '🏢', 'Admin Portal', 'For property managers & landlords')" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid var(--gray-100);">
+                                <span style="font-size: 1.25rem;">🏢</span>
+                                <div>
+                                    <div style="font-weight: 600;">Admin Portal</div>
+                                    <div style="font-size: 0.8rem; color: var(--gray-500);">For property managers & landlords</div>
+                                </div>
+                            </div>
+                            <div class="portal-option" onclick="selectPortal('resident', '🏠', 'Resident Portal', 'For tenants & residents')" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; cursor: pointer; transition: background 0.2s;">
+                                <span style="font-size: 1.25rem;">🏠</span>
+                                <div>
+                                    <div style="font-weight: 600;">Resident Portal</div>
+                                    <div style="font-size: 0.8rem; color: var(--gray-500);">For tenants & residents</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="floating-card floating-card-2">
-                    <div class="mini-stat">
-                        <div class="mini-icon purple">📊</div>
-                        <div>
-                            <div class="mini-label">Response Time</div>
-                            <div class="mini-value">< 2 hours</div>
-                        </div>
+                
+                <div class="login-form" style="margin-top: 2rem;">
+                    <div class="form-group">
+                        <label class="form-label">Email address</label>
+                        <input type="email" class="form-input" placeholder="you@example.com">
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" placeholder="••••••••">
+                    </div>
+                    <button class="btn btn-primary btn-login">Sign In</button>
+                    <p style="text-align: center; margin-top: 1.5rem; color: var(--gray-500); font-size: 0.875rem;">
+                        Don't have an account? <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 500;">Contact your landlord</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <style>
+        .portal-dropdown-trigger:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+        .portal-dropdown-trigger:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        .portal-option:hover {
+            background: var(--gray-50);
+        }
+        .portal-dropdown.open .portal-dropdown-trigger {
+            border-color: var(--primary);
+            background: white;
+        }
+        .portal-dropdown.open #dropdownArrow {
+            transform: rotate(180deg);
+        }
+    </style>
+    
+    <script>
+        function togglePortalDropdown() {
+            const dropdown = document.querySelector('.portal-dropdown');
+            const menu = document.getElementById('portalMenu');
+            dropdown.classList.toggle('open');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function selectPortal(type, icon, name, desc) {
+            document.getElementById('selectedPortalIcon').textContent = icon;
+            document.getElementById('selectedPortalName').textContent = name;
+            document.getElementById('selectedPortalDesc').textContent = desc;
+            document.getElementById('portalMenu').style.display = 'none';
+            document.querySelector('.portal-dropdown').classList.remove('open');
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.querySelector('.portal-dropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                document.getElementById('portalMenu').style.display = 'none';
+                dropdown.classList.remove('open');
+            }
+        });
+    </script>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section scroll-padding" id="pricing">
+        <div class="preview-section" style="padding-top: 0;">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <span class="section-label">💎 Pricing</span>
+                <h2 class="section-title" style="font-size: 2.5rem;">Simple, transparent pricing</h2>
+                <p class="section-desc" style="margin-bottom: 0;">Choose the plan that fits your portfolio</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-name">Starter</div>
+                    <div class="pricing-desc">Perfect for small landlords</div>
+                    <div class="pricing-price">
+                        <span class="pricing-currency">$</span>
+                        <span class="pricing-amount">49</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Up to 5 units
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Maintenance tracking
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Tenant portal
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Email notifications
+                        </li>
+                    </ul>
+                    <button class="btn-pricing outline">Get Started</button>
+                </div>
+                
+                <div class="pricing-card popular">
+                    <div class="pricing-name">Professional</div>
+                    <div class="pricing-desc">For growing portfolios</div>
+                    <div class="pricing-price">
+                        <span class="pricing-currency">$</span>
+                        <span class="pricing-amount">99</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Up to 15 units
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Everything in Starter
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Financial reports
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            SMS notifications
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Priority support
+                        </li>
+                    </ul>
+                    <button class="btn-pricing filled">Get Started</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-name">Business</div>
+                    <div class="pricing-desc">For property managers</div>
+                    <div class="pricing-price">
+                        <span class="pricing-currency">$</span>
+                        <span class="pricing-amount">249</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Up to 50 units
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Everything in Pro
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Multi-client support
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            White-label portal
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            API access
+                        </li>
+                    </ul>
+                    <button class="btn-pricing outline">Contact Sales</button>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-header">
-                <h2 data-translate="features_title">Everything You Need</h2>
-                <p data-translate="features_subtitle">Powerful tools to manage properties efficiently, keep tenants happy, and grow your business.</p>
+    <section class="features-section scroll-padding" id="features">
+        <div class="preview-section" style="padding-top: 0;">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <span class="section-label">⚡ Features</span>
+                <h2 class="section-title" style="font-size: 2.5rem;">Everything you need</h2>
+                <p class="section-desc" style="margin-bottom: 0;">Powerful tools to manage your properties efficiently</p>
             </div>
+            
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📋</div>
-                    <h3 data-translate="feature1_title">Maintenance Requests</h3>
-                    <p data-translate="feature1_desc">Tenants submit requests through a simple portal. You track, assign, and resolve — all in one place.</p>
+                    <div class="feature-icon blue">🔧</div>
+                    <h3 class="feature-title">Maintenance Tracking</h3>
+                    <p class="feature-desc">Track all maintenance requests from submission to completion with automatic status updates.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <h3 data-translate="feature2_title">Tenant Communication</h3>
-                    <p data-translate="feature2_desc">Built-in messaging, automated notifications, and announcements keep everyone in the loop.</p>
+                    <div class="feature-icon purple">👥</div>
+                    <h3 class="feature-title">Tenant Portal</h3>
+                    <p class="feature-desc">Give tenants a beautiful self-service portal to submit requests and track progress.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3 data-translate="feature3_title">Analytics & Reports</h3>
-                    <p data-translate="feature3_desc">Track maintenance costs, response times, and property performance with beautiful dashboards.</p>
+                    <div class="feature-icon green">📊</div>
+                    <h3 class="feature-title">Financial Reports</h3>
+                    <p class="feature-desc">Get detailed insights into income, expenses, and profitability per property.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🏠</div>
-                    <h3 data-translate="feature4_title">Property Portfolio</h3>
-                    <p data-translate="feature4_desc">Manage multiple properties and units from a single dashboard. Scale without the chaos.</p>
+                    <div class="feature-icon orange">🔔</div>
+                    <h3 class="feature-title">Smart Notifications</h3>
+                    <p class="feature-desc">Keep everyone informed with automatic email and SMS notifications.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3 data-translate="feature5_title">Mobile-First Design</h3>
-                    <p data-translate="feature5_desc">Tenants can submit requests from their phone. You can manage on-the-go.</p>
+                    <div class="feature-icon pink">🌍</div>
+                    <h3 class="feature-title">Bilingual Support</h3>
+                    <p class="feature-desc">Full Spanish and English support for landlords and tenants in LATAM markets.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3 data-translate="feature6_title">Your Brand</h3>
-                    <p data-translate="feature6_desc">White-label portal with your logo and colors. Your tenants see your brand, not ours.</p>
+                    <div class="feature-icon cyan">📱</div>
+                    <h3 class="feature-title">Mobile Ready</h3>
+                    <p class="feature-desc">Access your dashboard from anywhere with our responsive design.</p>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <h2 data-translate="how_title">Up and Running in Minutes</h2>
-                <p data-translate="how_subtitle">No complex setup. No training required. Just sign up and start managing.</p>
-            </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3 data-translate="step1_title">Create Your Account</h3>
-                    <p data-translate="step1_desc">Sign up, add your properties and units. Import existing tenant data or start fresh.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3 data-translate="step2_title">Invite Your Tenants</h3>
-                    <p data-translate="step2_desc">Send automatic invitations. Tenants get instant access to their personalized portal.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3 data-translate="step3_title">Manage Everything</h3>
-                    <p data-translate="step3_desc">Receive requests, track progress, communicate with tenants — all from one dashboard.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
-        <div class="container">
-            <div class="section-header">
-                <h2 data-translate="pricing_title">Simple, Transparent Pricing</h2>
-                <p data-translate="pricing_subtitle">Choose the plan that fits your needs. Upgrade anytime.</p>
-            </div>
-            <div class="pricing-grid">
-                <div class="pricing-card" data-plan="starter">
-                    <div class="pricing-name">Starter</div>
-                    <div class="pricing-price">$49<span>/mo</span></div>
-                    <p class="pricing-description" data-translate="price1_desc">Perfect for small landlords getting started.</p>
-                    <ul class="pricing-features">
-                        <li>Up to 5 units</li>
-                        <li>Dashboard & analytics</li>
-                        <li>Maintenance requests</li>
-                        <li>Tenant portal</li>
-                        <li>Basic reports</li>
-                    </ul>
-                    <button onclick="openCheckout('starter')" class="btn btn-primary" data-translate="nav_start">Get Started</button>
-                </div>
-                <div class="pricing-card featured" data-plan="pro">
-                    <div class="pricing-name">Pro</div>
-                    <div class="pricing-price">$99<span>/mo</span></div>
-                    <p class="pricing-description" data-translate="price2_desc">For growing property managers.</p>
-                    <ul class="pricing-features">
-                        <li>Up to 13 units</li>
-                        <li>Everything in Starter</li>
-                        <li>Financial reports</li>
-                        <li>Income & expense tracking</li>
-                        <li>SMS notifications</li>
-                        <li>Priority support</li>
-                    </ul>
-                    <button onclick="openCheckout('pro')" class="btn btn-primary" data-translate="nav_start">Get Started</button>
-                </div>
-                <div class="pricing-card" data-plan="business">
-                    <div class="pricing-name">Business</div>
-                    <div class="pricing-price">$250<span>/mo</span></div>
-                    <p class="pricing-description" data-translate="price3_desc">For property management companies.</p>
-                    <ul class="pricing-features">
-                        <li>Up to 30 units</li>
-                        <li>Everything in Pro</li>
-                        <li>Client management</li>
-                        <li>Multi-client dashboards</li>
-                        <li>Custom branding</li>
-                        <li>Dedicated support</li>
-                    </ul>
-                    <button onclick="openCheckout('business')" class="btn btn-primary" data-translate="nav_start">Get Started</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta" id="cta">
-        <div class="cta-box">
-            <h2 data-translate="cta_title">Ready to Simplify Property Management?</h2>
-            <p data-translate="cta_subtitle">Start managing your properties more efficiently today.</p>
-            <a href="#pricing" class="btn btn-large" data-translate="cta_button">View Pricing</a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <a href="#" class="logo">
-                    <div class="logo-icon">R</div>
-                    Rentably
-                </a>
-                <p>The modern property management platform for landlords and property managers who want to work smarter.</p>
-            </div>
-            <div class="footer-column">
-                <h4>Product</h4>
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#">Roadmap</a>
-            </div>
-            <div class="footer-column">
-                <h4>Company</h4>
-                <a href="#">About</a>
-                <a href="#">Blog</a>
-                <a href="#">Careers</a>
-                <a href="#">Contact</a>
-            </div>
-            <div class="footer-column">
-                <h4>Legal</h4>
-                <a href="/privacy">Privacy Policy</a>
-                <a href="/terms">Terms of Service</a>
-                <a href="#">Cookie Policy</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 Rentably. All rights reserved.</p>
-            <p>Made with ❤️ for property managers everywhere</p>
-        </div>
+    <footer style="background: var(--gray-900); color: white; padding: 3rem 2rem; text-align: center;">
+        <p style="color: var(--gray-500);">This is a UI preview for Rentably redesign concepts</p>
+        <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.5rem;">Ready to implement these changes? Let's do it! 🚀</p>
     </footer>
-
-    <script>
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-                navbar.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
-            } else {
-                navbar.style.background = 'rgba(255, 255, 255, 0.8)';
-                navbar.style.boxShadow = 'none';
-            }
-        });
-
-        // Waitlist form handler
-        function handleWaitlist(e) {
-            e.preventDefault();
-            const email = e.target.querySelector('input').value;
-            
-            // TODO: Connect to backend/email service
-            alert(currentLang === 'es' ? '¡Gracias por unirte a la lista de espera! Te contactaremos pronto.' : 'Thanks for joining the waitlist! We\'ll be in touch soon.');
-            e.target.reset();
-        }
-
-        // ==============================================
-        // TRANSLATIONS
-        // ==============================================
-        const translations = {
-            en: {
-                // Nav
-                nav_features: 'Features',
-                nav_how: 'How It Works',
-                nav_pricing: 'Pricing',
-                nav_login: 'Log In ▾',
-                nav_start: 'Get Started',
-                login_resident: 'Resident Portal',
-                login_resident_sub: 'For tenants',
-                login_admin: 'Admin Dashboard',
-                login_admin_sub: 'For property managers',
-                // Hero
-                hero_badge: 'Now accepting early access signups',
-                hero_title: 'Property Management <span>Made Simple</span>',
-                hero_subtitle: 'Streamline maintenance requests, tenant communication, and property operations — all in one beautiful platform.',
-                hero_cta: 'Join Waitlist →',
-                hero_features: 'See Features',
-                // Dashboard preview
-                dash_today: 'Today',
-                dash_pending: 'Pending',
-                dash_progress: 'In Progress',
-                dash_completed: 'Completed',
-                dash_item1: 'Plumbing Issue - Unit 4B',
-                dash_item1_sub: 'Submitted 2 hours ago',
-                dash_item2: 'Electrical - Unit 2A',
-                dash_item2_sub: 'Technician assigned',
-                // Features
-                features_title: 'Everything You Need',
-                features_subtitle: 'Powerful tools to manage properties efficiently, keep tenants happy, and grow your business.',
-                feature1_title: 'Maintenance Requests',
-                feature1_desc: 'Tenants submit requests through a simple portal. You track, assign, and resolve — all in one place.',
-                feature2_title: 'Tenant Communication',
-                feature2_desc: 'Built-in messaging, automated notifications, and announcements keep everyone in the loop.',
-                feature3_title: 'Analytics & Reports',
-                feature3_desc: 'Track maintenance costs, response times, and property performance with beautiful dashboards.',
-                feature4_title: 'Property Portfolio',
-                feature4_desc: 'Manage multiple properties and units from a single dashboard. Scale without the chaos.',
-                feature5_title: 'Mobile-First Design',
-                feature5_desc: 'Tenants can submit requests from their phone. You can manage on-the-go.',
-                feature6_title: 'Your Brand',
-                feature6_desc: 'White-label portal with your logo and colors. Your tenants see your brand, not ours.',
-                // How it works
-                how_title: 'Up and Running in Minutes',
-                how_subtitle: 'No complex setup. No training required. Just sign up and start managing.',
-                step1_title: 'Create Your Account',
-                step1_desc: 'Sign up, add your properties and units. Import existing tenant data or start fresh.',
-                step2_title: 'Invite Your Tenants',
-                step2_desc: 'Send automatic invitations. Tenants get instant access to their personalized portal.',
-                step3_title: 'Manage Everything',
-                step3_desc: 'Receive requests, track progress, communicate with tenants — all from one dashboard.',
-                // Pricing
-                pricing_title: 'Simple, Transparent Pricing',
-                pricing_subtitle: 'Start free. Upgrade as you grow. No hidden fees, ever.',
-                price1_desc: 'Perfect for small landlords getting started.',
-                price1_f1: 'Up to 25 units',
-                price1_f2: 'Tenant portal',
-                price1_f3: 'Maintenance tracking',
-                price1_f4: 'Email notifications',
-                price1_f5: 'Basic reports',
-                price2_desc: 'For growing property managers.',
-                price2_f1: 'Up to 100 units',
-                price2_f2: 'Everything in Starter',
-                price2_f3: 'SMS notifications',
-                price2_f4: 'Custom branding',
-                price2_f5: 'Advanced analytics',
-                price2_f6: 'Priority support',
-                price3_desc: 'For large portfolios and teams.',
-                price3_f1: 'Up to 500 units',
-                price3_f2: 'Everything in Professional',
-                price3_f3: 'API access',
-                price3_f4: 'Custom domain',
-                price3_f5: 'Unlimited team accounts',
-                price3_f6: 'Dedicated support',
-                // CTA
-                cta_title: 'Ready to Simplify Property Management?',
-                cta_subtitle: 'Join the waitlist for early access. Be the first to know when we launch.',
-                cta_email: 'Enter your email',
-                cta_button: 'Join Waitlist'
-            },
-            es: {
-                // Nav
-                nav_features: 'Funciones',
-                nav_how: 'Cómo Funciona',
-                nav_pricing: 'Precios',
-                nav_login: 'Ingresar ▾',
-                nav_start: 'Comenzar',
-                login_resident: 'Portal de Residentes',
-                login_resident_sub: 'Para inquilinos',
-                login_admin: 'Panel de Administración',
-                login_admin_sub: 'Para administradores',
-                // Hero
-                hero_badge: 'Aceptando registros de acceso anticipado',
-                hero_title: 'Gestión de Propiedades <span>Simplificada</span>',
-                hero_subtitle: 'Optimiza solicitudes de mantenimiento, comunicación con inquilinos y operaciones — todo en una hermosa plataforma.',
-                hero_cta: 'Únete a la Lista →',
-                hero_features: 'Ver Funciones',
-                // Dashboard preview
-                dash_today: 'Hoy',
-                dash_pending: 'Pendiente',
-                dash_progress: 'En Progreso',
-                dash_completed: 'Completado',
-                dash_item1: 'Problema de Plomería - Unidad 4B',
-                dash_item1_sub: 'Enviado hace 2 horas',
-                dash_item2: 'Eléctrico - Unidad 2A',
-                dash_item2_sub: 'Técnico asignado',
-                // Features
-                features_title: 'Todo lo que Necesitas',
-                features_subtitle: 'Herramientas poderosas para gestionar propiedades eficientemente, mantener inquilinos felices y hacer crecer tu negocio.',
-                feature1_title: 'Solicitudes de Mantenimiento',
-                feature1_desc: 'Los inquilinos envían solicitudes a través de un portal simple. Tú rastreas, asignas y resuelves — todo en un lugar.',
-                feature2_title: 'Comunicación con Inquilinos',
-                feature2_desc: 'Mensajería integrada, notificaciones automáticas y anuncios mantienen a todos informados.',
-                feature3_title: 'Análisis e Informes',
-                feature3_desc: 'Rastrea costos de mantenimiento, tiempos de respuesta y rendimiento de propiedades con hermosos dashboards.',
-                feature4_title: 'Portafolio de Propiedades',
-                feature4_desc: 'Gestiona múltiples propiedades y unidades desde un solo dashboard. Escala sin caos.',
-                feature5_title: 'Diseño Mobile-First',
-                feature5_desc: 'Los inquilinos pueden enviar solicitudes desde su teléfono. Tú puedes gestionar en movimiento.',
-                feature6_title: 'Tu Marca',
-                feature6_desc: 'Portal white-label con tu logo y colores. Tus inquilinos ven tu marca, no la nuestra.',
-                // How it works
-                how_title: 'Funcionando en Minutos',
-                how_subtitle: 'Sin configuración compleja. Sin entrenamiento requerido. Solo regístrate y comienza a gestionar.',
-                step1_title: 'Crea tu Cuenta',
-                step1_desc: 'Regístrate, agrega tus propiedades y unidades. Importa datos existentes o comienza desde cero.',
-                step2_title: 'Invita a tus Inquilinos',
-                step2_desc: 'Envía invitaciones automáticas. Los inquilinos obtienen acceso instantáneo a su portal personalizado.',
-                step3_title: 'Gestiona Todo',
-                step3_desc: 'Recibe solicitudes, rastrea progreso, comunícate con inquilinos — todo desde un dashboard.',
-                // Pricing
-                pricing_title: 'Precios Simples y Transparentes',
-                pricing_subtitle: 'Comienza gratis. Actualiza mientras creces. Sin tarifas ocultas, nunca.',
-                price1_desc: 'Perfecto para pequeños propietarios comenzando.',
-                price1_f1: 'Hasta 25 unidades',
-                price1_f2: 'Portal de inquilinos',
-                price1_f3: 'Seguimiento de mantenimiento',
-                price1_f4: 'Notificaciones por email',
-                price1_f5: 'Informes básicos',
-                price2_desc: 'Para administradores de propiedades en crecimiento.',
-                price2_f1: 'Hasta 100 unidades',
-                price2_f2: 'Todo en Starter',
-                price2_f3: 'Notificaciones SMS',
-                price2_f4: 'Marca personalizada',
-                price2_f5: 'Análisis avanzado',
-                price2_f6: 'Soporte prioritario',
-                price3_desc: 'Para grandes portafolios y equipos.',
-                price3_f1: 'Hasta 500 unidades',
-                price3_f2: 'Todo en Professional',
-                price3_f3: 'Acceso API',
-                price3_f4: 'Dominio personalizado',
-                price3_f5: 'Cuentas de equipo ilimitadas',
-                price3_f6: 'Soporte dedicado',
-                // CTA
-                cta_title: '¿Listo para Simplificar la Gestión de Propiedades?',
-                cta_subtitle: 'Únete a la lista de espera para acceso anticipado. Sé el primero en saber cuando lancemos.',
-                cta_email: 'Ingresa tu correo',
-                cta_button: 'Unirse a la Lista'
-            }
-        };
-
-        let currentLang = localStorage.getItem('rentably-lang') || 'en';
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('rentably-lang', lang);
-
-            // Update toggle buttons
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent === lang.toUpperCase()) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // Update all translated elements
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.getAttribute('data-translate');
-                if (translations[lang][key]) {
-                    if (key === 'hero_title') {
-                        el.innerHTML = translations[lang][key];
-                    } else {
-                        el.textContent = translations[lang][key];
-                    }
-                }
-            });
-
-            // Update placeholders
-            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-translate-placeholder');
-                if (translations[lang][key]) {
-                    el.placeholder = translations[lang][key];
-                }
-            });
-        }
-
-        // Initialize language on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set initial toggle state
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent === currentLang.toUpperCase()) {
-                    btn.classList.add('active');
-                }
-            });
-            setLanguage(currentLang);
-        });
-
-        // Animate elements on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.feature-card, .step, .pricing-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'all 0.6s ease';
-            observer.observe(el);
-        });
-
-        // ========================================
-        // STRIPE CHECKOUT INTEGRATION
-        // ========================================
-        const CHECKOUT_API = 'https://udmqecapkpkaluzuqjjk.supabase.co/functions/v1/create-checkout';
-        const PLAN_DETAILS = {
-            starter: { name: 'Starter', units: 'Up to 5', price: '$49/mo', priceId: 'price_1T2KhpEOGLTjV8SIIviOjAAP' },
-            pro: { name: 'Pro', units: 'Up to 13', price: '$99/mo', priceId: 'price_1T2KiqEOGLTjV8SINREyAaBG' },
-            business: { name: 'Business', units: 'Up to 30', price: '$250/mo', priceId: 'price_1T2KjFEOGLTjV8SIHMRV9C9a' }
-        };
-        let selectedPlan = null;
-
-        function openCheckout(plan) {
-            selectedPlan = plan;
-            const details = PLAN_DETAILS[plan];
-            document.getElementById('summaryPlan').textContent = details.name;
-            document.getElementById('summaryUnits').textContent = details.units;
-            document.getElementById('summaryPrice').textContent = details.price;
-            document.getElementById('checkoutModal').style.display = 'flex';
-            document.getElementById('checkout-form').style.display = 'block';
-            document.getElementById('orgName').value = '';
-            document.getElementById('customerEmail').value = '';
-        }
-
-        function closeCheckout() {
-            document.getElementById('checkoutModal').style.display = 'none';
-            selectedPlan = null;
-        }
-
-        async function submitPayment() {
-            const orgName = document.getElementById('orgName').value.trim();
-            const email = document.getElementById('customerEmail').value.trim();
-            if (!orgName || !email) { showCheckoutError('Please fill in all fields'); return; }
-            if (!selectedPlan) { showCheckoutError('Please select a plan'); return; }
-
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Redirecting to checkout...';
-
-            try {
-                const details = PLAN_DETAILS[selectedPlan];
-                
-                const response = await fetch(CHECKOUT_API, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        priceId: details.priceId,
-                        orgName: orgName,
-                        email: email
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                window.location.href = data.url;
-                
-            } catch (error) {
-                console.error('Checkout error:', error);
-                showCheckoutError(error.message || 'Failed to start checkout. Please try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Subscribe Now';
-            }
-        }
-
-        function showCheckoutError(msg) {
-            const el = document.getElementById('paymentError');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 5000);
-        }
-
-        document.getElementById('checkoutModal').addEventListener('click', (e) => {
-            if (e.target.id === 'checkoutModal') closeCheckout();
-        });
-    </script>
-
-    <!-- Checkout Modal -->
-    <div id="checkoutModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:2000;align-items:center;justify-content:center;padding:2rem">
-        <div style="background:white;border-radius:16px;width:100%;max-width:450px;max-height:90vh;overflow-y:auto">
-            <div style="padding:1.5rem;border-bottom:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center">
-                <h2 style="font-size:1.25rem;font-weight:700;margin:0">Complete Your Purchase</h2>
-                <button onclick="closeCheckout()" style="background:none;border:none;font-size:1.5rem;color:#6B7280;cursor:pointer">&times;</button>
-            </div>
-            <div style="padding:1.5rem" id="checkout-form">
-                <div style="margin-bottom:1.25rem">
-                    <label style="display:block;font-size:0.9rem;font-weight:600;color:#374151;margin-bottom:0.5rem">Organization Name</label>
-                    <input type="text" id="orgName" placeholder="My Property Company" style="width:100%;padding:0.75rem 1rem;border:1px solid #D1D5DB;border-radius:8px;font-size:1rem">
-                </div>
-                <div style="margin-bottom:1.25rem">
-                    <label style="display:block;font-size:0.9rem;font-weight:600;color:#374151;margin-bottom:0.5rem">Email Address</label>
-                    <input type="email" id="customerEmail" placeholder="you@example.com" style="width:100%;padding:0.75rem 1rem;border:1px solid #D1D5DB;border-radius:8px;font-size:1rem">
-                </div>
-                <div style="background:#F9FAFB;border-radius:8px;padding:1rem;margin-bottom:1.5rem">
-                    <div style="display:flex;justify-content:space-between;padding:0.5rem 0"><span>Plan</span><span id="summaryPlan">Pro</span></div>
-                    <div style="display:flex;justify-content:space-between;padding:0.5rem 0"><span>Units</span><span id="summaryUnits">Up to 13</span></div>
-                    <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-top:1px solid #E5E7EB;margin-top:0.5rem;padding-top:1rem;font-weight:700;font-size:1.1rem"><span>Total</span><span id="summaryPrice">$99/mo</span></div>
-                </div>
-                <div id="paymentError" style="display:none;background:#FEF2F2;color:#DC2626;padding:0.75rem 1rem;border-radius:8px;font-size:0.9rem;margin-bottom:1rem"></div>
-                <button onclick="submitPayment()" id="submitBtn" style="width:100%;padding:1rem;font-size:1rem;font-weight:600;border-radius:8px;border:none;background:#4F46E5;color:white;cursor:pointer">Subscribe Now</button>
-                <p style="text-align:center;color:#6B7280;font-size:0.85rem;margin-top:1rem">🔒 Secured by Stripe. Cancel anytime.</p>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
