@@ -3962,33 +3962,39 @@
                 document.getElementById('dashboardOccupancyCard').style.display = '';
                 document.getElementById('dashboardUpgradeBanner').style.display = 'none';
                 
-                // Calculate monthly revenue from residents with active leases
+                // Calculate monthly revenue from active residents
                 let residentsQuery = db
                     .from('residents')
-                    .select('monthly_rent, lease_start, lease_end, unit_id, units(property_id)')
+                    .select('monthly_payment, lease_start, lease_end, unit_id, units(property_id)')
                     .eq('organization_id', currentOrg.id)
                     .eq('is_active', true);
                 
                 const { data: residents } = await residentsQuery;
                 
-                // Filter to only residents with valid leases in current month and matching client filter
-                const today = new Date();
+                // Sum up monthly payments from active residents (with optional client filter)
                 let monthlyRevenue = 0;
                 residents?.forEach(r => {
                     if (propertyIds && propertyIds.length > 0) {
                         if (!r.units || !propertyIds.includes(r.units.property_id)) return;
                     }
-                    const leaseStart = r.lease_start ? new Date(r.lease_start) : null;
-                    const leaseEnd = r.lease_end ? new Date(r.lease_end) : null;
-                    if (leaseStart && leaseStart <= today && (!leaseEnd || leaseEnd >= today)) {
-                        monthlyRevenue += parseFloat(r.monthly_rent || 0);
-                    }
+                    // Include all active residents - lease dates are optional
+                    monthlyRevenue += parseFloat(r.monthly_payment || 0);
                 });
                 
                 // Calculate expenses from maintenance costs this month
-                const monthlyExpenses = requests?.filter(r => 
-                    new Date(r.created_at) >= new Date(startOfMonth) && r.cost
-                ).reduce((sum, r) => sum + parseFloat(r.cost || 0), 0) || 0;
+                let expensesQuery = db
+                    .from('maintenance_requests')
+                    .select('total_cost, created_at, property_id')
+                    .eq('organization_id', currentOrg.id)
+                    .gte('created_at', startOfMonth)
+                    .not('total_cost', 'is', null);
+                
+                if (propertyIds && propertyIds.length > 0) {
+                    expensesQuery = expensesQuery.in('property_id', propertyIds);
+                }
+                
+                const { data: expenseRequests } = await expensesQuery;
+                const monthlyExpenses = expenseRequests?.reduce((sum, r) => sum + parseFloat(r.total_cost || 0), 0) || 0;
                 
                 const netIncome = monthlyRevenue - monthlyExpenses;
                 
