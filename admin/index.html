@@ -2904,12 +2904,12 @@
                 <div class="modal-body">
                     <input type="hidden" id="residentId">
                     <div class="form-group">
-                        <label class="form-label" data-translate="name">Name *</label>
+                        <label class="form-label" data-translate="name">Name <span style="color:var(--danger)">*</span></label>
                         <input type="text" class="form-input" id="residentName" required>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label" data-translate="email">Email *</label>
+                            <label class="form-label" data-translate="email">Email <span style="color:var(--danger)">*</span></label>
                             <input type="email" class="form-input" id="residentEmail" required>
                         </div>
                         <div class="form-group">
@@ -2918,7 +2918,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" data-translate="unit">Unit *</label>
+                        <label class="form-label" data-translate="unit">Unit <span style="color:var(--danger)">*</span></label>
                         <select class="form-select" id="residentUnit" required onchange="checkExistingTenants()"></select>
                         <div id="existingTenantsInfo" style="display:none;margin-top:0.5rem;padding:0.75rem;background:var(--gray-50);border-radius:6px;font-size:0.85rem">
                             <span style="color:var(--gray-600)" id="existingTenantsText"></span>
@@ -2933,17 +2933,17 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label" data-translate="lease_start">Lease Start</label>
-                            <input type="date" class="form-input" id="residentLeaseStart">
+                            <label class="form-label" data-translate="lease_start">Lease Start <span style="color:var(--danger)">*</span></label>
+                            <input type="date" class="form-input" id="residentLeaseStart" required>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" data-translate="lease_end">Lease End</label>
-                            <input type="date" class="form-input" id="residentLeaseEnd">
+                            <label class="form-label" data-translate="lease_end">Lease End <span style="color:var(--danger)">*</span></label>
+                            <input type="date" class="form-input" id="residentLeaseEnd" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" data-translate="monthly_payment">Monthly Payment</label>
-                        <input type="number" class="form-input" id="residentPayment" min="0">
+                        <label class="form-label" data-translate="monthly_payment">Monthly Payment <span style="color:var(--danger)">*</span></label>
+                        <input type="number" class="form-input" id="residentPayment" min="0" required>
                     </div>
                     
                     <!-- HOA Section -->
@@ -2994,9 +2994,12 @@
                         <small style="color:var(--gray-500);font-size:0.8rem;display:block;margin-top:0.25rem" data-translate="fees_desc">Amounts paid by owner will be deducted when calculating net income</small>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeResidentModal()" data-translate="cancel">Cancel</button>
-                    <button type="submit" class="btn btn-primary" data-translate="save">Save</button>
+                <div class="modal-footer" style="flex-direction:column;align-items:stretch;gap:0.75rem">
+                    <small style="color:var(--gray-500);font-size:0.8rem"><span style="color:var(--danger)">*</span> Required fields</small>
+                    <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+                        <button type="button" class="btn btn-secondary" onclick="closeResidentModal()" data-translate="cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary" data-translate="save">Save</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -5375,6 +5378,31 @@
             const unitId = document.getElementById('residentUnit').value;
             const isPrimary = document.getElementById('residentIsPrimary').checked;
             
+            // Get required fields
+            const name = document.getElementById('residentName').value.trim();
+            const email = document.getElementById('residentEmail').value.trim();
+            const leaseStart = document.getElementById('residentLeaseStart').value;
+            const leaseEnd = document.getElementById('residentLeaseEnd').value;
+            const monthlyPayment = document.getElementById('residentPayment').value;
+            
+            // Validate required fields
+            if (!name || !email || !unitId || !leaseStart || !leaseEnd || !monthlyPayment) {
+                const errorMsg = currentLang === 'es' 
+                    ? 'Por favor complete todos los campos requeridos (nombre, email, unidad, fechas de contrato y pago mensual)'
+                    : 'Please fill in all required fields (name, email, unit, lease dates, and monthly payment)';
+                alert(errorMsg);
+                return;
+            }
+            
+            // Validate lease end is after lease start
+            if (new Date(leaseEnd) <= new Date(leaseStart)) {
+                const errorMsg = currentLang === 'es'
+                    ? 'La fecha de fin de contrato debe ser posterior a la fecha de inicio'
+                    : 'Lease end date must be after lease start date';
+                alert(errorMsg);
+                return;
+            }
+            
             // HOA fields
             const hoaIncluded = document.getElementById('residentHoaIncluded').value === 'yes';
             const hoaPaidBy = document.getElementById('residentHoaPaidBy').value;
@@ -5388,12 +5416,12 @@
             const data = {
                 organization_id: currentOrg.id,
                 unit_id: unitId,
-                name: document.getElementById('residentName').value,
-                email: document.getElementById('residentEmail').value,
+                name: name,
+                email: email,
                 phone: document.getElementById('residentPhone').value || null,
-                lease_start: document.getElementById('residentLeaseStart').value || null,
-                lease_end: document.getElementById('residentLeaseEnd').value || null,
-                monthly_payment: document.getElementById('residentPayment').value || null,
+                lease_start: leaseStart,
+                lease_end: leaseEnd,
+                monthly_payment: monthlyPayment,
                 is_primary: isPrimary,
                 // HOA
                 hoa_included: hoaIncluded,
